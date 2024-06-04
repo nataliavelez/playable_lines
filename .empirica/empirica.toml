@@ -1,9 +1,0 @@
-name = "interactive_lines"
-
-[tajriba.auth]
-srtoken = "CAPnLDeTdOyVHgVH"
-
-[[tajriba.auth.users]]
-name = "Admin"
-username = "admin"
-password = "bNmOiRrr"
