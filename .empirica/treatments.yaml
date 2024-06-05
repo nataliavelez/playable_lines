@@ -17,6 +17,12 @@ factors:
       - value: 2
       - value: 3
       - value: 4
+  - desc: "The line  of learning maps"
+    name: universalizability
+    values:
+      - value: "high"
+      - value: "medium"
+      - value: "low"
 
 treatments:
   - desc: "Single-player Game"
@@ -24,10 +30,23 @@ treatments:
       playerCount: 1
       numRounds: 2
     name: Solo
-  - desc: "Two-round Game"
+  - desc: "Three-round Game"
     factors:
-      numRounds: 2
+      numRounds: 3
       playerCount: 1
     name: TwoRounds
-  
-
+  - desc: "High Universalizability"
+    factors:
+      numRounds: 3
+      playerCount: 1
+      univerzalisability: "high"
+  - desc: "Medium Universalizability"
+    factors:
+      numRounds: 3
+      playerCount: 1
+      univerzalisability: "medium"
+  - desc: "Low Universalizability"
+    factors:
+      numRounds: 3
+      playerCount: 1
+      univerzalisability: "low"
