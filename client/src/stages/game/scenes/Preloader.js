@@ -31,15 +31,31 @@ export class Preloader extends Scene
     {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
-        this.load.image('logo', 'logo.png');
-        this.load.image('star', 'star.png');
 
-        this.load.image('tiles', 'cloud_tileset.png');
-        this.load.tilemapTiledJSON('cloud-city-map', 'cloud_city.json');
+        this.load.image('tiles', 'cloud_tileset.png'); // demo
+        this.load.image('Water_1', 'Water_1.png');
+        this.load.image('Grass_tiles_v2', 'Grass_tiles_v2.png');
+        this.load.image('Water well', 'Water well.png');
+        this.load.image('Farming Plants', 'Farming Plants.png');
+        this.load.image('Tilled_Dirt', 'Tilled_Dirt.png');
+        
+        this.load.tilemapTiledJSON('cloud-city-map', 'cloud_city.json'); // demo
+        this.load.tilemapTiledJSON('test-map', 'test_map.json');
+
         this.load.spritesheet('player', 'characters.png', {
             frameWidth: 52,
             frameHeight: 72
         });
+
+        this.load.spritesheet('bunny', 'bunny_spritesheet.png', {
+            frameWidth: 48,
+            frameHeight: 48
+        }); 
+
+        this.load.spritesheet('bunny-actions', 'bunny_actions.png', {
+            frameWidth: 48,
+            frameHeight: 48
+        }); 
     }
 
     create ()

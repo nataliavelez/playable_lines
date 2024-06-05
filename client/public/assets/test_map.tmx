@@ -1,95 +1,641 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="28">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="57">
+ <editorsettings>
+  <export target="test_map.tmj" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="Water_1" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="Water_1.png" width="16" height="16"/>
  </tileset>
  <tileset firstgid="2" name="Grass_tiles_v2" tilewidth="16" tileheight="16" tilecount="77" columns="11">
   <image source="Grass_tiles_v2.png" width="176" height="112"/>
+  <wangsets>
+   <wangset name="Grass" type="corner" tile="-1">
+    <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>
+    <wangtile tileid="0" wangid="0,1,0,0,0,1,0,1"/>
+    <wangtile tileid="1" wangid="0,1,0,0,0,0,0,1"/>
+    <wangtile tileid="2" wangid="0,1,0,1,0,0,0,1"/>
+    <wangtile tileid="4" wangid="0,0,0,1,0,0,0,0"/>
+    <wangtile tileid="5" wangid="0,0,0,1,0,0,0,0"/>
+    <wangtile tileid="6" wangid="0,0,0,0,0,1,0,0"/>
+    <wangtile tileid="7" wangid="0,0,0,0,0,1,0,0"/>
+    <wangtile tileid="8" wangid="0,0,0,1,0,1,0,0"/>
+    <wangtile tileid="9" wangid="0,1,0,0,0,1,0,0"/>
+    <wangtile tileid="11" wangid="0,0,0,0,0,1,0,1"/>
+    <wangtile tileid="13" wangid="0,1,0,1,0,0,0,0"/>
+    <wangtile tileid="15" wangid="0,0,0,1,0,0,0,0"/>
+    <wangtile tileid="16" wangid="0,0,0,1,0,0,0,0"/>
+    <wangtile tileid="17" wangid="0,0,0,0,0,1,0,0"/>
+    <wangtile tileid="18" wangid="0,0,0,0,0,1,0,0"/>
+    <wangtile tileid="19" wangid="0,0,0,1,0,1,0,0"/>
+    <wangtile tileid="20" wangid="0,0,0,1,0,0,0,0"/>
+    <wangtile tileid="22" wangid="0,0,0,1,0,1,0,1"/>
+    <wangtile tileid="23" wangid="0,0,0,1,0,1,0,0"/>
+    <wangtile tileid="24" wangid="0,1,0,1,0,1,0,0"/>
+    <wangtile tileid="26" wangid="0,1,0,0,0,0,0,0"/>
+    <wangtile tileid="27" wangid="0,1,0,0,0,0,0,0"/>
+    <wangtile tileid="28" wangid="0,0,0,0,0,0,0,1"/>
+    <wangtile tileid="29" wangid="0,0,0,0,0,0,0,1"/>
+    <wangtile tileid="37" wangid="0,1,0,0,0,0,0,0"/>
+    <wangtile tileid="38" wangid="0,1,0,0,0,0,0,0"/>
+    <wangtile tileid="39" wangid="0,0,0,0,0,0,0,1"/>
+    <wangtile tileid="40" wangid="0,0,0,0,0,0,0,1"/>
+   </wangset>
+  </wangsets>
  </tileset>
  <tileset firstgid="79" name="Water well" tilewidth="16" tileheight="16" tilecount="4" columns="2">
   <image source="Water well.png" width="32" height="32"/>
+  <tile id="2">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="false"/>
+    <property name="water" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="false"/>
+    <property name="water" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="83" name="Farming Plants" tilewidth="16" tileheight="16" tilecount="75" columns="5">
   <image source="Farming Plants.png" width="80" height="240"/>
+  <tile id="5">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="15">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="21">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="28">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="29">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="31">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="32">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="33">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="34">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="36">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="39">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="40">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="42">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="47">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="48">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="49">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="50">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="51">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="52">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="53">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="55">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="56">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="58">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="59">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="60">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="61">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="62">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="63">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="64">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="65">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="66">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="67">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="68">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="69">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="70">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="71">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="72">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="73">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="74">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="plant" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
  </tileset>
- <layer id="1" name="Tile Layer 1" width="14" height="14">
+ <tileset firstgid="158" name="Tilled_Dirt" tilewidth="16" tileheight="16" tilecount="77" columns="11">
+  <image source="Tilled_Dirt.png" width="176" height="112"/>
+  <wangsets>
+   <wangset name="Dirt Terrain" type="mixed" tile="-1">
+    <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>
+   </wangset>
+  </wangsets>
+ </tileset>
+ <tileset firstgid="235" name="Mushrooms, Flowers, Stones" tilewidth="16" tileheight="16" tilecount="60" columns="12">
+  <image source="Mushrooms, Flowers, Stones.png" width="192" height="80"/>
+ </tileset>
+ <layer id="9" name="Grass" width="14" height="14">
   <data encoding="csv">
-14,62,68,14,14,14,14,14,14,14,14,68,14,62,
-62,68,68,14,68,69,14,14,14,14,68,62,68,68,
-68,68,62,14,14,69,14,14,14,14,14,68,62,14,
-14,14,14,14,14,14,14,14,68,14,14,14,14,14,
-14,14,14,14,14,14,14,68,14,68,62,14,14,14,
-14,14,14,14,14,14,14,14,68,62,14,14,69,69,
-14,14,68,62,68,14,14,14,14,14,14,14,14,14,
-14,14,14,68,62,14,14,14,14,14,62,68,73,14,
-14,68,14,14,14,14,14,14,14,14,68,14,62,68,
-14,69,14,14,14,14,14,14,14,14,14,68,68,62,
-14,14,14,14,14,62,68,68,62,14,14,14,14,14,
-14,68,62,14,14,68,14,14,68,73,14,14,14,14,
-68,62,68,14,14,14,62,68,14,14,14,14,14,68,
-62,68,68,14,14,14,14,14,14,14,14,14,68,73
+14,14,14,14,14,14,14,14,14,14,14,14,14,14,
+14,68,62,68,14,14,14,14,14,14,69,62,70,14,
+14,62,68,72,71,14,14,14,14,14,14,68,72,14,
+14,14,14,68,14,14,14,14,14,14,14,14,14,14,
+14,14,14,14,14,14,14,14,14,68,14,14,68,14,
+14,14,14,14,14,14,14,71,62,68,68,62,71,14,
+14,14,14,14,14,14,14,14,71,14,14,68,14,14,
+14,14,14,14,68,62,14,14,14,14,14,14,14,14,
+14,14,14,68,62,71,71,14,14,14,14,14,14,14,
+14,14,14,14,68,68,14,14,14,14,14,14,14,14,
+14,14,62,14,14,14,14,14,68,14,62,68,14,14,
+14,14,68,62,14,71,14,14,14,68,71,68,14,14,
+14,14,71,68,14,14,14,14,14,14,68,71,14,14,
+14,14,14,14,14,14,14,14,14,14,14,14,14,14
 </data>
  </layer>
- <objectgroup id="3" name="Object Layer 1">
-  <object id="4" gid="81" x="192" y="112" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="false"/>
-    <property name="water" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="5" gid="82" x="208" y="112" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="false"/>
-    <property name="water" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="19" gid="95" x="0" y="64" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="true"/>
-    <property name="water" type="bool" value="false"/>
-   </properties>
-  </object>
-  <object id="20" gid="95" x="0" y="80" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="true"/>
-    <property name="water" type="bool" value="false"/>
-   </properties>
-  </object>
-  <object id="21" gid="95" x="0" y="96" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="true"/>
-    <property name="water" type="bool" value="false"/>
-   </properties>
-  </object>
-  <object id="22" gid="95" x="0" y="112" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="true"/>
-    <property name="water" type="bool" value="false"/>
-   </properties>
-  </object>
-  <object id="23" gid="95" x="0" y="128" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="true"/>
-    <property name="water" type="bool" value="false"/>
-   </properties>
-  </object>
-  <object id="27" gid="95" x="0" y="144" width="16" height="16">
-   <properties>
-    <property name="ge_collide" type="bool" value="true"/>
-    <property name="plant" type="bool" value="true"/>
-    <property name="water" type="bool" value="false"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="4" name="Object Layer 2">
-  <object id="7" gid="79" x="192" y="96" width="16" height="16"/>
-  <object id="8" gid="80" x="208" y="96" width="16" height="16"/>
- </objectgroup>
+ <layer id="10" name="Grass Decor" width="14" height="14">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+159,160,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+170,171,0,0,0,0,0,0,0,0,0,0,0,0,
+181,182,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="11" name="Objects" width="14" height="14">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,0,0,0,0,0,0,0,0,0,0,0,81,82,
+96,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,0,0,0,0,0,0,0,0,0,0,0,0,0,
+96,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="13" name="Top View" width="14" height="14">
+  <properties>
+   <property name="ge_alwaysTop" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,79,80,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
 </map>
