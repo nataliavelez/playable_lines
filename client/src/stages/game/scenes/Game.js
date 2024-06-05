@@ -12,15 +12,15 @@ export class Game extends Scene
     create ()
     {
         this.complete = false; // do not touch this! tells Empirica to advance trial
-        this.tilesets = ["Water_1", "Grass_tiles_v2", "Water well", "Farming Plants", "Tilled_Dirt"];
         this.trialTilemap = this.make.tilemap({ key: "test-map" });
+        this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
         this.tilesets.forEach(tileset => {
             this.trialTilemap.addTilesetImage(tileset);
         });
 
         for (let i = 0; i < this.trialTilemap.layers.length; i++) {
             const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
-            layer.scale = 3;
+            layer.scale = 2;
             
             if (this.trialTilemap.layers[i].name == 'Top View') {
               layer.depth = 10;
@@ -30,13 +30,13 @@ export class Game extends Scene
 
         this.playerSprite = this.add.sprite(0, 0, "bunny");
         this.playerSprite.depth = 1;
-        this.playerSprite.scale = 3;
+        this.playerSprite.scale = 2;
 
         console.log(this.playerSprite.depth);
 
         this.playerSprite.setFrame(this.getStopFrame('down'));
-        this.cameras.main.startFollow(this.playerSprite, true);
-        this.cameras.main.setFollowOffset(-this.playerSprite.width, -this.playerSprite.height);
+        //this.cameras.main.startFollow(this.playerSprite, true);
+        // this.cameras.main.setFollowOffset(-this.playerSprite.width, -this.playerSprite.height);
 
         this.createPlayerAnimation.call(this, 'idle_up', 4, 5);
         this.createPlayerAnimation.call(this, 'idle_right', 12, 13);
