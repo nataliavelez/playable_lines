@@ -47,6 +47,15 @@ export class Game extends Scene
           };
         
         this.gridEngine.create(this.cloudCityTilemap, this.gridEngineConfig);
+        
+        this.gridEngine
+        .positionChangeStarted()
+        .subscribe(({ charId, enterTile }) => {
+          
+            EventBus.emit('position-change', enterTile.x, enterTile.y);
+            
+        });
+
 
         this.gridEngine
         .positionChangeStarted()
@@ -66,7 +75,6 @@ export class Game extends Scene
     update ()
     {
         const cursors = this.input.keyboard.createCursorKeys();
-
         if (cursors.left.isDown) { 
             this.gridEngine.move("player", "left");
         } else if (cursors.right.isDown) {
@@ -76,8 +84,22 @@ export class Game extends Scene
         } else if (cursors.down.isDown) {
             this.gridEngine.move("player", "down");
         }
+        
+   
     }
 
+    movePlayer(reactCallback)
+    {
+        onUpdate: () => {
+                    if (reactCallback)
+                    {
+                        reactCallback({
+                            x: Math.floor(this.container.x),
+                            y: Math.floor(this.container.y)
+                        });
+                    }
+                }
+    }
     changeScene ()
     {
         this.scene.start('GameOver');
