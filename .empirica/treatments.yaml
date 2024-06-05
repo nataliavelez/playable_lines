@@ -17,7 +17,7 @@ factors:
       - value: 2
       - value: 3
       - value: 4
-  - desc: "The line  of learning maps"
+  - desc: "The universalizabiliity of learning maps"
     name: universalizability
     values:
       - value: "high"
