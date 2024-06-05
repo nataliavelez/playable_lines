@@ -39,14 +39,14 @@ treatments:
     factors:
       numRounds: 3
       playerCount: 1
-      univerzalisability: "high"
+      universalizability: "high"
   - desc: "Medium Universalizability"
     factors:
       numRounds: 3
       playerCount: 1
-      univerzalisability: "medium"
+      universalizability: "medium"
   - desc: "Low Universalizability"
     factors:
       numRounds: 3
       playerCount: 1
-      univerzalisability: "low"
+      universalizability: "low"
