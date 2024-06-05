@@ -2,19 +2,33 @@ import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
+  // Get treatment condition information
   const treatment = game.get("treatment");
   const { numRounds } = treatment;
+  const { playerCount } = treatment;
+  const { universalizability } = treatment;
+  
   for (let i = 0; i < numRounds; i++) {
     const round = game.addRound({
       name: `Round ${i + 1}`,
     });
   round.addStage({ name: "game", duration: 10 });  
   round.addStage({ name: "result", duration: 10 });
+  round.set("roundType", "learn");
+  round.set("mapUniverzalisablity", universalizability);
+
+  // make last round a test round with medium universalizability
+  if (i === numRounds - 1) {
+    round.set("roundType", "test");
+    round.set("mapUniverzalisablity", "medium");
+  }
   }
 });
 
 
-Empirica.onRoundStart(({ round }) => {});
+Empirica.onRoundStart(({ round }) => {
+
+});
 
 Empirica.onStageStart(({ stage }) => {});
 
