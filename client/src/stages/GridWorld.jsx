@@ -6,8 +6,10 @@ import Phaser from 'phaser';
 import { PhaserGame } from './game/PhaserGame';
 import { EventBus } from './game/EventBus';
 
-export function GridWorld ()
-{
+export function GridWorld (){
+    // get the map needed
+    // const map = useRound().get("mapUniverzalisablity");
+
     //  References to the PhaserGame component (game and scene are exposed)
     const player = usePlayer();
     const phaserRef = useRef();
