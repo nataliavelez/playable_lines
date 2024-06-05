@@ -37,14 +37,12 @@ export class Preloader extends Scene
         this.load.image('Grass_tiles_v2', 'Grass_tiles_v2.png');
         this.load.image('Water well', 'Water well.png');
         this.load.image('Farming Plants', 'Farming Plants.png');
-        this.load.image('Fences', 'Fences.png');
-        this.load.image('Mushrooms, Flowers, Stones', 'Mushrooms, Flowers, Stones.png');
         this.load.image('Tilled_Dirt', 'Tilled_Dirt.png');
         this.load.image('Fences', 'Fences.png');
         this.load.image('Mushrooms, Flowers, Stones', 'Mushrooms, Flowers, Stones.png');
         
         this.load.tilemapTiledJSON('cloud-city-map', 'cloud_city.json'); // demo
-        this.load.tilemapTiledJSON('test-map', 'test_map_3.json');
+        this.load.tilemapTiledJSON('test-map', 'test_map_2.json');
 
         this.load.spritesheet('player', 'characters.png', {
             frameWidth: 52,
