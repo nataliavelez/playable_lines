@@ -42,7 +42,7 @@ export class Preloader extends Scene
         this.load.image('Tilled_Dirt', 'Tilled_Dirt.png');
         
         this.load.tilemapTiledJSON('cloud-city-map', 'cloud_city.json'); // demo
-        this.load.tilemapTiledJSON('test-map', 'test_map_3.json');
+        this.load.tilemapTiledJSON('test-map', 'test_map_4.json');
 
         this.load.spritesheet('player', 'characters.png', {
             frameWidth: 52,
