@@ -1,2 +1,4 @@
 .empirica/local/tajriba.json
 .DS_Store
+*.tiled-session
+*.tiled-project

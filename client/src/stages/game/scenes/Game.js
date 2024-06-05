@@ -40,7 +40,7 @@ export class Game extends Scene
                 id: "player",
                 sprite: this.playerSprite,
                 container: this.container,
-                walkingAnimationMapping: 6,
+                walkingAnimationMapping: 1,
                 startPosition: { x: 8, y: 8 },
               },
             ],
