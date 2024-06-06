@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref)
+export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene, updateScore}, ref)
 {
     const game = useRef();
 
@@ -16,7 +16,7 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
             
             if (ref !== null)
             {
-                ref.current = { game: game.current, scene: null };
+                ref.current = { game: game.current, scene: null, score: 0, carrying: false};
             }
         }
 
@@ -43,13 +43,6 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
             
         });
 
-        EventBus.on('goal-reached', () => {
-            
-            console.log('Goal reached!');
-
-            
-        });
-
         return () => {
 
             EventBus.removeListener('current-scene-ready');
@@ -66,5 +59,6 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
 
 // Props definitions
 PhaserGame.propTypes = {
-    currentActiveScene: PropTypes.func 
+    currentActiveScene: PropTypes.func,
+    updateScore: PropTypes.func
 }

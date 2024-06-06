@@ -1,6 +1,5 @@
 import { EventBus } from '../EventBus';
-import { Scene } from 'phaser';
-
+import { Scene, Input } from 'phaser';
 
 export class Game extends Scene
 {
@@ -54,14 +53,12 @@ export class Game extends Scene
         this.createPlayerAnimation.call(this, 'water_down', 18, 19, 0);
         this.createPlayerAnimation.call(this, 'water_left', 16, 17, 0);
 
-        this.text = this.add.text(8, 10, "Player 1");
-        this.text.setColor("#000000");
-
-        // this.goal = this.add.polygon(13*48+24, 7*48+24, [[0,48], [24, 0], [48,48]], 0xffffff);
-        // //this.goal = this.add.rectangle(13*48+24,7*48+24,48,48,0xffffff,.5);
-        // this.goal.postFX.addGlow();
-
-        this.container = this.add.container(0, 0, [this.playerSprite, this.text]);
+        this.indicator = this.add.sprite(48, 20, "indicator");
+        this.plumbob = this.add.graphics();
+        this.plumbob.lineStyle(2, 0xFFFFFF, .75);
+        this.plumbob.strokeRect(38, 52, 20, 20);
+        
+        this.container = this.add.container(0, 0, [this.plumbob, this.playerSprite, this.indicator]);
         // this.cameras.main.startFollow(this.container, true);        
 
         this.gridEngineConfig = {
@@ -94,18 +91,6 @@ export class Game extends Scene
           this.playerSprite.anims.play('idle_'+direction);
           //this.playerSprite.setFrame(this.getStopFrame(direction));
         });
-
-        // this.gridEngine
-        // .positionChangeStarted()
-        // .subscribe(({ charId, exitTile, enterTile }) => {
-        //     if ((enterTile.x == 13) & (enterTile.y == 6)) {
-        //         this.cameras.main.fadeOut(1000, 0, 0, 0, function(camera, progress) {
-        //             if (progress == 1) {
-        //                 this.changeScene();
-        //             }
-        //         });
-        //     }
-        // });
 
         EventBus.emit('current-scene-ready', this);
     }
@@ -145,6 +130,7 @@ export class Game extends Scene
         const cursors = this.input.keyboard.createCursorKeys();
         const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        // move sprite when arrow keys are pressed
         if (cursors.left.isDown) { 
             this.gridEngine.move("bunny", "left");
         } else if (cursors.right.isDown) {
@@ -154,8 +140,9 @@ export class Game extends Scene
         } else if (cursors.down.isDown) {
             this.gridEngine.move("bunny", "down");
         }
-
-        if (action.isDown) {
+        
+        // use action button (spacebar) to load and unload water
+        if (Input.Keyboard.JustDown(action)) {
           const direction = this.gridEngine.getFacingDirection('bunny');
 
           if (!this.isCarrying() & this.nearSource()) {
@@ -164,17 +151,21 @@ export class Game extends Scene
               'animationcomplete',
               () => {this.playerSprite.anims.play('idle_'+direction)}
             );
+
           } else if (this.isCarrying() & this.nearTarget()) {
             this.playerSprite.carrying = false;
             this.playerSprite.anims.play('water_'+direction).on(
               'animationcomplete',
               () => {this.playerSprite.anims.play('idle_'+direction)}
             );
+
           }
 
         }
 
-        this.text.text = 'carrying?:'+this.isCarrying();
+        // display a water emote when character is carrying water
+        this.indicator.visible = this.isCarrying();
+        //this.text.text = 'carrying?:'+this.isCarrying();
     }
 
     changeScene ()
