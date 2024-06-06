@@ -29,11 +29,13 @@ treatments:
     factors:
       playerCount: 1
       numRounds: 2
+      universalizability: "medium"
     name: Solo
   - desc: "Three-round Game"
     factors:
       numRounds: 3
       playerCount: 1
+      universalizability: "medium"
     name: TwoRounds
   - desc: "High Universalizability"
     factors:
