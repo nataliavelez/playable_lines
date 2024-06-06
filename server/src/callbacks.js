@@ -14,21 +14,20 @@ Empirica.onGameStart(({ game }) => {
     });
   round.addStage({ name: "game", duration: 10 });  
   round.addStage({ name: "result", duration: 10 });
-  round.set("roundType", "learn");
-  round.set("mapUniverzalisablity", universalizability);
 
   // make last round a test round with medium universalizability
-  if (i === numRounds - 1) {
+  if (i !== numRounds - 1) {
+    round.set("roundType", "learn");
+    round.set("mapUniversalizablity", "universalizability");
+  } else {
     round.set("roundType", "test");
-    round.set("mapUniverzalisablity", "medium");
+    round.set("mapUniversalizablity", "medium");
   }
   }
 });
 
 
-Empirica.onRoundStart(({ round }) => {
-
-});
+Empirica.onRoundStart(({ round }) => {});
 
 Empirica.onStageStart(({ stage }) => {});
 

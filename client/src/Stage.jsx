@@ -15,6 +15,17 @@ export function Stage() {
   const round = useRound();
   const stage = useStage();
 
+  if (player.stage.get("submit")) {
+    if (players.length === 1) {
+      return <Loading />;
+    }
+
+    return (
+      <div className="text-center text-gray-400 pointer-events-none">
+        Please wait for other player(s).
+      </div>
+    );
+  }
 
   switch (stage.get("name")) {
     case "game":
