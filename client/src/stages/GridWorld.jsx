@@ -14,8 +14,6 @@ export function GridWorld ()
 
     // Event emitted from the PhaserGame component
     const currentScene = (scene) => {
-        console.log('Change scene!');
-        console.log(scene);
 
         if (scene.complete) {
             player.stage.set("submit", true);

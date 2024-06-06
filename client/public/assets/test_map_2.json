@@ -1170,7 +1170,7 @@
         }, 
         {
          "firstgid":1336,
-         "source":"..\/..\/..\/..\/..\/..\/Desktop\/playable_line\/Grass_tiles_v2.tsx"
+         "source":"Grass_tiles_v2.tsx"
         }, 
         {
          "columns":2,
@@ -1244,7 +1244,7 @@
         }, 
         {
          "firstgid":1417,
-         "source":"..\/..\/..\/..\/..\/..\/Desktop\/playable_line\/Mushrooms, Flowers, Stones.tsx"
+         "source":"Mushrooms, Flowers, Stones.tsx"
         }],
  "tilewidth":16,
  "type":"map",
