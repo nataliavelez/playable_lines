@@ -25,30 +25,33 @@ factors:
       - value: "low"
 
 treatments:
-  - desc: "Single-player Game"
-    factors:
-      playerCount: 1
-      numRounds: 2
-      universalizability: "medium"
+  - desc: "Single-player One-round Game"
     name: Solo
-  - desc: "Three-round Game"
     factors:
-      numRounds: 3
       playerCount: 1
+      numRounds: 1
       universalizability: "medium"
-    name: TwoRounds
-  - desc: "High Universalizability"
+  - desc: "Single-player Three-round Game"
+    name: ThreeRounds
     factors:
-      numRounds: 3
       playerCount: 1
+      numRounds: 3
+      universalizability: "medium"
+  - desc: "High Universalizability"
+    name: HighUniversalizability
+    factors:
+      playerCount: 2
+      numRounds: 3
       universalizability: "high"
   - desc: "Medium Universalizability"
+    name: MediumUniversalizability
     factors:
+      playerCount: 2
       numRounds: 3
-      playerCount: 1
       universalizability: "medium"
   - desc: "Low Universalizability"
+    name: LowUniversalizability
     factors:
+      playerCount: 2
       numRounds: 3
-      playerCount: 1
       universalizability: "low"
