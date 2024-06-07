@@ -33,7 +33,21 @@ export function GridWorld ()
             player.stage.set("submit", true);
         }
 
+        EventBus.on('player_generated',(playerConf)=>{
+            console.log(playerConf);
+            player.round.set("config", playerConf);
 
+            const PartnerConfig = partner.round.get("config");
+            console.log(PartnerConfig);
+            console.log(phaserRef);
+            PartnerConfig.id+='2'
+            const PhaserPlayers = phaserRef.current.scene.gridEngineConfig.characters;
+            console.log(PhaserPlayers);
+            PhaserPlayers.push(PartnerConfig);
+
+            phaserRef.current.scene.gridEngine.update(phaserRef.current.scene.trialTilemap, phaserRef.current.scene.gridEngineConfig);
+
+        })
 
         EventBus.on('position-change', (x,y) => {
             console.log(playerPosition)

@@ -11,42 +11,72 @@ export class Game extends Scene
 
     create ()
     {
+        this.complete = false; // do not touch this! tells Empirica to advance trial
+        this.trialTilemap = this.make.tilemap({ key: "test-map" });
+        this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
+        this.tilesets.forEach(tileset => {
+            this.trialTilemap.addTilesetImage(tileset);
+        });
 
-        this.complete = false;
-        this.cloudCityTilemap = this.make.tilemap({ key: "cloud-city-map" });
-        this.cloudCityTilemap.addTilesetImage("Cloud City", "tiles");
-        for (let i = 0; i < this.cloudCityTilemap.layers.length; i++) {
-            const layer = this.cloudCityTilemap.createLayer(i, "Cloud City", 0, 0);
-            layer.scale = 3;
+        for (let i = 0; i < this.trialTilemap.layers.length; i++) {
+            const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
+            layer.scale = 2;
+            
+            if (this.trialTilemap.layers[i].name == 'Top View') {
+              layer.depth = 10;
+            }
+            console.log(layer.depth);
         }
 
-        this.playerSprite = this.add.sprite(0, 0, "player");
-        this.playerSprite.scale = 1.5;
+        this.playerSprite = this.add.sprite(0, 0, "bunny");
+        this.playerSprite.depth = 1;
+        this.playerSprite.scale = 2;
 
-        this.text = this.add.text(0, -10, "Player 1");
-        this.text.setColor("#000000");
+        console.log(this.playerSprite.depth);
 
-        this.goal = this.add.polygon(13*48+24, 7*48+24, [[0,48], [24, 0], [48,48]], 0xffffff);
-        //this.goal = this.add.rectangle(13*48+24,7*48+24,48,48,0xffffff,.5);
-        this.goal.postFX.addGlow();
+        this.playerSprite.setFrame(this.getStopFrame('down'));
+        //this.cameras.main.startFollow(this.playerSprite, true);
+        // this.cameras.main.setFollowOffset(-this.playerSprite.width, -this.playerSprite.height);
 
-        this.container = this.add.container(0, 0, [this.playerSprite, this.text]);
-        this.cameras.main.startFollow(this.container, true);
-        this.cameras.main.setFollowOffset(-this.playerSprite.width, -this.playerSprite.height);
+        this.createPlayerAnimation.call(this, 'idle_up', 4, 5);
+        this.createPlayerAnimation.call(this, 'idle_right', 12, 13);
+        this.createPlayerAnimation.call(this, 'idle_down', 0, 1);
+        this.createPlayerAnimation.call(this, 'idle_left', 8, 9);
+
+        this.createPlayerAnimation.call(this, 'up', 6, 7);
+        this.createPlayerAnimation.call(this, 'right', 14, 15);
+        this.createPlayerAnimation.call(this, 'down', 2, 3);
+        this.createPlayerAnimation.call(this, 'left', 10, 11);
+
+        // this.text = this.add.text(0, -10, "Player 1");
+        // this.text.setColor("#000000");
+
+        // this.goal = this.add.polygon(13*48+24, 7*48+24, [[0,48], [24, 0], [48,48]], 0xffffff);
+        // //this.goal = this.add.rectangle(13*48+24,7*48+24,48,48,0xffffff,.5);
+        // this.goal.postFX.addGlow();
+
+        // this.container = this.add.container(0, 0, [this.playerSprite, this.text]);
+        // this.cameras.main.startFollow(this.container, true);
+        
+      
 
         this.gridEngineConfig = {
             characters: [
               {
-                id: "player",
+                id: "bunny",
                 sprite: this.playerSprite,
-                container: this.container,
-                walkingAnimationMapping: 6,
-                startPosition: { x: 8, y: 8 },
+                offsetY: 16,
+                //container: this.container,
+                //walkingAnimationMapping: 1,
+                startPosition: { x:  Phaser.Math.RND.integerInRange(5,11), y:Phaser.Math.RND.integerInRange(5,11) },
               },
+              
             ],
           };
         
-        this.gridEngine.create(this.cloudCityTilemap, this.gridEngineConfig);
+
+
+        this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
         
         this.gridEngine
         .positionChangeStarted()
@@ -57,49 +87,87 @@ export class Game extends Scene
         });
 
 
-        this.gridEngine
-        .positionChangeStarted()
-        .subscribe(({ charId, exitTile, enterTile }) => {
-            if ((enterTile.x == 13) & (enterTile.y == 6)) {
-                this.cameras.main.fadeOut(1000, 0, 0, 0, function(camera, progress) {
-                    if (progress == 1) {
-                        this.changeScene();
-                    }
-                });
-            }
+        this.gridEngine.movementStarted().subscribe(({ direction }) => {
+            this.playerSprite.anims.play(direction);
+        });
+        
+        this.gridEngine.movementStopped().subscribe(({ direction }) => {
+        this.playerSprite.anims.stop();
+        this.playerSprite.setFrame(this.getStopFrame(direction));
+        this.playerSprite.anims.play('idle_'+direction);
+        });
+    
+        this.gridEngine.directionChanged().subscribe(({ direction }) => {
+        this.playerSprite.setFrame(this.getStopFrame(direction));
         });
 
+        // this.gridEngine
+        // .positionChangeStarted()
+        // .subscribe(({ charId, exitTile, enterTile }) => {
+        //     if ((enterTile.x == 13) & (enterTile.y == 6)) {
+        //         this.cameras.main.fadeOut(1000, 0, 0, 0, function(camera, progress) {
+        //             if (progress == 1) {
+        //                 this.changeScene();
+        //             }
+        //         });
+        //     }
+        // });
+
         EventBus.emit('current-scene-ready', this);
+        EventBus.emit('player_generated', this.gridEngineConfig.characters[0]);
+        
+        EventBus.on('PlayerAdded',(PartnerConf)=>{
+          console.log('Hey!!')
+          this.gridEngineConfig.characters.push(PartnerConf);
+          console.log(PartnerConf)
+        })
+
     }
+
+    createPlayerAnimation(name,startFrame,endFrame,
+      ) {
+        this.anims.create({
+          key: name,
+          frames: this.anims.generateFrameNumbers("bunny", {
+            start: startFrame,
+            end: endFrame,
+          }),
+          frameRate: 4,
+          repeat: -1,
+          yoyo: true,
+        });
+      }
+      
+    getStopFrame(direction) {
+        switch (direction) {
+          case 'up':
+            return 4;
+          case 'right':
+            return 12;
+          case 'down':
+            return 0;
+          case 'left':
+            return 8;
+        }
+      }
+      
 
     update ()
     {
         const cursors = this.input.keyboard.createCursorKeys();
         if (cursors.left.isDown) { 
-            this.gridEngine.move("player", "left");
+            this.gridEngine.move("bunny", "left");
         } else if (cursors.right.isDown) {
-            this.gridEngine.move("player", "right");
+            this.gridEngine.move("bunny", "right");
         } else if (cursors.up.isDown) {
-            this.gridEngine.move("player", "up");
+            this.gridEngine.move("bunny", "up");
         } else if (cursors.down.isDown) {
-            this.gridEngine.move("player", "down");
+            this.gridEngine.move("bunny", "down");
         }
         
-   
+  
     }
 
-    movePlayer(reactCallback)
-    {
-        onUpdate: () => {
-                    if (reactCallback)
-                    {
-                        reactCallback({
-                            x: Math.floor(this.container.x),
-                            y: Math.floor(this.container.y)
-                        });
-                    }
-                }
-    }
     changeScene ()
     {
         this.scene.start('GameOver');
