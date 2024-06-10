@@ -12,8 +12,8 @@ Empirica.onGameStart(({ game }) => {
     const round = game.addRound({
       name: `Round ${i + 1}`,
     });
-  round.addStage({ name: "game", duration: 10 });  
-  round.addStage({ name: "result", duration: 10 });
+  round.addStage({ name: "game", duration: 100 });  
+  round.addStage({ name: "result", duration: 100 });
 
   // make last round a test round with medium universalizability
   if (i !== numRounds - 1) {

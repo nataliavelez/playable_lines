@@ -75,6 +75,12 @@ export class Game extends Scene
           };
         
         this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
+
+        // get movements from player and emit via EventBus
+        this.gridEngine.positionChangeStarted().subscribe(({ charId, enterTile }) => {
+          EventBus.emit('position-change', enterTile.x, enterTile.y);
+        });
+
         this.playerSprite.anims.play('idle_down');
 
         this.gridEngine.movementStarted().subscribe(({ direction }) => {
@@ -147,16 +153,16 @@ export class Game extends Scene
 
           if (!this.isCarrying() & this.nearSource()) {
             this.playerSprite.carrying = true;
-            this.playerSprite.anims.play('water_'+direction).on(
+            this.playerSprite.anims.play('water_' + direction).on(
               'animationcomplete',
-              () => {this.playerSprite.anims.play('idle_'+direction)}
+              () => {this.playerSprite.anims.play('idle_' + direction)}
             );
 
           } else if (this.isCarrying() & this.nearTarget()) {
             this.playerSprite.carrying = false;
-            this.playerSprite.anims.play('water_'+direction).on(
+            this.playerSprite.anims.play('water_' + direction).on(
               'animationcomplete',
-              () => {this.playerSprite.anims.play('idle_'+direction)}
+              () => {this.playerSprite.anims.play('idle_' + direction)}
             );
 
           }
@@ -173,6 +179,8 @@ export class Game extends Scene
         this.scene.start('GameOver');
     }
 
+    // Helpers
+    // allowing to carry water
     nearSource() {
       const position = this.gridEngine.getFacingPosition("bunny");
 
@@ -194,5 +202,18 @@ export class Game extends Scene
     isCarrying() {
       return this.playerSprite.carrying
     }
+
+    // move player via react
+    movePlayer(reactCallback){
+      onUpdate: () => {
+        if (reactCallback){
+          reactCallback({
+              x: Math.floor(this.container.x),
+              y: Math.floor(this.container.y)
+          });
+        }
+      }
+    }
+    
 
 }

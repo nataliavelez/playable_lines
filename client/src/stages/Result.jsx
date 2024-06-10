@@ -11,12 +11,11 @@ export function Result() {
       <p>This was more than X players, the same as Y players, and less than Z players</p>
       <br />
       <p>You earned X dollars</p>
-      <p>Press the button to condition</p>
+      <p>Press the button to continue to the next round</p>
 
-     {/* <Button handleClick={() => player.stage.set("submit", true)}>
+      <Button handleClick={() => player.stage.set("submit", true)}>
         Continue
       </Button>
-      */}
     </div>
   );
   // const players = usePlayers();

@@ -1,5 +1,5 @@
 import React from "react";
-import { useRef, useState,useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { usePlayer, usePlayers } from "@empirica/core/player/classic/react";
 
 import Phaser from 'phaser';
@@ -30,23 +30,13 @@ export function GridWorld (){
         }
 
 
-
-        EventBus.on('position-change', (x,y) => {
-            console.log(playerPosition)
-            
-            setPlayerPosition(prevPosition => ({
-                x: x ,
-                y: y 
-              }));
-              player.round.set("position", playerPosition);
-
-          
-            
-            console.log('position x:'+x);
-            console.log('position y:'+y);
-
-            
-        });
+    // Tracks position and emits it via eventbus
+    EventBus.on('position-change', (x,y) => {
+        setPlayerPosition(prevPosition => ({
+            x: x,
+            y: y 
+        }));
+    });
          
 
 
