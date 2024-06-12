@@ -1,5 +1,6 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
+import { usePlayer, usePlayers } from "@empirica/core/player/classic/react";
 
 
 export class Game extends Scene
@@ -11,6 +12,9 @@ export class Game extends Scene
 
     create ()
     {
+      this.players=[];
+     this.playerID='tmp';
+
         this.complete = false; // do not touch this! tells Empirica to advance trial
         this.trialTilemap = this.make.tilemap({ key: "test-map" });
         this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
@@ -18,6 +22,7 @@ export class Game extends Scene
             this.trialTilemap.addTilesetImage(tileset);
         });
 
+        
         for (let i = 0; i < this.trialTilemap.layers.length; i++) {
             const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
             layer.scale = 2;
@@ -28,14 +33,14 @@ export class Game extends Scene
             console.log(layer.depth);
         }
 
-        this.playerSprite = this.add.sprite(0, 0, "bunny");
-        this.playerSprite.depth = 1;
-        this.playerSprite.scale = 2;
+        //this.playerSprite = this.add.sprite(0, 0, "bunny");
+      //  this.playerSprite.depth = 1;
+       // this.playerSprite.scale = 2;
 
-        console.log(this.playerSprite.depth);
+       // console.log(this.playerSprite.depth);
 
-        this.playerSprite.setFrame(this.getStopFrame('down'));
-        //this.cameras.main.startFollow(this.playerSprite, true);
+       // this.playerSprite.setFrame(this.getStopFrame('down'));
+        // this.cameras.main.startFollow(this.playerSprite, true);
         // this.cameras.main.setFollowOffset(-this.playerSprite.width, -this.playerSprite.height);
 
         this.createPlayerAnimation.call(this, 'idle_up', 4, 5);
@@ -48,58 +53,40 @@ export class Game extends Scene
         this.createPlayerAnimation.call(this, 'down', 2, 3);
         this.createPlayerAnimation.call(this, 'left', 10, 11);
 
-        // this.text = this.add.text(0, -10, "Player 1");
-        // this.text.setColor("#000000");
+         this.text = this.add.text(0, -10, "Player 1");
+         this.text.setColor("#000000");
 
         // this.goal = this.add.polygon(13*48+24, 7*48+24, [[0,48], [24, 0], [48,48]], 0xffffff);
         // //this.goal = this.add.rectangle(13*48+24,7*48+24,48,48,0xffffff,.5);
         // this.goal.postFX.addGlow();
 
-        // this.container = this.add.container(0, 0, [this.playerSprite, this.text]);
+         //this.container = this.add.container(0, 0, [this.playerSprite, this.text]);
         // this.cameras.main.startFollow(this.container, true);
         
       
 
+        // this.gridEngineConfig = {
+        //   characters: [
+        //     {
+        //       id: "bunny",
+        //       sprite: this.playerSprite,
+        //       offsetY: 16,
+        //       container: this.container,
+        //       //walkingAnimationMapping: 1,
+        //       startPosition: { x:  Phaser.Math.RND.integerInRange(5,11), y:Phaser.Math.RND.integerInRange(5,11) },
+        //     },
+            
+        //   ],
+        // };
+
         this.gridEngineConfig = {
-            characters: [
-              {
-                id: "bunny",
-                sprite: this.playerSprite,
-                offsetY: 16,
-                //container: this.container,
-                //walkingAnimationMapping: 1,
-                startPosition: { x:  Phaser.Math.RND.integerInRange(5,11), y:Phaser.Math.RND.integerInRange(5,11) },
-              },
-              
-            ],
+            characters: []  ,
           };
         
 
 
-        this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
+        //this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
         
-        this.gridEngine
-        .positionChangeStarted()
-        .subscribe(({ charId, enterTile }) => {
-          
-            EventBus.emit('position-change', enterTile.x, enterTile.y);
-            
-        });
-
-
-        this.gridEngine.movementStarted().subscribe(({ direction }) => {
-            this.playerSprite.anims.play(direction);
-        });
-        
-        this.gridEngine.movementStopped().subscribe(({ direction }) => {
-        this.playerSprite.anims.stop();
-        this.playerSprite.setFrame(this.getStopFrame(direction));
-        this.playerSprite.anims.play('idle_'+direction);
-        });
-    
-        this.gridEngine.directionChanged().subscribe(({ direction }) => {
-        this.playerSprite.setFrame(this.getStopFrame(direction));
-        });
 
         // this.gridEngine
         // .positionChangeStarted()
@@ -116,16 +103,14 @@ export class Game extends Scene
         EventBus.emit('current-scene-ready', this);
         EventBus.emit('player_generated', this.gridEngineConfig.characters[0]);
         
-        EventBus.on('PlayerAdded',(PartnerConf)=>{
-          console.log('Hey!!')
-          this.gridEngineConfig.characters.push(PartnerConf);
-          console.log(PartnerConf)
-        })
+        
+
 
     }
 
     createPlayerAnimation(name,startFrame,endFrame,
       ) {
+
         this.anims.create({
           key: name,
           frames: this.anims.generateFrameNumbers("bunny", {
@@ -136,6 +121,8 @@ export class Game extends Scene
           repeat: -1,
           yoyo: true,
         });
+
+
       }
       
     getStopFrame(direction) {
@@ -156,13 +143,13 @@ export class Game extends Scene
     {
         const cursors = this.input.keyboard.createCursorKeys();
         if (cursors.left.isDown) { 
-            this.gridEngine.move("bunny", "left");
+            this.gridEngine.move(this.playerID , "left");
         } else if (cursors.right.isDown) {
-            this.gridEngine.move("bunny", "right");
+            this.gridEngine.move(this.playerID , "right");
         } else if (cursors.up.isDown) {
-            this.gridEngine.move("bunny", "up");
+            this.gridEngine.move(this.playerID , "up");
         } else if (cursors.down.isDown) {
-            this.gridEngine.move("bunny", "down");
+            this.gridEngine.move(this.playerID , "down");
         }
         
   
@@ -172,4 +159,77 @@ export class Game extends Scene
     {
         this.scene.start('GameOver');
     }
+
+    AddPlayers (players,curPlayerID)
+    {
+
+      console.log('Hello!!');
+      this.playerID = curPlayerID;
+      console.log(curPlayerID)
+      console.log(players)
+      players.forEach((p) => {
+      //  const [ThisSpr,ThisCnt] =createSpriteWithContainer(this,p.id)
+        //const spr = this.add.sprite(0, 0, "bunny");
+        //const cont = this.add.container(0, 0, [spr, p.id]);
+        const text = this.add.text(-10, -20, p.id);
+        const sprite = this.add.sprite(0, 0, "bunny");
+        const container = this.add.container(0, 0, [sprite, text]);
+        console.log(p)
+        this.gridEngineConfig.characters.push({
+          id: p.id,
+          sprite: sprite,
+          offsetY: 16,
+          scale:1.5,
+          depth : 1,
+         container: container,
+          walkingAnimationMapping: 2,
+          startPosition: p.position,
+          
+        })
+      });
+
+      console.log(this.gridEngineConfig.characters)
+
+        this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
+        
+     
+        this.gridEngine
+        .positionChangeStarted()
+        .subscribe(({ charId, enterTile }) => {
+          console.log('Position-change')
+            EventBus.emit('position-change',this.playerID, enterTile.x, enterTile.y);
+            
+        });
+
+
+        this.gridEngine.movementStarted().subscribe(({ direction }) => {
+            this.playerSprite.anims.play(direction);
+        });
+        
+        this.gridEngine.movementStopped().subscribe(({ direction }) => {
+        this.playerSprite.anims.stop();
+        this.playerSprite.setFrame(this.getStopFrame(direction));
+        this.playerSprite.anims.play('idle_'+direction);
+        });
+    
+        this.gridEngine.directionChanged().subscribe(({ direction }) => {
+        this.playerSprite.setFrame(this.getStopFrame(direction));
+        });
+
+    }
+
+    MovePlayers (players){
+console.log('MovePlayers')
+
+players.forEach((p) => {
+    if (p.id!==this.playerID){
+      console.log('Player:'+p.id+p.position.x+p.position.y)
+      this.gridEngine.moveTo(p.id,p.position);
+
+    }
+  });
+     
+
+    }
+    
 }
