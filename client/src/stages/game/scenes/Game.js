@@ -144,9 +144,6 @@ export class Game extends Scene {
               player.sprite.anims.play(`idle_${direction}`, true);
           }  
 
-          //set position of player now
-          //const enterTile = this.gridEngine.getPosition(charId);
-          //this.gridEngine.setPosition(charId, enterTile);
       });
   
       this.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
@@ -155,20 +152,18 @@ export class Game extends Scene {
           if (player && player.sprite.anims) {
               player.sprite.anims.play(`idle_${direction}`, true);
           }
+          if (charId === this.playerId) {
+            EventBus.emit('player-state-change', this.playerId, { direction: direction } );
+        }
       });
   
       this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
           console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
-          const player = this.players[charId];
+          const direction = this.gridEngine.getFacingDirection(charId);
           if (charId === this.playerId) {
-              EventBus.emit('player-state-change', this.playerId, { x: enterTile.x, y: enterTile.y } );
+              EventBus.emit('player-state-change', this.playerId, { x: enterTile.x, y: enterTile.y, direction: direction } );
           }
       });
-
-      // currently either (1) it is slow to update if just use positionChangeFinished or 
-      // (2) it is synchronous if use started, but doesn't update the player if browswer isn't upen (with Move)
-      // (3) it is syncronoss but no animation if use eiter with setPosition
-      // need to use movementstopped as it doesn't listen to setPosition.
 
     }
 
@@ -202,7 +197,6 @@ export class Game extends Scene {
               this.playWaterAnimation(id, currentDirection);
             }
 
-            //this.gridEngine.setPosition(id, state.position); // updates even when not on screen but jumpy / not a minated
         }
     });
 }
@@ -227,13 +221,10 @@ export class Game extends Scene {
   
       if (direction) {
           this.gridEngine.move(this.playerId, direction);
-          const position = this.gridEngine.getPosition(this.playerId);
-          EventBus.emit('player-state-change', this.playerId, {direction: direction});
       }
 
       // Use space bay to load and unload water
       if (Phaser.Input.Keyboard.JustDown(action)) {
-        const position = this.gridEngine.getPosition(this.playerId);
         const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
         let isNowCarrying = player.carrying; // Get current carrying state
         let currentScore = player.score;
@@ -324,7 +315,7 @@ export class Game extends Scene {
       if (from.y < to.y) return 'down';
       if (from.y > to.y) return 'up';
       return null; // default direction
-  }
+    }
 
     getStopFrame(direction) {
       switch(direction) {
@@ -369,6 +360,5 @@ export class Game extends Scene {
           () => {player.sprite.anims.play('idle_' + direction)}
       );
   }
-
     
 }
