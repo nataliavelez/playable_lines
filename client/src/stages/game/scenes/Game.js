@@ -4,6 +4,7 @@ import { Scene, Input } from 'phaser';
 export class Game extends Scene {
     constructor () {
         super('Game');
+        this.isVisible = true;
 
         // TO DO, move this elswhere, prob just need to have the numbers in the vallback
         this.playerColors = {
@@ -18,8 +19,12 @@ export class Game extends Scene {
         };
         
         // to allow for better updating 
-        this.lastMoveTime = 0;
-        this.moveDelay = 100;
+        //this.lastMoveTime = 0;
+        //this.moveDelay = 100;
+    }
+
+    handleVisibilityChange = (isVisible) => {
+      this.isVisible = isVisible;
     }
 
     checkGridEngineState() {
@@ -60,7 +65,8 @@ export class Game extends Scene {
 
       EventBus.emit('current-scene-ready', this);
       EventBus.on('update-player-states', this.updatePlayerStates.bind(this));
-      console.log("Game scene created");
+      EventBus.on('visibility-change', this.handleVisibilityChange.bind(this));
+      //console.log("Game scene created");
     }
       
     initPlayers(playerStates, currentPlayerId) {
@@ -177,7 +183,11 @@ export class Game extends Scene {
             const currentlyCarrying = this.isCarrying(id);
 
             if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+              if (this.isVisible) {
                 this.gridEngine.moveTo(id, state.position);
+            } else {
+                this.gridEngine.setPosition(id, state.position);
+            }
             }
 
             if (currentDirection !== state.direction) {

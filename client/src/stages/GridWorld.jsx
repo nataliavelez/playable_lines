@@ -12,6 +12,7 @@ export function GridWorld() {
     const player = usePlayer();
     const players = usePlayers();
     const round = useRound();
+    const [isVisible, setIsVisible] = useState(!document.hidden);
 
     const initializePlayers = () => {
         if (!round.get('playerStates')) {
@@ -38,10 +39,23 @@ export function GridWorld() {
     };
 
     useEffect(() => {
+        const handleVisibilityChange = () => {
+            setIsVisible(!document.hidden);
+            EventBus.emit('visibility-change', !document.hidden);
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
+    }, []);
+
+    useEffect(() => {
         if (!initializeRef.current) { 
             initializePlayers();
         }
-        
+    
 
         const handlePlayerStateChange = (playerId, updates) => {
             round.set('playerStates', {
@@ -76,6 +90,8 @@ export function GridWorld() {
         };
     }, []);
 
+
+
     const currentScene = (scene) => {
         if (scene.complete) {
             player.stage.set("submit", true);
@@ -96,6 +112,7 @@ export function GridWorld() {
                 ref={phaserRef} 
                 currentActiveScene={currentScene} 
                 playerStates={round.get('playerStates')}
+                isVisible={isVisible}
             />
         </div>
     )

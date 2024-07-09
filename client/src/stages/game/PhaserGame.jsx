@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { forwardRef, useEffect, useLayoutEffect, useRef ,useState} from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, playerStates }, ref) {
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, playerStates, isVisible }, ref) {
     const game = useRef();
 
     useLayoutEffect(() => {
@@ -23,6 +23,12 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, p
             }
         }
     }, [ref]);
+
+    useEffect(() => {
+        if (game.current) {
+            EventBus.emit('visibility-change', isVisible);
+        }
+    }, [isVisible]);
 
     useEffect(() => {
         const handleSceneChange = (scene) => {
