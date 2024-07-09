@@ -5,15 +5,22 @@ factors:
       - value: 1
       - value: 2
       - value: 3
+      - value: 4
       - value: 5
+      - value: 6
+      - value: 7
       - value: 8
-      - value: 13
+
 treatments:
-  - desc: "Single-player Game"
-    factors:
-      playerCount: 1
-    name: Solo
-  - desc: "Two-player Game"
+  - desc: "Two Player Game"
+    name: TwoPlayers
     factors:
       playerCount: 2
-    name: Two Players
+  - desc: "Four Player Game"
+    name: FourPlayers
+    factors:
+      playerCount: 4
+  - desc: "Eight Player Game"
+    name: EightPlayers
+    factors:
+      playerCount: 8
