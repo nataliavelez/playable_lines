@@ -35,15 +35,15 @@ Empirica.onStageStart(({ stage }) => {
 });
 
 Empirica.onStageEnded(({ stage }) => {
-    //update round scores and get total scores.
-    if (game.stage.get("name") === "game") {
-      console.log("Calculating scores");
-      players.forEach((player) => {
-        const roundScore = player.round.get("score");
-        const cumScore = player.get("cumScore") + roundScore;
-        game.player.set("cumScore", cumScore);
-      });
-    }
+  if (stage.get("name") !== "game") return;
+
+  console.log(" End of game stage. Calculating scores");
+  const players = stage.currentGame.players;
+  players.forEach((player) => {
+    const roundScore = player.round.get("score");
+    const cumScore = player.get("cumScore") + roundScore;
+    player.set("cumScore", cumScore);
+  });
 });
 
 Empirica.onRoundEnded(({ round }) => {});
