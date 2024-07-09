@@ -10,16 +10,15 @@ export function Result() {
     const playerRoundScore = player.round.get("score")
     const roundScores = players.map((p) => p.round.get("score"));
     const morePlayers = roundScores.filter((s) => s > playerRoundScore).length;
-    const samePlayers = roundScores.filter((s) => s === playerRoundScore).length;
+    const samePlayers = roundScores.filter((s) => s === playerRoundScore).length - 1; // -1 to discount current player
     const lessPlayers = roundScores.filter((s) => s < playerRoundScore).length;
 
     // The same but for the cumulative score!
     const playerCumScore = player.get("cumScore");
     const cumScores = players.map((p) => p.get("cumScore"));
     const morePlayersCum = cumScores.filter((s) => s > playerCumScore).length;
-    const samePlayersCum = cumScores.filter((s) => s === playerCumScore).length;
+    const samePlayersCum = cumScores.filter((s) => s === playerCumScore).length - 1;
     const lessPlayersCum = cumScores.filter((s) => s < playerCumScore).length;
-    console.log(cumScores)
   
   return (
     <div>
