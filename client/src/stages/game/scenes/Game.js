@@ -1,235 +1,364 @@
 import { EventBus } from '../EventBus';
-import { Scene } from 'phaser';
-import { usePlayer, usePlayers } from "@empirica/core/player/classic/react";
+import { Scene, Input } from 'phaser';
 
-
-export class Game extends Scene
-{
-    constructor ()
-    {
+export class Game extends Scene {
+    constructor () {
         super('Game');
+
+        // TO DO, move this elswhere, prob just need to have the numbers in the vallback
+        this.playerColors = {
+          white: 0xFFFFFF,  // White (default)
+          red: 0xFF0000,  // Red
+          green: 0x00FF00,  // Green
+          blue: 0x0000FF,  // Blue
+          yellow: 0xFFFF00,  // Yellow
+          cyan: 0x00FFFF,  // Cyan
+          orange: 0xFF8000,  // Orange
+          purple: 0x8000FF   // Purple
+        };
+        
+        // to allow for better updating 
+        this.lastMoveTime = 0;
+        this.moveDelay = 100;
     }
 
-    create ()
-    {
-      this.players=[];
-     this.playerID='tmp';
+    checkGridEngineState() {
+      console.log("Checking GridEngine state:");
+      console.log("GridEngine initialized:", !!this.gridEngine);
+      console.log("Current player ID:", this.playerId);
+      if (this.gridEngine) {
+          console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
+          console.log("Current player in GridEngine:", this.gridEngine.hasCharacter(this.playerId));
+      }
+  }
 
-        this.complete = false; // do not touch this! tells Empirica to advance trial
-        this.trialTilemap = this.make.tilemap({ key: "test-map" });
-        this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
-        this.tilesets.forEach(tileset => {
-            this.trialTilemap.addTilesetImage(tileset);
-        });
+    create(){
+      this.players = [];
+      this.playerId = null;
+      this.complete = false; // do not touch this! tells Empirica to advance trial
 
-        
-        for (let i = 0; i < this.trialTilemap.layers.length; i++) {
-            const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
-            layer.scale = 2;
-            
-            if (this.trialTilemap.layers[i].name == 'Top View') {
-              layer.depth = 10;
-            }
-            console.log(layer.depth);
-        }
-
-        //this.playerSprite = this.add.sprite(0, 0, "bunny");
-      //  this.playerSprite.depth = 1;
-       // this.playerSprite.scale = 2;
-
-       // console.log(this.playerSprite.depth);
-
-       // this.playerSprite.setFrame(this.getStopFrame('down'));
-        // this.cameras.main.startFollow(this.playerSprite, true);
-        // this.cameras.main.setFollowOffset(-this.playerSprite.width, -this.playerSprite.height);
-
-        this.createPlayerAnimation.call(this, 'idle_up', 4, 5);
-        this.createPlayerAnimation.call(this, 'idle_right', 12, 13);
-        this.createPlayerAnimation.call(this, 'idle_down', 0, 1);
-        this.createPlayerAnimation.call(this, 'idle_left', 8, 9);
-
-        this.createPlayerAnimation.call(this, 'up', 6, 7);
-        this.createPlayerAnimation.call(this, 'right', 14, 15);
-        this.createPlayerAnimation.call(this, 'down', 2, 3);
-        this.createPlayerAnimation.call(this, 'left', 10, 11);
-
-         this.text = this.add.text(0, -10, "Player 1");
-         this.text.setColor("#000000");
-
-        // this.goal = this.add.polygon(13*48+24, 7*48+24, [[0,48], [24, 0], [48,48]], 0xffffff);
-        // //this.goal = this.add.rectangle(13*48+24,7*48+24,48,48,0xffffff,.5);
-        // this.goal.postFX.addGlow();
-
-         //this.container = this.add.container(0, 0, [this.playerSprite, this.text]);
-        // this.cameras.main.startFollow(this.container, true);
-        
+      //tile map
+      this.trialTilemap = this.make.tilemap({ key: "test-map" });
+      this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
+      this.tilesets.forEach(tileset => {
+          this.trialTilemap.addTilesetImage(tileset);
+      });
       
+      //layers
+      for (let i = 0; i < this.trialTilemap.layers.length; i++) {
+          const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
+          layer.scale = 2;
+          
+          if (this.trialTilemap.layers[i].name == 'Top View') {
+            layer.depth = 10;
+          }
+          console.log(layer.depth);
+      }
 
-        // this.gridEngineConfig = {
-        //   characters: [
-        //     {
-        //       id: "bunny",
-        //       sprite: this.playerSprite,
-        //       offsetY: 16,
-        //       container: this.container,
-        //       //walkingAnimationMapping: 1,
-        //       startPosition: { x:  Phaser.Math.RND.integerInRange(5,11), y:Phaser.Math.RND.integerInRange(5,11) },
-        //     },
-            
-        //   ],
-        // };
+
+      this.createPlayerAnimations();
+
+      EventBus.emit('current-scene-ready', this);
+      EventBus.on('update-player-states', this.updatePlayerStates.bind(this));
+      console.log("Game scene created");
+    }
+      
+    initPlayers(playerStates, currentPlayerId) {
+        this.playerId = currentPlayerId;
+        this.player = this.players[currentPlayerId];
+        //console.log("Current player ID:", this.playerId)
+        //console.log("Initializing players:", playerStates);
+
+        Object.entries(playerStates).forEach(([id, state]) => {
+            const sprite = this.add.sprite(state.position.x, state.position.y, 'bunny');
+            const carrying = state.carrying;
+            const score = state.score;
+            const name = state.name;
+            console.log("Player name:", name);
+            sprite.setTint(this.playerColors[state.color]);
+            //sprite.tintFill = true;
+
+
+            // Create water indicator for is carrying
+            const indicator = this.add.sprite(48, 20, "indicator");
+
+            // create plumbob (which in this case is rectangle showing active player)
+            const plumbob  = this.add.graphics();
+            plumbob.lineStyle(2, 0xFFFFFF, .75);
+            plumbob.strokeRect(38, 52, 20, 20);
+            plumbob.visible = id === this.playerId // only show for active player
+            indicator.visible = state.carrying;
+
+            // Create name text
+            const nameText = this.add.text(0, -10, name, { fontSize: '12px', fill: '#FFFFFF' });
+
+            // Create container for the plumbob, water indicator, name text and sprite
+            const container = this.add.container(state.position.x , state.position.y, [plumbob, sprite, indicator, nameText]);
+            //container.setDepth(2);
+
+            this.players[id] = { sprite, container, indicator, carrying, score };
+            console.log(`Created sprite for player ${id} at position:`, state.position, `, direction:`, state.direction, `, tint: `, state.color, `, carrying: `, state.carrying, `, score: `, state.score, `, name: `, state.name);
+
+        });
 
         this.gridEngineConfig = {
-            characters: []  ,
-          };
-        
+          cacheTileCollisions: true,
+            characters: Object.entries(this.players).map(([id, player]) => ({
+                id,
+                sprite: player.sprite,
+                container: player.container,
+                startPosition: { x: player.container.x , y: player.container.y  },
+                speed: 2 // Adjust this value to control movement speed
+            }))
+        };
+        //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
+            
+        this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
 
+        this.setupGridEngineEvents();
+        //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
+    }
 
-        //this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
-        
+    setupGridEngineEvents() {
+      this.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
+          console.log(`Movement started for ${charId} in direction ${direction}`);
+          const player = this.players[charId];
+          if (player && player.sprite.anims) {
+              player.sprite.anims.play(`walk_${direction}`, true);
+          }
+      });
+  
+      this.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
+          console.log(`Movement stopped for ${charId} in direction ${direction}`);
+          const player = this.players[charId];
 
-        // this.gridEngine
-        // .positionChangeStarted()
-        // .subscribe(({ charId, exitTile, enterTile }) => {
-        //     if ((enterTile.x == 13) & (enterTile.y == 6)) {
-        //         this.cameras.main.fadeOut(1000, 0, 0, 0, function(camera, progress) {
-        //             if (progress == 1) {
-        //                 this.changeScene();
-        //             }
-        //         });
-        //     }
-        // });
+          //animations
+          if (player && player.sprite.anims) {
+              player.sprite.anims.stop();
+              player.sprite.anims.play(`idle_${direction}`, true);
+          }  
 
-        EventBus.emit('current-scene-ready', this);
-        EventBus.emit('player_generated', this.gridEngineConfig.characters[0]);
-        
-        
+          //set position of player now
+          //const enterTile = this.gridEngine.getPosition(charId);
+          //this.gridEngine.setPosition(charId, enterTile);
+      });
+  
+      this.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
+          console.log(`direction changed for ${charId} in direction ${direction}`);
+          const player = this.players[charId];
+          if (player && player.sprite.anims) {
+              player.sprite.anims.play(`idle_${direction}`, true);
+          }
+      });
+  
+      this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
+          console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
+          const player = this.players[charId];
+          if (charId === this.playerId) {
+              EventBus.emit('player-state-change', this.playerId, { x: enterTile.x, y: enterTile.y } );
+          }
+      });
 
+      // currently either (1) it is slow to update if just use positionChangeFinished or 
+      // (2) it is synchronous if use started, but doesn't update the player if browswer isn't upen (with Move)
+      // (3) it is syncronoss but no animation if use eiter with setPosition
+      // need to use movementstopped as it doesn't listen to setPosition.
 
     }
 
-    createPlayerAnimation(name,startFrame,endFrame,
-      ) {
+  // Gets states for all other players from empirica and does stuff in the game with them
+    updatePlayerStates(playerStates) {
+      console.log("Updating player states:", playerStates);
+      //this means that updates happen in order of player id (might want to randomise or something.)
+      Object.entries(playerStates).forEach(([id, state]) => {
+          if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
+            const currentPos = this.gridEngine.getPosition(id);
+            const currentDirection = this.gridEngine.getFacingDirection(id);
+            const currentlyCarrying = this.isCarrying(id);
 
-        this.anims.create({
-          key: name,
-          frames: this.anims.generateFrameNumbers("bunny", {
-            start: startFrame,
-            end: endFrame,
-          }),
-          frameRate: 4,
-          repeat: -1,
-          yoyo: true,
-        });
+            if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+                this.gridEngine.moveTo(id, state.position);
+            }
 
+            if (currentDirection !== state.direction) {
+                this.gridEngine.turnTowards(id, state.direction);
+            }
 
-      }
-      
-    getStopFrame(direction) {
-        switch (direction) {
-          case 'up':
-            return 4;
-          case 'right':
-            return 12;
-          case 'down':
-            return 0;
-          case 'left':
-            return 8;
+            if (currentlyCarrying !== state.carrying) {
+              this.players[id].carrying = state.carrying;
+              this.players[id].indicator.visible = state.carrying;
+              
+              // Play water animation
+              this.playWaterAnimation(id, currentDirection);
+            }
+
+            //this.gridEngine.setPosition(id, state.position); // updates even when not on screen but jumpy / not a minated
         }
-      }
-      
+    });
+}
 
-    update ()
-    {
+    update() {
+
+      if (!this.playerId) return;
         const cursors = this.input.keyboard.createCursorKeys();
+        const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        let direction = null;
+        let player = this.players[this.playerId];
+      
         if (cursors.left.isDown) { 
-            this.gridEngine.move(this.playerID , "left");
+          direction = "left";
         } else if (cursors.right.isDown) {
-            this.gridEngine.move(this.playerID , "right");
+            direction = "right";
         } else if (cursors.up.isDown) {
-            this.gridEngine.move(this.playerID , "up");
+            direction = "up";
         } else if (cursors.down.isDown) {
-            this.gridEngine.move(this.playerID , "down");
+            direction = "down";
         }
+  
+      if (direction) {
+          this.gridEngine.move(this.playerId, direction);
+          const position = this.gridEngine.getPosition(this.playerId);
+          EventBus.emit('player-state-change', this.playerId, {direction: direction});
+      }
+
+      // Use space bay to load and unload water
+      if (Phaser.Input.Keyboard.JustDown(action)) {
+        const position = this.gridEngine.getPosition(this.playerId);
+        const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
+        let isNowCarrying = player.carrying; // Get current carrying state
+        let currentScore = player.score;
+
+        if (!player.carrying && this.nearSource(this.playerId)) {
+            isNowCarrying = true;
+            player.carrying = true;
+            console.log('Picked up water', currentScore);
+
+            // Play animation whens loading water
+            this.playWaterAnimation(this.playerId, currentDirection);
+
+        } else if (player.carrying && this.nearTarget(this.playerId)) {
+            isNowCarrying = false;
+            player.carrying = false;
+            currentScore = currentScore + 1; // Increment score
+            console.log('Dropped off water, new score:', currentScore);
+
+            // play animation when unloading water
+            // For ease of reference, we could have the main player showing the animation regarless of if loading or unloading
+            // but the only way we can do that with other players is to add a new "spacebar" item for the playerstate. Prob not worth it. 
+            this.playWaterAnimation(this.playerId, currentDirection);
+        }
+
+        // Update indicator visibility
+        this.players[this.playerId].indicator.visible = isNowCarrying;
+
+        // Update the score in the local game state
+        this.players[this.playerId].score = currentScore;
+
+        EventBus.emit('player-state-change', this.playerId, {carrying: isNowCarrying, score: currentScore} );
         
+
+      }
   
     }
 
-    changeScene ()
-    {
-        this.scene.start('GameOver');
-    }
+    createPlayerAnimations() {
+      const directions = ['up', 'down', 'left', 'right'];
+      const animsConfig = {
+          up: { start: 4, end: 7 },
+          down: { start: 0, end: 3 },
+          left: { start: 8, end: 11 },
+          right: { start: 12, end: 15 }
+      };
+      const waterAnimsConfig = {
+        up: 22, 
+        down: 18,
+        left: 16,
+        right: 20
+      };
 
-    AddPlayers (players,curPlayerID)
-    {
+      directions.forEach(dir => {
+          // Walking animations
+          this.anims.create({
+              key: `walk_${dir}`,
+              frames: this.anims.generateFrameNumbers('bunny', animsConfig[dir]),
+              frameRate: 8,
+              repeat: -1,
+          });
 
-      console.log('Hello!!');
-      this.playerID = curPlayerID;
-      console.log(curPlayerID)
-      console.log(players)
-      players.forEach((p) => {
-      //  const [ThisSpr,ThisCnt] =createSpriteWithContainer(this,p.id)
-        //const spr = this.add.sprite(0, 0, "bunny");
-        //const cont = this.add.container(0, 0, [spr, p.id]);
-        const text = this.add.text(-10, -20, p.id);
-        const sprite = this.add.sprite(0, 0, "bunny");
-        const container = this.add.container(0, 0, [sprite, text]);
-        console.log(p)
-        this.gridEngineConfig.characters.push({
-          id: p.id,
-          sprite: sprite,
-          offsetY: 16,
-          scale:1.5,
-          depth : 1,
-         container: container,
-          walkingAnimationMapping: 2,
-          startPosition: p.position,
-          
-        })
+          // Idle animations (using the first frame of each direction)
+          this.anims.create({
+              key: `idle_${dir}`,
+              frames: this.anims.generateFrameNumbers('bunny', { start: animsConfig[dir].start, end: animsConfig[dir].start + 1 }),
+              frameRate: 4,
+              repeat: -1,
+              yoyo: true
+          });
       });
 
-      console.log(this.gridEngineConfig.characters)
+      // Water animations
+      directions.forEach(dir => {
+        this.anims.create({
+            key: `water_${dir}`,
+            frames: this.anims.generateFrameNumbers('bunny', { start: waterAnimsConfig[dir], end: waterAnimsConfig[dir] + 1 }),
+            frameRate: 4,
+            repeat: 0,
+        });
+      });
 
-        this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
-        
-     
-        this.gridEngine
-        .positionChangeStarted()
-        .subscribe(({ charId, enterTile }) => {
-          console.log('Position-change')
-            EventBus.emit('position-change',this.playerID, enterTile.x, enterTile.y);
-            
-        });
-
-
-        this.gridEngine.movementStarted().subscribe(({ direction }) => {
-            this.playerSprite.anims.play(direction);
-        });
-        
-        this.gridEngine.movementStopped().subscribe(({ direction }) => {
-        this.playerSprite.anims.stop();
-        this.playerSprite.setFrame(this.getStopFrame(direction));
-        this.playerSprite.anims.play('idle_'+direction);
-        });
-    
-        this.gridEngine.directionChanged().subscribe(({ direction }) => {
-        this.playerSprite.setFrame(this.getStopFrame(direction));
-        });
 
     }
 
-    MovePlayers (players){
-console.log('MovePlayers')
+    getMovementDirection(from, to) {
+      if (from.x < to.x) return 'right';
+      if (from.x > to.x) return 'left';
+      if (from.y < to.y) return 'down';
+      if (from.y > to.y) return 'up';
+      return null; // default direction
+  }
 
-players.forEach((p) => {
-    if (p.id!==this.playerID){
-      console.log('Player:'+p.id+p.position.x+p.position.y)
-      this.gridEngine.moveTo(p.id,p.position);
-
+    getStopFrame(direction) {
+      switch(direction) {
+        case 'up':
+          return 4;
+        case 'right':
+          return 12;
+        case 'down':
+          return 0;
+        case 'left':
+          return 8;
+      }
     }
-  });
-     
 
+    // helpers for carrying
+    nearSource(id) {
+      const position = this.gridEngine.getFacingPosition(id);
+
+      return this.trialTilemap.layers.some((layer) => {
+        const tile = this.trialTilemap.getTileAt(position.x, position.y, false, layer.name);
+        return tile?.properties?.source
+      });
     }
+
+    nearTarget(id) {
+      const position = this.gridEngine.getFacingPosition(id);
+
+      return this.trialTilemap.layers.some((layer) => {
+        const tile = this.trialTilemap.getTileAt(position.x, position.y, false, layer.name);
+        return tile?.properties?.target
+      });
+    }
+
+    isCarrying(id) {
+      return this.players[id].carrying;
+    }
+
+    playWaterAnimation(id, direction) {
+      const player = this.players[id];
+      player.sprite.anims.play('water_' + direction).on(
+          'animationcomplete',
+          () => {player.sprite.anims.play('idle_' + direction)}
+      );
+  }
+
     
 }

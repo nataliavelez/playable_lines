@@ -3,81 +3,49 @@ import { forwardRef, useEffect, useLayoutEffect, useRef ,useState} from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref)
-{
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, playerStates }, ref) {
     const game = useRef();
-   // const [playerPosition,setPlayerPosition] = useState({ x: 0, y: 0 });
 
-    // Create the game inside a useLayoutEffect hook to avoid the game being created outside the DOM
     useLayoutEffect(() => {
-        
-        if (game.current === undefined)
-        {
+        if (game.current === undefined) {
             game.current = StartGame("game-container");
             
-            if (ref !== null)
-            {
+            if (ref !== null) {
                 ref.current = { game: game.current, scene: null };
+
             }
         }
 
         return () => {
-
-            if (game.current)
-            {
+            if (game.current) {
                 game.current.destroy(true);
                 game.current = undefined;
             }
-
         }
     }, [ref]);
 
     useEffect(() => {
-
-        EventBus.on('current-scene-ready', (currentScene) => {
-
-            if (currentActiveScene instanceof Function)
-            {
-                currentActiveScene(currentScene);
+        const handleSceneChange = (scene) => {
+            if (currentActiveScene instanceof Function) {
+                currentActiveScene(scene);
             }
-            ref.current.scene = currentScene;
-            
-        });
+            ref.current.scene = scene;
+        };
 
-        EventBus.on('goal-reached', () => {
-            
-            console.log('Goal reached!');
-
-            
-        });
-
-        // EventBus.on('position-change', (x,y) => {
-        //     console.log(playerPosition)
-        //     //Object.assign(playerPosition, { x:x,y:y} )
-        //     //setPlayerPosition = {...playerPosition,x:x,y:y};
-        //     playerPosition.x = x;
-        //     playerPosition.y=y;
-        //     console.log('position x:'+x);
-        //     console.log('position y:'+y);
-
-            
-        // });
+        EventBus.on('current-scene-ready', handleSceneChange);
 
         return () => {
-
-            EventBus.removeListener('current-scene-ready');
-
+            EventBus.off('current-scene-ready', handleSceneChange);
         }
-        
-    }, [currentActiveScene, ref])
+    }, [currentActiveScene, ref]); 
 
-    return (
-        
-        <div id="game-container">      
-         
-        </div>
-    );
+    useEffect(() => {
+        if (game.current) {
+            EventBus.emit('update-player-states', playerStates);
+        }
+    }, [playerStates]);
 
+    return  <div id="game-container"> </div>
 });
 
 // Props definitions
