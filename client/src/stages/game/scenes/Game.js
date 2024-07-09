@@ -1,5 +1,5 @@
 import { EventBus } from '../EventBus';
-import { Scene, Input } from 'phaser';
+import { Scene } from 'phaser';
 
 export class Game extends Scene {
     constructor () {
@@ -120,6 +120,12 @@ export class Game extends Scene {
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
             
         this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
+
+        //play idle animation on start
+        Object.entries(this.players).forEach(([id, player]) => {
+          const direction = playerStates[id].direction || 'down';
+          player.sprite.play(`idle_${direction}`);
+      });
 
         this.setupGridEngineEvents();
         //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
