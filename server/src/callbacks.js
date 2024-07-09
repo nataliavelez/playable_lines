@@ -2,13 +2,16 @@ import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
+  const treatment = game.get("treatment");
+  const { playerCount } = treatment;
+
   const round = game.addRound({
     name: `Round`,
    });
    round.addStage({name: "Grid-Engine Example", duration:10000});
 
   //Randomly set colours for players
-  const colors = ["white", "red"] //, "green", "blue", "yellow", "cyan", "orange", "purple"];
+  const colors = ["white", "red", "green", "blue", "yellow", "cyan", "orange", "purple"].slice(0, playerCount);
   const shuffledColors = colors.sort(() => Math.random() - 0.5); //permute colours array
   game.players.forEach((player, i) => player.set("color", shuffledColors[i]));
 
@@ -24,7 +27,7 @@ Empirica.onGameStart(({ game }) => {
     { x: 9, y: 9 },
     { x: 10, y: 10 }
   ];
-  // slide after sort to randomize position for each color
+  // slice after sort to randomize position for each color
   const shuffledStartPositions = startPositions.sort(() => Math.random() - 0.5).slice(0, playerCount);
 
   //set starting position for player and partner
