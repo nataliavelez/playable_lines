@@ -1,3 +1,4 @@
+import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 
 export class Preloader extends Scene {
