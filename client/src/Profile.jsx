@@ -4,7 +4,6 @@ import {
   useStage,
 } from "@empirica/core/player/classic/react";
 import React from "react";
-import { Avatar } from "./components/Avatar";
 import { Timer } from "./components/Timer";
 
 export function Profile() {
