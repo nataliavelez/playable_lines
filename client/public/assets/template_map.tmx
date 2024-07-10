@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="Water_1" tilewidth="16" tileheight="16" tilecount="1" columns="1">
+  <image source="Water_1.png" width="16" height="16"/>
+ </tileset>
+ <tileset firstgid="2" name="Water well" tilewidth="16" tileheight="16" tilecount="4" columns="2">
+  <image source="Water well.png" width="32" height="32"/>
+ </tileset>
+ <tileset firstgid="6" name="Mushrooms, Flowers, Stones" tilewidth="16" tileheight="16" tilecount="60" columns="12">
+  <image source="Mushrooms, Flowers, Stones.png" width="192" height="80"/>
+ </tileset>
+ <tileset firstgid="66" name="Farming Plants" tilewidth="16" tileheight="16" tilecount="75" columns="5">
+  <image source="Farming Plants.png" width="80" height="240"/>
+ </tileset>
+ <tileset firstgid="141" name="Tilled_Dirt" tilewidth="16" tileheight="16" tilecount="77" columns="11">
+  <image source="Tilled_Dirt.png" width="176" height="112"/>
+ </tileset>
+ <tileset firstgid="218" name="Grass_tiles_v2" tilewidth="16" tileheight="16" tilecount="77" columns="11">
+  <image source="Grass_tiles_v2.png" width="176" height="112"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="16" height="16">
+  <data encoding="csv">
+218,219,219,219,219,219,219,219,219,219,219,219,219,219,219,220,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+229,230,230,230,230,230,230,230,230,230,230,230,230,230,230,231,
+240,241,241,241,241,241,241,241,241,241,241,241,241,241,241,242
+</data>
+ </layer>
+</map>

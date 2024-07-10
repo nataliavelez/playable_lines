@@ -13,7 +13,7 @@ export function GridWorld() {
     const players = usePlayers();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
-
+  
     const initializePlayers = () => {
         if (!round.get('playerStates')) {
             round.set('playerStates', {});

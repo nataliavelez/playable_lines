@@ -214,7 +214,6 @@ export class Game extends Scene {
 }
 
     update() {
-
       if (!this.playerId) return;
         const cursors = this.input.keyboard.createCursorKeys();
         const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -268,8 +267,6 @@ export class Game extends Scene {
         this.players[this.playerId].score = currentScore;
 
         EventBus.emit('player-state-change', this.playerId, {carrying: isNowCarrying, score: currentScore} );
-        
-
       }
   
     }

@@ -12,7 +12,6 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
             
             if (ref !== null) {
                 ref.current = { game: game.current, scene: null };
-
             }
         }
 
@@ -62,5 +61,6 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
 
 // Props definitions
 PhaserGame.propTypes = {
-    currentActiveScene: PropTypes.func 
+    currentActiveScene: PropTypes.func,
+    updateScore: PropTypes.func
 }
