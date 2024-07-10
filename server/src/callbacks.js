@@ -28,12 +28,12 @@ Empirica.onGameStart(({ game }) => {
       round.set("roundType", "learn");
       round.set("mapUniversalizablity", universalizability);
       round.set("mapName", mapNamesLearn[i]);
-      startPositions = mapInfoLearn[mapNamesLearn[i]].sort(() => Math.random() - 0.5);
+      startPositions = mapInfoLearn[mapNamesLearn[i]].slice(0, playerCount).sort(() => Math.random() - 0.5);
     } else { 
       round.set("roundType", "test");
       round.set("mapUniversalizablity", "medium");
       round.set("mapName", mapNamesTest[0]); // for now just one map for test round
-      startPositions = mapInfoLearn[mapNamesTest[0]].sort(() => Math.random() - 0.5);
+      startPositions = mapInfoLearn[mapNamesTest[0]].slice(0, playerCount).sort(() => Math.random() - 0.5);
     }
 
     // set start position for each player in each round
@@ -42,7 +42,7 @@ Empirica.onGameStart(({ game }) => {
 
   //Randomly set colours for players
   // for now just with two players, but need to change for more players
-  const colors = ["white", "red"] //, "green", "blue", "yellow", "cyan", "orange", "purple"];
+  const colors = ["white", "red", "green", "blue", "yellow", "cyan", "orange", "purple"].slice(0, playerCount);
   const shuffledColors = colors.sort(() => Math.random() - 0.5); //permute colours array
   game.players.forEach((player, i) => player.set("color", shuffledColors[i]));
 

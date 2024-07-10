@@ -1,4 +1,9 @@
 factors:
+  - desc: Can players chat with each other during the game?
+    name: chatEnabled
+    values:
+      - value: true
+      - value: false
   - desc: playerCount determines the number of Players are in a Game.
     name: playerCount
     values:
@@ -24,15 +29,31 @@ factors:
       - value: "low"
 
 treatments:
-  - desc: "High Universalizability"
-    name: HighUniversalizability
+  - desc: "High Universalizability Two Players"
+    name: HighUniversalizabilityTwoPlayers
     factors:
       playerCount: 2
       numRounds: 4
       universalizability: "high"
-  - desc: "Low Universalizability"
-    name: LowUniversalizability
-    factors:
+      chatEnabled: false
+  - desc: "Low Universalizability Two Players"
+    name: LowUniversalizabilityTwoPlayers
+    factors: 
       playerCount: 2
-      numRounds: 3
+      numRounds: 4
       universalizability: "low"
+      chatEnabled: false
+  - desc: "High Universalizability Four Players"
+    name: HighUniversalizabilityFourPlayers
+    factors:
+      playerCount: 4
+      numRounds: 4
+      universalizability: "high"
+      chatEnabled: false
+  - desc: "Low Universalizability Four Players"
+    name: LowUniversalizabilityFourPlayers
+    factors: 
+      playerCount: 4
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false
