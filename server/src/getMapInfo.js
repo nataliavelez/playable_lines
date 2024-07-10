@@ -1,4 +1,7 @@
 export function getMapInfo(universalizability) {
+    // Note the logic is written so that if X players are in a game, the map will take the first X start positions
+    // and permute them. This is to ensure that players start in different locations each round, but to also allow 
+    // for the same map to be used for different player counts and to have control over what that looks like.
     const mapData = {
         low: {
             low1: [
