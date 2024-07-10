@@ -1,0 +1,330 @@
+{ "compressionlevel":-1,
+ "height":16,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 230, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+            14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+         "height":16,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4,
+            13, 0, 0, 73, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 72, 15,
+            13, 0, 0, 0, 0, 0, 0, 0, 73, 0, 0, 0, 0, 0, 0, 15,
+            13, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15,
+            13, 86, 0, 0, 170, 191, 204, 181, 181, 193, 0, 0, 57, 0, 0, 15,
+            13, 86, 0, 0, 171, 0, 0, 0, 0, 0, 0, 0, 0, 73, 0, 15,
+            13, 86, 0, 0, 0, 14, 14, 14, 0, 171, 170, 0, 0, 0, 0, 15,
+            13, 86, 0, 0, 0, 0, 216, 217, 0, 170, 171, 0, 0, 0, 60, 15,
+            13, 86, 0, 0, 171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15,
+            13, 86, 0, 0, 170, 171, 181, 193, 204, 181, 0, 0, 0, 0, 0, 15,
+            13, 86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15,
+            13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 73, 72, 0, 0, 15,
+            13, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 15,
+            13, 0, 0, 73, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 15,
+            13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15,
+            24, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 26],
+         "height":16,
+         "id":2,
+         "name":"obstacles",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 214, 215, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":16,
+         "id":3,
+         "name":"top",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":4,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":16,
+ "tilesets":[
+        {
+         "columns":1,
+         "firstgid":1,
+         "image":"..\/Water_1.png",
+         "imageheight":16,
+         "imagewidth":16,
+         "margin":0,
+         "name":"Water_1",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":16,
+         "tilewidth":16
+        }, 
+        {
+         "columns":11,
+         "firstgid":2,
+         "image":"..\/Grass_tiles_v2.png",
+         "imageheight":112,
+         "imagewidth":176,
+         "margin":0,
+         "name":"Grass_tiles_v2",
+         "spacing":0,
+         "tilecount":77,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":false
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":22,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":23,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":24,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
+         "tilewidth":16
+        }, 
+        {
+         "columns":5,
+         "firstgid":79,
+         "image":"..\/Farming Plants.png",
+         "imageheight":240,
+         "imagewidth":80,
+         "margin":0,
+         "name":"Farming Plants",
+         "properties":[
+                {
+                 "name":"target",
+                 "type":"bool",
+                 "value":false
+                }],
+         "spacing":0,
+         "tilecount":75,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_target",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
+         "tilewidth":16
+        }, 
+        {
+         "columns":12,
+         "firstgid":154,
+         "image":"..\/Mushrooms, Flowers, Stones.png",
+         "imageheight":80,
+         "imagewidth":192,
+         "margin":0,
+         "name":"Mushrooms, Flowers, Stones",
+         "spacing":0,
+         "tilecount":60,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
+         "tilewidth":16
+        }, 
+        {
+         "columns":2,
+         "firstgid":214,
+         "image":"..\/Water well.png",
+         "imageheight":32,
+         "imagewidth":32,
+         "margin":0,
+         "name":"Water well",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_alwaysTop",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"ge_alwaysTop",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"ge_source",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"ge_source",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
+         "tilewidth":16
+        }, 
+        {
+         "columns":11,
+         "firstgid":218,
+         "image":"..\/Tilled_Dirt.png",
+         "imageheight":112,
+         "imagewidth":176,
+         "margin":0,
+         "name":"Tilled_Dirt",
+         "spacing":0,
+         "tilecount":77,
+         "tileheight":16,
+         "tilewidth":16
+        }],
+ "tilewidth":16,
+ "type":"map",
+ "version":"1.10",
+ "width":16
+}
