@@ -3,58 +3,60 @@ import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene, updateScore}, ref)
-{
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerStates, isVisible }, ref) {
     const game = useRef();
 
-    // Create the game inside a useLayoutEffect hook to avoid the game being created outside the DOM
     useLayoutEffect(() => {
-        
-        if (game.current === undefined)
-        {
+        if (game.current === undefined) {
             game.current = StartGame("game-container");
             
-            if (ref !== null)
-            {
-                ref.current = { game: game.current, scene: null, score: 0, carrying: false};
+            if (ref !== null) {
+                ref.current = { game: game.current, scene: null };
             }
         }
 
         return () => {
-
-            if (game.current)
-            {
+            if (game.current) {
                 game.current.destroy(true);
                 game.current = undefined;
             }
-
         }
     }, [ref]);
 
     useEffect(() => {
+        if (game.current) {
+            EventBus.emit('visibility-change', isVisible);
+        }
+    }, [isVisible]);
 
-        EventBus.on('current-scene-ready', (currentScene) => {
-
-            if (currentActiveScene instanceof Function)
-            {
-                currentActiveScene(currentScene);
+    useEffect(() => {
+        const handleSceneChange = (scene) => {
+            if (currentActiveScene instanceof Function) {
+                currentActiveScene(scene);
             }
-            ref.current.scene = currentScene;
-            
-        });
+            ref.current.scene = scene;
+        };
+
+        EventBus.on('current-scene-ready', handleSceneChange);
 
         return () => {
-
-            EventBus.removeListener('current-scene-ready');
-
+            EventBus.off('current-scene-ready', handleSceneChange);
         }
-        
-    }, [currentActiveScene, ref])
+    }, [currentActiveScene, ref]); 
 
-    return (
-        <div id="game-container"></div>
-    );
+    useEffect(() => {
+        if (game.current) {
+            EventBus.emit('update-player-states', playerStates);
+        }
+    }, [playerStates]);
 
+    useEffect(() => {
+        if (game.current) {
+            EventBus.emit('set-map-name', mapName);
+        }
+    }, []); // don't need to update this. Only one map per round.
+
+    return  <div id="game-container"> </div>
 });
 
 // Props definitions
