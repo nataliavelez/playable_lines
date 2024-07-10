@@ -32,7 +32,7 @@ Empirica.onGameStart(({ game }) => {
     } else { 
       round.set("roundType", "test");
       round.set("mapUniversalizablity", "medium");
-      round.set("mapName", mapNamesTest[0]) // for now just one map for test round
+      round.set("mapName", mapNamesTest[0]); // for now just one map for test round
       startPositions = mapInfoLearn[mapNamesTest[0]].sort(() => Math.random() - 0.5);
     }
 
