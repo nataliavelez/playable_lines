@@ -51,6 +51,12 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
         }
     }, [playerStates]);
 
+    useEffect(() => {
+        if (game.current) {
+            EventBus.emit('set-map-name', mapName);
+        }
+    }, []); // don't need to update this. Only one map per round.
+
     return  <div id="game-container"> </div>
 });
 

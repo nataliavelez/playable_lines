@@ -7,8 +7,14 @@ export class Preloader extends Scene
         super('Preloader');
     }
 
-    init ()
-    {
+    init() {
+        // Get map name
+        EventBus.on('set-map-name', (mapName) => {
+            this.mapName = mapName;
+            this.mapFileName = `${mapName}.json`;
+            console.log('Map name in Preloader:', this.mapName);
+        });
+
         //  We loaded this image in our Boot Scene, so we can display it here
         this.add.image(512, 384, 'background');
 
@@ -42,8 +48,7 @@ export class Preloader extends Scene
         this.load.image('Mushrooms, Flowers, Stones', 'Mushrooms, Flowers, Stones.png');
         this.load.image('indicator', 'water_ready.png');
         
-        this.load.tilemapTiledJSON('cloud-city-map', 'cloud_city.json'); // demo
-        this.load.tilemapTiledJSON('test-map', 'test_map.json');
+        this.load.tilemapTiledJSON(this.mapName, this.mapFileName);
 
         this.load.spritesheet('bunny', 'bunny_spritesheet.png', {
             frameWidth: 48,
@@ -59,5 +64,9 @@ export class Preloader extends Scene
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start('Game');
+    }
+
+    shutdown() {
+        EventBus.off('set-map-name'); // remove listener to avoid memory leak
     }
 }
