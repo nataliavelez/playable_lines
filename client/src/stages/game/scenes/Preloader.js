@@ -9,7 +9,7 @@ export class Preloader extends Scene {
         // Get map name
         EventBus.on('set-map-name', (mapName) => {
             this.mapName = mapName;
-            this.mapFileName = `${mapName}.json`;
+            this.mapFileName = `maps/${mapName}.json`;
             console.log('Map name in Preloader:', this.mapName);
         });
 
