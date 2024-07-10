@@ -111,6 +111,7 @@ export function GridWorld() {
             <PhaserGame 
                 ref={phaserRef} 
                 currentActiveScene={currentScene} 
+                mapName={round.get('mapName')}
                 playerStates={round.get('playerStates')}
                 isVisible={isVisible}
             />

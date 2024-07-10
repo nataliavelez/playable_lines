@@ -6,13 +6,19 @@ export class Preloader extends Scene {
     }
 
     init() {
-        const centerX = this.cameras.main.width / 2;
-        const centerY = this.cameras.main.height / 2;
+        // Get map name
+        EventBus.on('set-map-name', (mapName) => {
+            this.mapName = mapName;
+            this.mapFileName = `${mapName}.json`;
+            console.log('Map name in Preloader:', this.mapName);
+        });
 
         //  Show the background image
         this.add.image(512, 384, 'background');
 
         // Progress bar. 
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
         this.add.rectangle(centerX, centerY, 468, 32).setStrokeStyle(1, 0xffffff); // bar outline.
         const bar = this.add.rectangle(centerX-230, centerY, 4, 28, 0xffffff); //bar
         this.load.on('progress', (progress) => { //  'progress' event emitted by the LoaderPlugin
@@ -34,7 +40,7 @@ export class Preloader extends Scene {
         this.load.image('indicator', 'water_ready.png');
         
         // Tile Maps
-        this.load.tilemapTiledJSON('test-map', 'test_map.json');
+        this.load.tilemapTiledJSON(this.mapName, this.mapFileName);
 
         // Spritesheet
         this.load.spritesheet('bunny', 'bunny_spritesheet.png', {
@@ -48,5 +54,9 @@ export class Preloader extends Scene {
         //  Could create global objects here that the rest of the game can use. i.e. Global animations. 
         //  Move to the main game. 
         this.scene.start('Game');
+    }
+
+    shutdown() {
+        EventBus.off('set-map-name'); // remove listener to avoid memory leak
     }
 }

@@ -3,7 +3,7 @@ import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, playerStates, isVisible }, ref) {
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerStates, isVisible }, ref) {
     const game = useRef();
 
     useLayoutEffect(() => {
@@ -50,6 +50,12 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, p
             EventBus.emit('update-player-states', playerStates);
         }
     }, [playerStates]);
+
+    useEffect(() => {
+        if (game.current) {
+            EventBus.emit('set-map-name', mapName);
+        }
+    }, []); // don't need to update this. Only one map per round.
 
     return  <div id="game-container"> </div>
 });

@@ -15,20 +15,45 @@ factors:
       - value: 6
       - value: 7
       - value: 8
+  - desc: "The number of rounds in a Game"
+    name: numRounds
+    values:
+      - value: 1
+      - value: 2
+      - value: 3
+      - value: 4
+  - desc: "The universalizabiliity of learning maps"
+    name: universalizability
+    values:
+      - value: "high"
+      - value: "low"
 
 treatments:
-  - desc: "Two Player Game"
-    name: TwoPlayers
+  - desc: "High Universalizability Two Players"
+    name: HighUniversalizabilityTwoPlayers
     factors:
-      chatEnabled: false
       playerCount: 2
-  - desc: "Four Player Game"
-    name: FourPlayers
-    factors:
+      numRounds: 4
+      universalizability: "high"
       chatEnabled: false
+  - desc: "Low Universalizability Two Players"
+    name: LowUniversalizabilityTwoPlayers
+    factors: 
+      playerCount: 2
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false
+  - desc: "High Universalizability Four Players"
+    name: HighUniversalizabilityFourPlayers
+    factors:
       playerCount: 4
-  - desc: "Eight Player Game"
-    name: EightPlayers
-    factors:
+      numRounds: 4
+      universalizability: "high"
       chatEnabled: false
-      playerCount: 8
+  - desc: "Low Universalizability Four Players"
+    name: LowUniversalizabilityFourPlayers
+    factors: 
+      playerCount: 4
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false
