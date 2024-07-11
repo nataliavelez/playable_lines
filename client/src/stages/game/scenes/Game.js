@@ -43,7 +43,7 @@ export class Game extends Scene {
       this.complete = false; // do not touch this! tells Empirica to advance trial
 
       //tile map
-      this.trialTilemap = this.make.tilemap({ key: "test-map" });
+      this.trialTilemap = this.make.tilemap({ key: this.registry.get('mapName') });
       this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
       this.tilesets.forEach(tileset => {
           this.trialTilemap.addTilesetImage(tileset);

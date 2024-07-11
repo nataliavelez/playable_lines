@@ -8,7 +8,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
 
     useLayoutEffect(() => {
         if (game.current === undefined) {
-            game.current = StartGame("game-container");
+            game.current = StartGame("game-container", mapName);
             
             if (ref !== null) {
                 ref.current = { game: game.current, scene: null };
@@ -21,7 +21,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
                 game.current = undefined;
             }
         }
-    }, [ref]);
+    }, [ref, mapName]);
 
     useEffect(() => {
         if (game.current) {
@@ -49,12 +49,6 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
             EventBus.emit('update-player-states', playerStates);
         }
     }, [playerStates]);
-
-    useEffect(() => {
-        if (game.current) {
-            EventBus.emit('set-map-name', mapName);
-        }
-    }, []); // don't need to update this. Only one map per round.
 
     return  <div id="game-container"> </div>
 });

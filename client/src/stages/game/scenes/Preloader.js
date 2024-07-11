@@ -4,17 +4,12 @@ import { Scene } from 'phaser';
 export class Preloader extends Scene {
     constructor() {
         super('Preloader');
-        this.mapName = null;
-        this.mapFileName = null;
     }
 
     init() {
-        // Get map name
-        EventBus.on('set-map-name', (mapName) => {
-            this.mapName = mapName;
-            this.mapFileName = `maps/${mapName}.json`;
-            console.log('Map name in Preloader:', this.mapName);
-        });
+        // get map name from registry
+        this.mapName = this.registry.get('mapName');
+        this.mapFileName = `maps/${this.mapName}.json`;
 
         //  Show the background image
         this.add.image(512, 384, 'background');
@@ -43,8 +38,6 @@ export class Preloader extends Scene {
         this.load.image('indicator', 'water_ready.png');
         
         // Tile Maps
-        console.log('Map file name:', this.mapFileName);
-        console.log('Map name:', this.mapName);
         this.load.tilemapTiledJSON(this.mapName, this.mapFileName);
 
         // Spritesheet

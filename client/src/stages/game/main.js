@@ -30,10 +30,15 @@ const config = {
       }
 };
 
-const StartGame = (parent) => {
+const StartGame = (parent, mapName) => {
     return new Phaser.Game({
         ...config,
-        parent
+        parent,
+        callbacks: {
+          preBoot: (game) => {
+              game.registry.set('mapName', mapName);
+          }
+      }
     });
 
 
