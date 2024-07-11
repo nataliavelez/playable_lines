@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="1">
  <editorsettings>
-  <export target="univ_2.json" format="json"/>
+  <export target="high2.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="Water_1" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="../Water_1.png" width="16" height="16"/>
@@ -958,7 +958,7 @@
    </properties>
   </tile>
  </tileset>
- <layer id="1" name="bg" width="16" height="16" visible="0">
+ <layer id="1" name="bg" width="16" height="16">
   <data encoding="csv">
 230,230,230,230,230,230,230,230,230,230,230,230,230,230,230,230,
 230,230,230,230,230,230,230,230,230,230,230,230,230,230,230,230,
@@ -978,7 +978,7 @@
 230,230,230,230,230,230,230,230,230,230,230,230,230,230,230,230
 </data>
  </layer>
- <layer id="6" name="decor" width="16" height="16" visible="0">
+ <layer id="6" name="decor" width="16" height="16">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,287,0,0,0,0,
