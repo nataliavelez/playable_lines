@@ -51,12 +51,12 @@ Empirica.onRoundStart(({ round }) => {
     round.set("mapUniversalizablity", "medium");
   }
 
-  const mapNames = Object.keys(mapInfo).sort(() => Math.random() - 0.5); // permuted
+  const mapNames = Object.keys(mapInfo)//.sort(() => Math.random() - 0.5); // need to fix this as it shuffles every time, meaning you could get the same map twice
   const mapName = (roundType === "learn") ? mapNames[index] : mapNames[0];
 
   // set map info
   round.set("mapName", mapName);
-  const startPositions = mapInfo[mapName].slice(0, playerCount);
+  const startPositions = mapInfo[mapName].slice(0, playerCount); 
   startPositions.sort(() => Math.random() - 0.5); //modifies in place
   round.set("startPositions", startPositions);
 

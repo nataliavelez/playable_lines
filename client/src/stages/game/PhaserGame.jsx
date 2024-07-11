@@ -3,12 +3,12 @@ import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerStates, isVisible }, ref) {
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerId, playerStates, isVisible }, ref) {
     const game = useRef();
 
     useLayoutEffect(() => {
         if (game.current === undefined) {
-            game.current = StartGame("game-container", mapName);
+            game.current = StartGame("game-container", mapName, playerStates, playerId);
             
             if (ref !== null) {
                 ref.current = { game: game.current, scene: null };
