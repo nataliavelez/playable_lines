@@ -19,12 +19,12 @@ export function GridWorld() {
             round.set('playerStates', {});
         }
 
-        players.forEach(p => {
+        players.forEach((p, i) => {
             if (!round.get('playerStates')[p.id]) {
                 round.set('playerStates', {
                     ...round.get('playerStates'),
                     [p.id]: { 
-                        position: p.get('startPos'),
+                        position: round.get('startPositions')[i],
                         direction: 'down',
                         carrying: false,
                         score: 0,   
@@ -105,6 +105,7 @@ export function GridWorld() {
     if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
         return <div>Loading...</div>;
     }
+    console.log("Map name in GridWorld:", round.get('mapName'));
 
     return (
         <div id="app">

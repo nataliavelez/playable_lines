@@ -4,49 +4,19 @@ export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
-  const { numRounds } = treatment;
-  const { playerCount } = treatment;
-  const { universalizability } = treatment;
-
-  // get map info for learn and test rounds
-  const mapInfoLearn = getMapInfo(universalizability); // depends on universaliabilty condition
-  const mapNamesLearn = Object.keys(mapInfoLearn).sort(() => Math.random() - 0.5); // permuted
-  const mapInfoTest = getMapInfo("medium");
-  const mapNamesTest = Object.keys(mapInfoTest).sort(() => Math.random() - 0.5); // permuted
+  const { numRounds, playerCount, universalizability } = treatment;
   
   // add rounds
   for (let i = 0; i < numRounds; i++) {
     const round = game.addRound({
       name: `Round ${i + 1}`,
+      number: i + 1,
+      index: i,
+      type: (i !== numRounds-1) ? "learn" : "test",
+      universalizability: (i !== numRounds-1) ? universalizability : "medium"
     });
     round.addStage({ name: "game", duration: 30 });  
     round.addStage({ name: "result", duration: 30 });
-
-    //set map name, details, and get permuted start positions
-    let startPositions; // init outside of if logic to access outside of it.
-    if (i !== numRounds - 1) {
-      round.set("roundType", "learn");
-      round.set("mapUniversalizablity", universalizability);
-      round.set("mapName", mapNamesLearn[i]);
-      startPositions = mapInfoLearn[mapNamesLearn[i]].slice(0, playerCount);
-      startPositions.sort(() => Math.random() - 0.5); //modifies in place
-    } else { 
-      round.set("roundType", "test");
-      round.set("mapUniversalizablity", "medium");
-      round.set("mapName", mapNamesTest[0]); // for now just one map for test round
-      startPositions = mapInfoTest[mapNamesTest[0]].slice(0, playerCount); //modifies in place
-      startPositions.sort(() => Math.random() - 0.5);
-    }
-
-    //set start positions
-    round.set("startPositions", startPositions);
-
-    // Log details of each round
-    console.log(`Round ${i} round type:`, round.get("roundType"));
-    console.log(`Round ${i} map universalizability:`, round.get("mapUniversalizablity"));
-    console.log(`Round ${i} map name:`, round.get("mapName")); 
-    console.log(`Round ${i} Starting positions:`, round.get("startPositions")); 
-
 
   }
 
@@ -61,10 +31,43 @@ Empirica.onGameStart(({ game }) => {
 });
 
 
-Empirica.onRoundStart(({ round }) => {});
+Empirica.onRoundStart(({ round }) => {
+  const roundType = round.get("type")
+  const index = round.get("index");
+  const universalizability = round.get("universalizability");
+
+  // Get number of players, for now just use the treatment, but later we should have an option to get active players
+  const treatment = round.currentGame.get("treatment");
+  const { playerCount } = treatment;
+  //const activePlayerCount = round.currentGame.players.filter(p => p.get("online")).length;
+  //console.log("Active player count:", activePlayerCount)
+
+  let mapInfo; // init outside of if logic to access outside of it.
+  if (roundType === "learn") {
+    mapInfo = getMapInfo(universalizability); // depends on universaliabilty condition
+    round.set("mapUniversalizablity", universalizability);
+  } else { 
+    mapInfo = getMapInfo("medium");
+    round.set("mapUniversalizablity", "medium");
+  }
+
+  const mapNames = Object.keys(mapInfo).sort(() => Math.random() - 0.5); // permuted
+  const mapName = (roundType === "learn") ? mapNames[index] : mapNames[0];
+
+  // set map info
+  round.set("mapName", mapName);
+  const startPositions = mapInfo[mapName].slice(0, playerCount);
+  startPositions.sort(() => Math.random() - 0.5); //modifies in place
+  round.set("startPositions", startPositions);
+
+  // Log details of each round
+  console.log(`Round ${index+1} round type:`, round.get("type"));
+  console.log(`Round ${index+1} map universalizability:`, round.get("mapUniversalizablity"));
+  console.log(`Round ${index+1} map name:`, round.get("mapName")); 
+  console.log(`Round ${index+1} Starting positions:`, round.get("startPositions")); 
+});
 
 Empirica.onStageStart(({ stage }) => {
-
 });
 
 Empirica.onStageEnded(({ stage }) => {
