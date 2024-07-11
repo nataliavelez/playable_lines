@@ -3,25 +3,25 @@
  "infinite":false,
  "layers":[
         {
-         "data":[1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 313, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14,
-            23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25],
+         "data":[13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+            13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
          "height":16,
          "id":1,
-         "name":"Tile Layer 1",
+         "name":"bg",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -31,21 +31,48 @@
         }, 
         {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 70, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 225, 0,
+            0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 302, 303, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 313, 314, 0, 0, 0, 0, 61, 0, 60, 0, 0, 0, 0, 0, 0,
+            0, 313, 314, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 313, 314, 0, 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 0,
+            0, 313, 314, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 313, 314, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 313, 314, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 324, 325, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 70, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":16,
+         "id":4,
+         "name":"decor",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[379, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 381,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 179, 0, 0, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 224, 225, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 201, 0, 0, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 187, 0, 0, 386,
+            386, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 386,
+            386, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 386,
+            386, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 201, 0, 0, 386,
+            386, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 187, 0, 0, 386,
+            386, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 386,
+            386, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 386,
+            386, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 386,
+            395, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 404, 397],
          "height":16,
          "id":2,
          "name":"obstacles",
@@ -57,20 +84,20 @@
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 179, 187, 187, 0,
-            0, 0, 70, 0, 0, 61, 0, 0, 0, 0, 0, 0, 179, 222, 223, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 0,
-            0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 201, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 187, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 61, 0, 60, 0, 0, 189, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 0, 70, 0, 0, 0, 201, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 187, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 233, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0,
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 222, 223, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 70, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":16,
@@ -83,7 +110,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
+ "nextlayerid":6,
  "nextobjectid":1,
  "orientation":"orthogonal",
  "renderorder":"right-down",
@@ -130,6 +157,540 @@
          "tiles":[
                 {
                  "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":21,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":22,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":23,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":24,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":25,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":26,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":27,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":28,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":29,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":30,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":31,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":32,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":33,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":34,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":35,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":36,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":37,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":38,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":39,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":40,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":41,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":42,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":43,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":44,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":45,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":46,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":47,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":48,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":49,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":50,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":51,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":52,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":53,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":54,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":55,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":56,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":57,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":58,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":59,
                  "properties":[
                         {
                          "name":"ge_collide",
@@ -188,7 +749,7 @@
                          "value":true
                         }, 
                         {
-                         "name":"ge_source",
+                         "name":"source",
                          "type":"bool",
                          "value":true
                         }]
@@ -202,7 +763,7 @@
                          "value":true
                         }, 
                         {
-                         "name":"ge_source",
+                         "name":"source",
                          "type":"bool",
                          "value":true
                         }]
@@ -231,7 +792,12 @@
                  "id":0,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -240,7 +806,12 @@
                  "id":1,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -249,7 +820,12 @@
                  "id":2,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -258,7 +834,12 @@
                  "id":3,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -267,7 +848,12 @@
                  "id":4,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -276,7 +862,12 @@
                  "id":5,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -285,7 +876,12 @@
                  "id":6,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -294,7 +890,12 @@
                  "id":7,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -303,7 +904,12 @@
                  "id":8,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -312,7 +918,12 @@
                  "id":9,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -321,7 +932,12 @@
                  "id":10,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -330,7 +946,12 @@
                  "id":11,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -339,7 +960,12 @@
                  "id":12,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -348,7 +974,12 @@
                  "id":13,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -357,7 +988,12 @@
                  "id":14,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -366,7 +1002,12 @@
                  "id":15,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -376,7 +1017,12 @@
                  "id":16,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -385,7 +1031,12 @@
                  "id":17,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -394,7 +1045,12 @@
                  "id":18,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -403,7 +1059,12 @@
                  "id":19,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -412,7 +1073,12 @@
                  "id":20,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -421,7 +1087,12 @@
                  "id":21,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -430,7 +1101,12 @@
                  "id":22,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -439,7 +1115,12 @@
                  "id":23,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -448,7 +1129,12 @@
                  "id":24,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -457,7 +1143,12 @@
                  "id":25,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -466,7 +1157,12 @@
                  "id":26,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -475,7 +1171,12 @@
                  "id":27,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -484,7 +1185,12 @@
                  "id":28,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -493,7 +1199,12 @@
                  "id":29,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -502,7 +1213,12 @@
                  "id":30,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -511,7 +1227,12 @@
                  "id":31,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -521,7 +1242,12 @@
                  "id":32,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -530,7 +1256,12 @@
                  "id":33,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -539,7 +1270,12 @@
                  "id":34,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -548,7 +1284,12 @@
                  "id":35,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -557,7 +1298,12 @@
                  "id":36,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -566,7 +1312,12 @@
                  "id":37,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -575,7 +1326,12 @@
                  "id":38,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -584,7 +1340,12 @@
                  "id":39,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -593,7 +1354,12 @@
                  "id":40,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -602,7 +1368,12 @@
                  "id":41,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -611,7 +1382,12 @@
                  "id":42,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -620,7 +1396,12 @@
                  "id":43,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -629,7 +1410,12 @@
                  "id":44,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -638,7 +1424,12 @@
                  "id":45,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -647,7 +1438,12 @@
                  "id":46,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -656,7 +1452,12 @@
                  "id":47,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -666,7 +1467,12 @@
                  "id":48,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -675,7 +1481,12 @@
                  "id":49,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -684,7 +1495,12 @@
                  "id":50,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -693,7 +1509,12 @@
                  "id":51,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -702,7 +1523,12 @@
                  "id":52,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -711,7 +1537,12 @@
                  "id":53,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -720,7 +1551,12 @@
                  "id":54,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -729,7 +1565,12 @@
                  "id":55,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -738,7 +1579,12 @@
                  "id":56,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -747,7 +1593,12 @@
                  "id":57,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -756,7 +1607,12 @@
                  "id":58,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -765,7 +1621,12 @@
                  "id":59,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -774,7 +1635,12 @@
                  "id":60,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -783,7 +1649,12 @@
                  "id":61,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -792,7 +1663,12 @@
                  "id":62,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -801,7 +1677,12 @@
                  "id":63,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -811,7 +1692,12 @@
                  "id":64,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -820,7 +1706,12 @@
                  "id":65,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -829,7 +1720,12 @@
                  "id":66,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -838,7 +1734,12 @@
                  "id":67,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -847,7 +1748,12 @@
                  "id":68,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -856,7 +1762,12 @@
                  "id":69,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -865,7 +1776,12 @@
                  "id":70,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -874,7 +1790,12 @@
                  "id":71,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -883,7 +1804,12 @@
                  "id":72,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -892,7 +1818,12 @@
                  "id":73,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -901,7 +1832,12 @@
                  "id":74,
                  "properties":[
                         {
-                         "name":"ge_target",
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"target",
                          "type":"bool",
                          "value":true
                         }]
@@ -919,6 +1855,309 @@
          "spacing":0,
          "tilecount":77,
          "tileheight":16,
+         "tilewidth":16
+        }, 
+        {
+         "columns":8,
+         "firstgid":378,
+         "image":"..\/Fences.png",
+         "imageheight":64,
+         "imagewidth":128,
+         "margin":0,
+         "name":"Fences",
+         "spacing":0,
+         "tilecount":32,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":3,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":4,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":6,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":7,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":8,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":9,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":10,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":11,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":13,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":14,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":15,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":16,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":17,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":19,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":21,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":22,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":23,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":24,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":25,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":26,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":27,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":28,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":29,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":30,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":31,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
          "tilewidth":16
         }],
  "tilewidth":16,
