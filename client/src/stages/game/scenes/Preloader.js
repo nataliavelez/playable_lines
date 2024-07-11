@@ -4,6 +4,8 @@ import { Scene } from 'phaser';
 export class Preloader extends Scene {
     constructor() {
         super('Preloader');
+        this.mapName = null;
+        this.mapFileName = null;
     }
 
     init() {
@@ -41,6 +43,8 @@ export class Preloader extends Scene {
         this.load.image('indicator', 'water_ready.png');
         
         // Tile Maps
+        console.log('Map file name:', this.mapFileName);
+        console.log('Map name:', this.mapName);
         this.load.tilemapTiledJSON(this.mapName, this.mapFileName);
 
         // Spritesheet
