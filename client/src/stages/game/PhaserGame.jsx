@@ -3,16 +3,15 @@ import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerStates, isVisible }, ref) {
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerId, playerStates, isVisible }, ref) {
     const game = useRef();
 
     useLayoutEffect(() => {
         if (game.current === undefined) {
-            game.current = StartGame("game-container");
+            game.current = StartGame("game-container", mapName, playerStates, playerId);
             
             if (ref !== null) {
                 ref.current = { game: game.current, scene: null };
-
             }
         }
 
@@ -22,7 +21,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
                 game.current = undefined;
             }
         }
-    }, [ref]);
+    }, [ref, mapName]);
 
     useEffect(() => {
         if (game.current) {
@@ -51,16 +50,11 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
         }
     }, [playerStates]);
 
-    useEffect(() => {
-        if (game.current) {
-            EventBus.emit('set-map-name', mapName);
-        }
-    }, []); // don't need to update this. Only one map per round.
-
     return  <div id="game-container"> </div>
 });
 
 // Props definitions
 PhaserGame.propTypes = {
-    currentActiveScene: PropTypes.func 
+    currentActiveScene: PropTypes.func,
+    updateScore: PropTypes.func
 }

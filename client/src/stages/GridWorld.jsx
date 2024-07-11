@@ -8,23 +8,22 @@ import { Game } from "../Game.jsx";
 
 export function GridWorld() {
     const phaserRef = useRef();
-    const initializeRef = useRef(false); // ensure players are only initialized once, not on every render
     const player = usePlayer();
     const players = usePlayers();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
-
+  
     const initializePlayers = () => {
         if (!round.get('playerStates')) {
             round.set('playerStates', {});
         }
 
-        players.forEach(p => {
+        players.forEach((p, i) => {
             if (!round.get('playerStates')[p.id]) {
                 round.set('playerStates', {
                     ...round.get('playerStates'),
                     [p.id]: { 
-                        position: p.get('startPos'),
+                        position: round.get('startPositions')[i],
                         direction: 'down',
                         carrying: false,
                         score: 0,   
@@ -34,9 +33,8 @@ export function GridWorld() {
                 });
             }
         });
-
-        initializeRef.current = true;
     };
+    initializePlayers();
 
     useEffect(() => {
         const handleVisibilityChange = () => {
@@ -52,10 +50,6 @@ export function GridWorld() {
     }, []);
 
     useEffect(() => {
-        if (!initializeRef.current) { 
-            initializePlayers();
-        }
-    
 
         const handlePlayerStateChange = (playerId, updates) => {
             round.set('playerStates', {
@@ -112,6 +106,7 @@ export function GridWorld() {
                 ref={phaserRef} 
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
+                playerId={player.id}
                 playerStates={round.get('playerStates')}
                 isVisible={isVisible}
             />

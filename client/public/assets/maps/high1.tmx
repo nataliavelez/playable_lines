@@ -1,0 +1,1044 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="1">
+ <editorsettings>
+  <export target="univ_1.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" name="Grass_tiles_v2" tilewidth="16" tileheight="16" tilecount="77" columns="11">
+  <image source="../Grass_tiles_v2.png" width="176" height="112"/>
+ </tileset>
+ <tileset firstgid="78" name="Trees, stumps and bushes" tilewidth="16" tileheight="16" tilecount="84" columns="12">
+  <image source="../Trees, stumps and bushes.png" width="192" height="112"/>
+ </tileset>
+ <tileset firstgid="162" name="Mushrooms, Flowers, Stones" tilewidth="16" tileheight="16" tilecount="60" columns="12">
+  <image source="../Mushrooms, Flowers, Stones.png" width="192" height="80"/>
+  <tile id="0">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="15">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="21">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="28">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="29">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="31">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="32">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="33">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="34">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="36">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="39">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="40">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="42">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="47">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="48">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="49">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="50">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="51">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="52">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="53">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="55">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="56">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="58">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="59">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="222" name="Water well" tilewidth="16" tileheight="16" tilecount="4" columns="2">
+  <image source="../Water well.png" width="32" height="32"/>
+  <tile id="0">
+   <properties>
+    <property name="ge_alwaysTop" type="bool" value="true"/>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="ge_alwaysTop" type="bool" value="true"/>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="source" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="source" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="226" name="Farming Plants" tilewidth="16" tileheight="16" tilecount="75" columns="5">
+  <properties>
+   <property name="ge_target" type="bool" value="true"/>
+  </properties>
+  <image source="../Farming Plants.png" width="80" height="240"/>
+  <tile id="0">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="15">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="21">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="28">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="29">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="31">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="32">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="33">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="34">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="36">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="39">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="40">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="42">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="44">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="45">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="46">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="47">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="48">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="49">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="50">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="51">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="52">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="53">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="55">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="56">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="58">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="59">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="60">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="61">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="62">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="63">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="64">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="65">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="66">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="67">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="68">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="69">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="70">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="71">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="72">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="73">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="74">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+    <property name="target" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="301" name="Tilled_Dirt" tilewidth="16" tileheight="16" tilecount="77" columns="11">
+  <image source="../Tilled_Dirt.png" width="176" height="112"/>
+ </tileset>
+ <tileset firstgid="378" name="Fences" tilewidth="16" tileheight="16" tilecount="32" columns="8">
+  <image source="../Fences.png" width="128" height="64"/>
+  <tile id="0">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="13">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="15">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="21">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="23">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="28">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="29">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="31">
+   <properties>
+    <property name="ge_collide" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer id="1" name="bg" width="16" height="16">
+  <data encoding="csv">
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+</data>
+ </layer>
+ <layer id="4" name="decor" width="16" height="16">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,70,0,0,61,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,
+0,302,303,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,313,314,0,0,0,0,61,0,60,0,0,0,0,0,0,
+0,313,314,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,313,314,0,0,0,0,0,70,0,0,0,0,0,0,0,
+0,313,314,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,313,314,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,313,314,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,324,325,0,0,0,0,0,60,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,70,0,0,61,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="obstacles" width="16" height="16">
+  <data encoding="csv">
+379,404,404,404,404,404,404,404,404,404,404,404,404,404,404,381,
+386,0,0,0,0,0,0,0,0,0,0,0,179,0,0,386,
+386,0,0,0,0,0,0,0,0,0,0,0,189,224,225,386,
+386,0,0,0,0,0,0,0,0,0,0,0,201,0,0,386,
+386,0,0,0,0,0,0,0,0,0,0,0,187,0,0,386,
+386,233,0,0,0,0,0,0,0,0,0,0,189,0,0,386,
+386,233,0,0,0,0,0,0,0,0,0,0,189,0,0,386,
+386,233,0,0,0,0,0,0,0,0,0,0,201,0,0,386,
+386,233,0,0,0,0,0,0,0,0,0,0,187,0,0,386,
+386,233,0,0,0,0,0,0,0,0,0,0,189,0,0,386,
+386,233,0,0,0,0,0,0,0,0,0,0,0,0,0,386,
+386,0,0,0,0,0,0,0,0,0,0,0,0,0,0,386,
+386,0,0,0,0,0,0,0,0,0,0,0,0,0,0,386,
+386,0,0,0,0,0,0,0,0,0,0,0,0,0,0,386,
+386,0,0,0,0,0,0,0,0,0,0,0,0,0,0,386,
+395,404,404,404,404,404,404,404,404,404,404,404,404,404,404,397
+</data>
+ </layer>
+ <layer id="3" name="top" width="16" height="16">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,222,223,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

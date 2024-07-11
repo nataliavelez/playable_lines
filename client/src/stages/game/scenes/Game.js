@@ -43,7 +43,7 @@ export class Game extends Scene {
       this.complete = false; // do not touch this! tells Empirica to advance trial
 
       //tile map
-      this.trialTilemap = this.make.tilemap({ key: "test-map" });
+      this.trialTilemap = this.make.tilemap({ key: this.registry.get('mapName') });
       this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
       this.tilesets.forEach(tileset => {
           this.trialTilemap.addTilesetImage(tileset);
@@ -60,7 +60,7 @@ export class Game extends Scene {
           console.log(layer.depth);
       }
 
-
+      this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
       this.createPlayerAnimations();
 
       EventBus.emit('current-scene-ready', this);
@@ -214,7 +214,6 @@ export class Game extends Scene {
 }
 
     update() {
-
       if (!this.playerId) return;
         const cursors = this.input.keyboard.createCursorKeys();
         const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -268,8 +267,6 @@ export class Game extends Scene {
         this.players[this.playerId].score = currentScore;
 
         EventBus.emit('player-state-change', this.playerId, {carrying: isNowCarrying, score: currentScore} );
-        
-
       }
   
     }
