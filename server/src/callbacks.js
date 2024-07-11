@@ -28,16 +28,26 @@ Empirica.onGameStart(({ game }) => {
       round.set("roundType", "learn");
       round.set("mapUniversalizablity", universalizability);
       round.set("mapName", mapNamesLearn[i]);
-      startPositions = mapInfoLearn[mapNamesLearn[i]].slice(0, playerCount).sort(() => Math.random() - 0.5);
+      startPositions = mapInfoLearn[mapNamesLearn[i]].slice(0, playerCount);
+      startPositions.sort(() => Math.random() - 0.5); //modifies in place
     } else { 
       round.set("roundType", "test");
       round.set("mapUniversalizablity", "medium");
       round.set("mapName", mapNamesTest[0]); // for now just one map for test round
-      startPositions = mapInfoLearn[mapNamesTest[0]].slice(0, playerCount).sort(() => Math.random() - 0.5);
+      startPositions = mapInfoTest[mapNamesTest[0]].slice(0, playerCount); //modifies in place
+      startPositions.sort(() => Math.random() - 0.5);
     }
 
-    // set start position for each player in each round
-    game.players.forEach((player, i) => player.set("startPos", startPositions[i]));
+    //set start positions
+    round.set("startPositions", startPositions);
+
+    // Log details of each round
+    console.log(`Round ${i} round type:`, round.get("roundType"));
+    console.log(`Round ${i} map universalizability:`, round.get("mapUniversalizablity"));
+    console.log(`Round ${i} map name:`, round.get("mapName")); 
+    console.log(`Round ${i} Starting positions:`, round.get("startPositions")); 
+
+
   }
 
   //Randomly set colours for players
