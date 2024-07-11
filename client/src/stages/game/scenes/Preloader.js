@@ -35,6 +35,7 @@ export class Preloader extends Scene {
         this.load.image('Tilled_Dirt', 'Tilled_Dirt.png');
         this.load.image('Fences', 'Fences.png');
         this.load.image('Mushrooms, Flowers, Stones', 'Mushrooms, Flowers, Stones.png');
+        this.load.image('Trees, stumps and bushes', 'Trees, stumps and bushes.png');
         this.load.image('indicator', 'water_ready.png');
         
         // Tile Maps
