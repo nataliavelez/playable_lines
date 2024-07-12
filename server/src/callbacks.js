@@ -35,7 +35,6 @@ Empirica.onGameStart(({ game }) => {
 Empirica.onRoundStart(({ round }) => {
   const roundType = round.get("type")
   const randIndex = round.get("randIndex");
-  console.log("RandIndex:", randIndex);
   const roundNumber = round.get("number");
   const universalizability = round.get("universalizability");
 
@@ -55,9 +54,7 @@ Empirica.onRoundStart(({ round }) => {
   }
 
   const mapNames = Object.keys(mapInfo);
-  console.log(mapNames);
   const mapName = (roundType === "learn") ? mapNames[randIndex] : mapNames[0];
-  console.log(mapName);
 
   // set map info
   round.set("mapName", mapName);
