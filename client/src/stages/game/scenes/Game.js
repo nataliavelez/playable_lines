@@ -237,36 +237,33 @@ export class Game extends Scene {
       // Use space bay to load and unload water
       if (Phaser.Input.Keyboard.JustDown(action)) {
         const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
-        let isNowCarrying = player.carrying; // Get current carrying state
-        let currentScore = player.score;
 
         if (!player.carrying && this.nearSource(this.playerId)) {
-            isNowCarrying = true;
             player.carrying = true;
-            console.log('Picked up water', currentScore);
+            console.log('Picked up water', player.score);
 
             // Play animation whens loading water
             this.playWaterAnimation(this.playerId, currentDirection);
 
         } else if (player.carrying && this.nearTarget(this.playerId)) {
-            isNowCarrying = false;
             player.carrying = false;
-            currentScore = currentScore + 1; // Increment score
-            console.log('Dropped off water, new score:', currentScore);
+            player.score = player.score + 1; // Increment score
+            //player.score = currentScore; //update in local game
+            
+            // Emit the updated score in playerStates
+            EventBus.emit('player-state-change', this.playerId, {
+              carrying: player.carrying, 
+              score: player.score
+          });
 
             // play animation when unloading water
-            // For ease of reference, we could have the main player showing the animation regarless of if loading or unloading
-            // but the only way we can do that with other players is to add a new "spacebar" item for the playerstate. Prob not worth it. 
+            // placing here means that main player can NOT do the animation whenever they press spacebar (like others who can only when loading or unloading)
+            // regardless of if they are near a target or not. Putting belwo allows them to do it whenever (but not other players).
             this.playWaterAnimation(this.playerId, currentDirection);
         }
 
         // Update indicator visibility
-        this.players[this.playerId].indicator.visible = isNowCarrying;
-
-        // Update the score in the local game state
-        this.players[this.playerId].score = currentScore;
-
-        EventBus.emit('player-state-change', this.playerId, {carrying: isNowCarrying, score: currentScore} );
+        player.indicator.visible = player.carrying;
       }
   
     }
