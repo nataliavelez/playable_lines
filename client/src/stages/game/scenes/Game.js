@@ -60,7 +60,7 @@ export class Game extends Scene {
           console.log(layer.depth);
       }
 
-
+      this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
       this.createPlayerAnimations();
 
       EventBus.emit('current-scene-ready', this);
