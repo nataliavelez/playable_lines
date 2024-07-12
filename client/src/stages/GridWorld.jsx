@@ -80,6 +80,17 @@ export function GridWorld() {
         
                 console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
             }
+            
+            //Stores every state update with a timestamp, appended into an array for the whole round.
+            round.set('stateUpdates', [
+                 ...(round.get('stateUpdates') || []),
+                 {
+                     playerId: playerId,
+                     ...updates,
+                     timestamp: Date.now()
+                 }
+             ]);
+            console.log('upates:', round.get('stateUpdates'));
         };
 
         EventBus.on('player-state-change', handlePlayerStateChange);
