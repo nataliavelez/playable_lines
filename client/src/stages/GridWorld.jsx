@@ -6,6 +6,7 @@ import { EventBus } from './game/EventBus';
 
 export function GridWorld() {
     const phaserRef = useRef();
+    const initializeRef = useRef(false); // ensure players are only initialized once, not on every render
     const player = usePlayer();
     const players = usePlayers();
     const round = useRound();
@@ -31,8 +32,9 @@ export function GridWorld() {
                 });
             }
         });
+
+        initializeRef.current = true;
     };
-    initializePlayers();
 
     useEffect(() => {
         const handleVisibilityChange = () => {
@@ -48,6 +50,10 @@ export function GridWorld() {
     }, []);
 
     useEffect(() => {
+        if (!initializeRef.current) { 
+            initializePlayers();
+        }
+    
 
         const handlePlayerStateChange = (playerId, updates) => {
             round.set('playerStates', {
@@ -116,6 +122,7 @@ export function GridWorld() {
     if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
         return <div>Loading...</div>;
     }
+    console.log("Map name in GridWorld:", round.get('mapName'));
 
     return (
         <div id="app">
@@ -123,7 +130,6 @@ export function GridWorld() {
                 ref={phaserRef} 
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
-                playerId={player.id}
                 playerStates={round.get('playerStates')}
                 isVisible={isVisible}
             />

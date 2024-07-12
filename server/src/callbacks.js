@@ -58,7 +58,7 @@ Empirica.onRoundStart(({ round }) => {
 
   // set map info
   round.set("mapName", mapName);
-  const startPositions = mapInfo[mapName].slice(0, playerCount); 
+  const startPositions = mapInfo[mapName].slice(0, playerCount);
   startPositions.sort(() => Math.random() - 0.5); //modifies in place
   round.set("startPositions", startPositions);
 
