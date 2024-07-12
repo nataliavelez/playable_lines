@@ -11,8 +11,9 @@ export function Profile() {
   const round = useRound();
   const stage = useStage();
 
-  const score = player.round.get("score") || 0;
-  const cumScore = player.get("cumScore") + score; 
+  const playerStates = round.get('playerStates') || {};
+  const roundScore = playerStates[player.id]?.score || 0; // ? is optional chaining operator
+  const cumScore = player.get("cumScore") || 0;
 
   return (
     <div className="min-w-lg md:min-w-2xl mt-2 m-x-auto px-3 py-2 text-gray-500 rounded-md grid grid-cols-3 items-center border-.5">
@@ -33,7 +34,7 @@ export function Profile() {
             Round Score
           </div>
           <div className="text-3xl font-semibold !leading-none tabular-nums">
-            {score}
+            {roundScore}
           </div>
         </div>
         <div className="flex flex-col items-center">

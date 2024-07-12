@@ -1,14 +1,17 @@
 import React from "react";
-import { usePlayer, usePlayers } from "@empirica/core/player/classic/react";
+import { usePlayer, usePlayers, useRound } from "@empirica/core/player/classic/react";
 import { Button } from "../components/Button";
 
 export function Result() {
     const player = usePlayer();
     const players = usePlayers();
+    const round = useRound();
+
+    const playerStates = round.get("playerStates");
+    const playerRoundScore = playerStates[player.id]?.score;
 
     // Count how many players have more, less, or the same score as the current player
-    const playerRoundScore = player.round.get("score")
-    const roundScores = players.map((p) => p.round.get("score"));
+    const roundScores = Object.values(playerStates).map(state => state.score);
     const morePlayers = roundScores.filter((s) => s > playerRoundScore).length;
     const samePlayers = roundScores.filter((s) => s === playerRoundScore).length - 1; // -1 to discount current player
     const lessPlayers = roundScores.filter((s) => s < playerRoundScore).length;

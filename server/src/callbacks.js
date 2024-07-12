@@ -67,20 +67,9 @@ Empirica.onRoundStart(({ round }) => {
   console.log(`Round ${index+1} Starting positions:`, round.get("startPositions")); 
 });
 
-Empirica.onStageStart(({ stage }) => {
-});
+Empirica.onStageStart(({ stage }) => {});
 
-Empirica.onStageEnded(({ stage }) => {
-  if (stage.get("name") !== "game") return;
-
-  console.log("End of game stage. Calculating scores");
-  const players = stage.currentGame.players;
-  players.forEach((player) => {
-    const roundScore = player.round.get("score");
-    const cumScore = player.get("cumScore") + roundScore;
-    player.set("cumScore", cumScore);
-  });
-});
+Empirica.onStageEnded(({ stage }) => {});
 
 Empirica.onRoundEnded(({ round }) => {});
 

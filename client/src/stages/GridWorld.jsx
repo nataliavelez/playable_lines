@@ -1,10 +1,8 @@
 import React from "react";
 import { useRef, useState, useEffect } from 'react';
 import { usePlayer, usePlayers, useRound } from "@empirica/core/player/classic/react";
-import Phaser from 'phaser';
 import { PhaserGame } from './game/PhaserGame';
 import { EventBus } from './game/EventBus';
-import { Game } from "../Game.jsx";
 
 export function GridWorld() {
     const phaserRef = useRef();
@@ -72,7 +70,15 @@ export function GridWorld() {
             });
 
             if (updates.score !== undefined && playerId === player.id) {
-                player.round.set("score", updates.score);
+                const newScore = updates.score;
+                player.round.set("score", newScore);
+                
+                // Update cumulative score
+                const prevCumScore = player.get("cumScore") || 0;
+                const newCumScore = prevCumScore + 1; // Increment by 1 for each successful water delivery
+                player.set("cumScore", newCumScore);
+        
+                console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
             }
         };
 
