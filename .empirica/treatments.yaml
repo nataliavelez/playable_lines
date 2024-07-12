@@ -57,3 +57,17 @@ treatments:
       numRounds: 4
       universalizability: "low"
       chatEnabled: false
+  - desc: "High Universalizability Eight Players"
+    name: HighUniversalizabilityEightPlayers
+    factors:
+      playerCount: 8
+      numRounds: 4
+      universalizability: "high"
+      chatEnabled: false
+  - desc: "Low Universalizability Eight Players"
+    name: LowUniversalizabilityEightPlayers
+    factors: 
+      playerCount: 8
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false
