@@ -28,9 +28,9 @@ export function Stage() {
   }
 
   switch (stage.get("name")) {
-    case "game":
+    case "Game":
       return <GridWorld />;
-    case "result":
+    case "Feedback":
       return <Result />;
     default:
       return <Loading />;
