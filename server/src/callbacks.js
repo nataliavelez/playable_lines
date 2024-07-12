@@ -5,13 +5,14 @@ export const Empirica = new ClassicListenersCollector();
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
   const { numRounds, playerCount, universalizability } = treatment;
-  
+  const randIndices = [...Array(numRounds-1).keys()].sort(() => Math.random() - 0.5)
+
   // add rounds
-  for (let i = 0; i < numRounds; i++) {
+  for (let i = 0; i < numRounds; i++) { 
     const round = game.addRound({
       name: `Round ${i + 1}`,
       number: i + 1,
-      index: i,
+      randIndex: randIndices[i],
       type: (i !== numRounds-1) ? "learn" : "test",
       universalizability: (i !== numRounds-1) ? universalizability : "medium"
     });
@@ -33,7 +34,9 @@ Empirica.onGameStart(({ game }) => {
 
 Empirica.onRoundStart(({ round }) => {
   const roundType = round.get("type")
-  const index = round.get("index");
+  const randIndex = round.get("randIndex");
+  console.log("RandIndex:", randIndex);
+  const roundNumber = round.get("number");
   const universalizability = round.get("universalizability");
 
   // Get number of players, for now just use the treatment, but later we should have an option to get active players
@@ -51,8 +54,10 @@ Empirica.onRoundStart(({ round }) => {
     round.set("mapUniversalizablity", "medium");
   }
 
-  const mapNames = Object.keys(mapInfo)//.sort(() => Math.random() - 0.5); // need to fix this as it shuffles every time, meaning you could get the same map twice
-  const mapName = (roundType === "learn") ? mapNames[index] : mapNames[0];
+  const mapNames = Object.keys(mapInfo);
+  console.log(mapNames);
+  const mapName = (roundType === "learn") ? mapNames[randIndex] : mapNames[0];
+  console.log(mapName);
 
   // set map info
   round.set("mapName", mapName);
@@ -61,10 +66,10 @@ Empirica.onRoundStart(({ round }) => {
   round.set("startPositions", startPositions);
 
   // Log details of each round
-  console.log(`Round ${index+1} round type:`, round.get("type"));
-  console.log(`Round ${index+1} map universalizability:`, round.get("mapUniversalizablity"));
-  console.log(`Round ${index+1} map name:`, round.get("mapName")); 
-  console.log(`Round ${index+1} Starting positions:`, round.get("startPositions")); 
+  console.log(`Round ${roundNumber} round type:`, round.get("type"));
+  console.log(`Round ${roundNumber} map universalizability:`, round.get("mapUniversalizablity"));
+  console.log(`Round ${roundNumber} map name:`, round.get("mapName")); 
+  console.log(`Round ${roundNumber} Starting positions:`, round.get("startPositions")); 
 });
 
 Empirica.onStageStart(({ stage }) => {});
