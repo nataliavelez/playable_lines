@@ -16,13 +16,11 @@ export function Profile() {
   const roundScore = playerStates[player.id]?.score || 0; // ? is optional chaining operator
   const cumScore = player.get("cumScore") || 0;
 
-  const playerColor = playerStates[player.id]?.color; // get player color for avatar
-
   return (
     <div className="min-w-lg md:min-w-2xl mt-2 mx-auto px-3 py-2 text-gray-500 rounded-md grid grid-cols-3 items-center border-.5">
       <div className="flex items-center space-x-2">
         <div className="h-11 w-11">
-          <Avatar playerColor={playerColor} />
+          <Avatar player={player} />
         </div>
         <div className="leading-tight">
           <div className="text-gray-600 font-semibold">
