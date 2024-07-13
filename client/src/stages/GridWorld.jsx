@@ -108,9 +108,9 @@ export function GridWorld() {
             player.stage.set("submit", true);
         }
 
-        if (scene.scene.key === 'Game' && round.get('playerStates')) {
-            scene.initPlayers(round.get('playerStates'), player.id);
-        }
+        //if (scene.scene.key === 'Game' && round.get('playerStates')) {
+        //    scene.initPlayers(round.get('playerStates'), player.id);
+        //}
     };
     
     if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
