@@ -16,8 +16,12 @@ export function GridWorld() {
             round.set('playerStates', {});
         }
 
-        players.forEach((p, i) => {
+
+        //players order is different for different players, so can't just do this. 
+        const sortedPlayers = [...players].sort((a, b) => a.id.localeCompare(b.id));
+        sortedPlayers.forEach((p, i) => {
             if (!round.get('playerStates')[p.id]) {
+                console.log(`Player ${p.id}, index ${i}, position:`, round.get('startPositions'));
                 round.set('playerStates', {
                     ...round.get('playerStates'),
                     [p.id]: { 
@@ -82,15 +86,15 @@ export function GridWorld() {
             }
             
             //Stores every state update with a timestamp, appended into an array for the whole round.
-            round.set('stateUpdates', [
-                 ...(round.get('stateUpdates') || []),
-                 {
-                     playerId: playerId,
-                     ...updates,
-                     timestamp: Date.now()
-                 }
-             ]);
-            console.log('upates:', round.get('stateUpdates'));
+            // round.set('stateUpdates', [
+            //      ...(round.get('stateUpdates') || []),
+            //      {
+            //          playerId: playerId,
+            //          ...updates,
+            //          timestamp: Date.now()
+            //      }
+            //  ]);
+            // console.log('upates:', round.get('stateUpdates'));
         };
 
         EventBus.on('player-state-change', handlePlayerStateChange);
@@ -104,13 +108,12 @@ export function GridWorld() {
 
 
     const currentScene = (scene) => {
+        // Allow player to submit to move to next stage, 
+        // Not currently needed becuase rounds are working on the basis of time. 
         if (scene.complete) {
             player.stage.set("submit", true);
         }
 
-        //if (scene.scene.key === 'Game' && round.get('playerStates')) {
-        //    scene.initPlayers(round.get('playerStates'), player.id);
-        //}
     };
     
     if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
