@@ -61,7 +61,6 @@ export class Game extends Scene {
       }
 
       this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
-      this.createPlayerAnimations();
 
       EventBus.emit('current-scene-ready', this);
       EventBus.on('update-player-states', this.updatePlayerStates.bind(this));
@@ -126,6 +125,9 @@ export class Game extends Scene {
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
             
         this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
+
+        //create animations
+        this.createPlayerAnimations();
 
         //play idle animation on start
         Object.entries(this.players).forEach(([id, player]) => {
@@ -269,6 +271,7 @@ export class Game extends Scene {
     }
 
     createPlayerAnimations() {
+      console.log("Creating player animations")
       const directions = ['up', 'down', 'left', 'right'];
       const animsConfig = {
           up: { start: 4, end: 7 },
@@ -361,10 +364,12 @@ export class Game extends Scene {
 
     playWaterAnimation(id, direction) {
       const player = this.players[id];
-      player.sprite.anims.play('water_' + direction).on(
-          'animationcomplete',
-          () => {player.sprite.anims.play('idle_' + direction)}
-      );
+      if (player && player.sprite.anims) {
+        player.sprite.anims.play('water_' + direction).on(
+            'animationcomplete',
+            () => {player.sprite.anims.play('idle_' + direction)}
+        );
+      }
   }
     
 }
