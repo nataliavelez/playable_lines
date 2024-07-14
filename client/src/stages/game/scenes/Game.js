@@ -240,7 +240,7 @@ export class Game extends Scene {
 
         if (!player.carrying && this.nearSource(this.playerId)) {
             player.carrying = true;
-            console.log('Picked up water', player.score);
+            EventBus.emit('player-state-change', this.playerId, {carrying: player.carrying});
 
             // Play animation whens loading water
             this.playWaterAnimation(this.playerId, currentDirection);
