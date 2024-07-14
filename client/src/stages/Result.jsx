@@ -26,11 +26,11 @@ export function Result() {
   return (
     <div>
         <h2>Last Round: </h2>
-      <p>You got {playerRoundScore} amount of water in the last round!</p>
+      <p>You watered {playerRoundScore} plants in the last round!</p>
       <p>This was more than {lessPlayers} players, the same as {samePlayers} players, and less than {morePlayers} players</p>
       <br /> <br />
         <h2>Overall: </h2>
-      <p>Overall, in all the rounds, you have gotten {playerCumScore} amounts of water. </p>
+      <p>Overall, in all the rounds, you have watered {playerCumScore} plants. </p>
       <p>This was more than {lessPlayersCum} players, the same as {samePlayersCum} players, and less than {morePlayersCum} players</p>
       <br /> <br />
       <p>Press the button to continue to the next round</p>
