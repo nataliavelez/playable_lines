@@ -119,7 +119,7 @@ export class Game extends Scene {
                 //offsetY: 16,
                 //offsetx: 16,
                 startPosition: { x: player.container.x , y: player.container.y  },
-                speed: 3 // Adjust this value to control movement speed
+                speed: 2 // Adjust this value to control movement speed
             }))
         };
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
