@@ -982,7 +982,7 @@
 230,230,230,230,230,230,230,230,230,230,230,230,230,230,230,230
 </data>
  </layer>
- <layer id="6" name="decor" width="16" height="16">
+ <layer id="6" name="decor" width="16" height="16" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,273,0,0,0,
@@ -1023,6 +1023,9 @@
 </data>
  </layer>
  <layer id="4" name="top" width="16" height="16">
+  <properties>
+   <property name="ge_alwaysTop" type="bool" value="true"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

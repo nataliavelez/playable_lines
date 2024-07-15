@@ -112,7 +112,7 @@
          "opacity":1,
          "properties":[
                 {
-                 "name":"ge_alwaysStop",
+                 "name":"ge_alwaysTop",
                  "type":"bool",
                  "value":true
                 }],

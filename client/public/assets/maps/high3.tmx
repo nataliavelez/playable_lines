@@ -1450,7 +1450,7 @@
  </layer>
  <layer id="4" name="top" width="16" height="16">
   <properties>
-   <property name="ge_alwaysStop" type="bool" value="true"/>
+   <property name="ge_alwaysTop" type="bool" value="true"/>
   </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

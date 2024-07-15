@@ -104,6 +104,12 @@
          "id":3,
          "name":"top",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"ge_alwaysTop",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":16,

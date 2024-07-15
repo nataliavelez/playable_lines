@@ -104,6 +104,12 @@
          "id":4,
          "name":"top",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"ge_alwaysTop",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"tilelayer",
          "visible":false,
          "width":16,
@@ -2153,6 +2159,34 @@
                  "properties":[
                         {
                          "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }],
+         "tilewidth":16
+        }, 
+        {
+         "columns":1,
+         "firstgid":327,
+         "image":"..\/Water_1.png",
+         "imageheight":16,
+         "imagewidth":16,
+         "margin":0,
+         "name":"Water_1",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":16,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"source",
                          "type":"bool",
                          "value":true
                         }]

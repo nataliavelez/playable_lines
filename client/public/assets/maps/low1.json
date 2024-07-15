@@ -51,7 +51,7 @@
          "name":"decor",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":16,
          "x":0,
          "y":0
@@ -104,6 +104,12 @@
          "id":4,
          "name":"top",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"ge_alwaysTop",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":16,
