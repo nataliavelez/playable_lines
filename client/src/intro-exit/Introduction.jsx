@@ -28,7 +28,8 @@ export function Introduction({ next }) {
              <span className="key-styling">&darr;</span>)
           to move your character around the screen. 
           When you are next to and facing a water source (either a well or ground water) press the <span className="key-styling space-key">SPACE BAR</span> to collect water, 
-          and when you are next to and facing a plant press the <span className="key-styling space-key">SPACE BAR</span> to water the plant. 
+          and when you are next to and facing a plant (well, a sapling, <img src="assets/sapling.png" alt="Grass Tile" className="inline-block align-middle w-6 h-6"></img>) 
+          press the <span className="key-styling space-key">SPACE BAR</span> to water it. 
           An animation will show when you are collecting/disposing water and when you are holding water.  
         </p>
       </div>
