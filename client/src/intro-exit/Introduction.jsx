@@ -18,7 +18,7 @@ export function Introduction({ next }) {
           <b> For each plant you water you will receive $X.XX</b>. 
           <br /><br />
           Below, we explain how to play the game, before giving you a chance to practice by yourself.
-          When you are confident with the instructions and gameplay, please press 'next' to proceed to the multiplayer game.   
+          When you are confident with the instructions and gameplay, please press 'next' to proceed.   
           <br /><br />
           <b>Gameplay instructions</b> <br />         
           Use the arrow keys 
@@ -35,7 +35,7 @@ export function Introduction({ next }) {
       <div className="mb-6">
         <InstructionPhaserGame />
       </div>
-      <Button handleClick={next} >
+      <Button handleClick={next}>
         <p>Next</p>
       </Button>
     </div>
