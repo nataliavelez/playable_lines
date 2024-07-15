@@ -1,19 +1,73 @@
 factors:
+  - desc: Can players chat with each other during the game?
+    name: chatEnabled
+    values:
+      - value: true
+      - value: false
   - desc: playerCount determines the number of Players are in a Game.
     name: playerCount
     values:
       - value: 1
       - value: 2
       - value: 3
+      - value: 4
       - value: 5
+      - value: 6
+      - value: 7
       - value: 8
-      - value: 13
+  - desc: "The number of rounds in a Game"
+    name: numRounds
+    values:
+      - value: 1
+      - value: 2
+      - value: 3
+      - value: 4
+  - desc: "The universalizabiliity of learning maps"
+    name: universalizability
+    values:
+      - value: "high"
+      - value: "low"
+
 treatments:
-  - desc: "Single-player Game"
-    factors:
-      playerCount: 1
-    name: Solo
-  - desc: "Two-player Game"
+  - desc: "High Universalizability Two Players"
+    name: HighUniversalizabilityTwoPlayers
     factors:
       playerCount: 2
-    name: Two Players
+      numRounds: 4
+      universalizability: "high"
+      chatEnabled: false
+  - desc: "Low Universalizability Two Players"
+    name: LowUniversalizabilityTwoPlayers
+    factors: 
+      playerCount: 2
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false
+  - desc: "High Universalizability Four Players"
+    name: HighUniversalizabilityFourPlayers
+    factors:
+      playerCount: 4
+      numRounds: 4
+      universalizability: "high"
+      chatEnabled: false
+  - desc: "Low Universalizability Four Players"
+    name: LowUniversalizabilityFourPlayers
+    factors: 
+      playerCount: 4
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false
+  - desc: "High Universalizability Eight Players"
+    name: HighUniversalizabilityEightPlayers
+    factors:
+      playerCount: 8
+      numRounds: 4
+      universalizability: "high"
+      chatEnabled: false
+  - desc: "Low Universalizability Eight Players"
+    name: LowUniversalizabilityEightPlayers
+    factors: 
+      playerCount: 8
+      numRounds: 4
+      universalizability: "low"
+      chatEnabled: false

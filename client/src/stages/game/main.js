@@ -9,8 +9,8 @@ import { GridEngine } from 'grid-engine';
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
     type: Phaser.AUTO,
-    width: 700,
-    height: 528,
+    width: 512,
+    height: 512,
     parent: 'game-container',
     backgroundColor: '#028af8',
     scene: [
@@ -30,9 +30,19 @@ const config = {
       }
 };
 
-const StartGame = (parent) => {
+const StartGame = (parent, mapName, playerStates, playerId) => {
+    return new Phaser.Game({
+        ...config,
+        parent,
+        callbacks: {
+          preBoot: (game) => {
+              game.registry.set('mapName', mapName);
+              game.registry.set('initialPlayerStates', playerStates);
+              game.registry.set('playerId', playerId);
+          }
+      }
+    });
 
-    return new Phaser.Game({ ...config, parent });
 
 }
 

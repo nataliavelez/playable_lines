@@ -7,6 +7,7 @@ import {
 import { Loading } from "@empirica/core/player/react";
 import React from "react";
 import { GridWorld } from "./stages/GridWorld";
+import { Result } from "./stages/Result";
 
 export function Stage() {
   const player = usePlayer();
@@ -27,8 +28,10 @@ export function Stage() {
   }
 
   switch (stage.get("name")) {
-    case "Grid-Engine Example":
+    case "Game":
       return <GridWorld />;
+    case "Feedback":
+      return <Result />;
     default:
       return <Loading />;
   }

@@ -1,2 +1,6 @@
 .empirica/local/tajriba.json
 .DS_Store
+*.tiled-session
+*.tiled-project
+server/package-lock.json
+client/package-lock.json
