@@ -103,60 +103,68 @@ function shuffleArray(array) {
     };
   
     if (questions.length === 0) {
-      return <div>Loading questions...</div>;
-    }
-  
-    return (
-      <div className="mt-3 sm:mt-5 p-20">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-          Understanding Check
-        </h3>
-        {questions.map((q, qIndex) => (
-          <div key={qIndex} className="mb-6">
-            <p className="text-sm font-medium text-gray-900 mb-2">{q.question}</p>
-            {q.options.map((option, oIndex) => (
-              <div key={oIndex} className="flex items-center mb-2">
-                <input
-                  type="radio"
-                  id={`q${qIndex}a${oIndex}`}
-                  name={`question${qIndex}`}
-                  checked={answers[qIndex] === oIndex}
-                  onChange={() => handleAnswer(qIndex, oIndex)}
-                  className="mr-2"
-                />
-                <label htmlFor={`q${qIndex}a${oIndex}`} className="text-sm text-gray-700">
-                  {option}
-                </label>
+        return (
+          <div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        );
+      }
+    
+      return (
+        <div className="mt-3 sm:mt-5 p-20">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            Understanding Check
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {questions.map((q, qIndex) => (
+              <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm font-medium text-gray-900 mb-2">{q.question}</p>
+                {q.options.map((option, oIndex) => (
+                  <div key={oIndex} className="flex items-center mb-2">
+                    <input
+                      type="radio"
+                      id={`q${qIndex}a${oIndex}`}
+                      name={`question${qIndex}`}
+                      checked={answers[qIndex] === oIndex}
+                      onChange={() => handleAnswer(qIndex, oIndex)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`q${qIndex}a${oIndex}`} className="text-sm text-gray-700">
+                      {option}
+                    </label>
+                  </div>
+                ))}
+                {showResults && (
+                  <p className={`text-sm ${answers[qIndex] === q.correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
+                    {answers[qIndex] === q.correctAnswer ? '✅ Correct!' : '❌ Incorrect'}
+                  </p>
+                )}
               </div>
             ))}
-            {showResults && (
-              <p className={`text-sm ${answers[qIndex] === q.correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
-                {answers[qIndex] === q.correctAnswer ? 'Correct!' : 'Incorrect'}
-              </p>
-            )}
           </div>
-        ))}
-        {!showResults && (
-          <Button handleClick={handleSubmit}>
-            Submit
-          </Button>
-        )}
-        {showResults && !allCorrect && (
-          <div className="mt-4">
-            <p className="text-sm text-red-600">You didn't answer all questions correctly. Please review the instructions and try again.</p>
-            <Button handleClick={previous} className="mt-2">
-              Back to Instructions
-            </Button>
-          </div>
-        )}
-        {showResults && allCorrect && (
-          <div className="mt-4">
-            <p className="text-sm text-green-600">Well done! You answered all the questions correctly.</p>
-            <Button handleClick={next} className="mt-2">
-              Proceed to Multiplayer Game
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
+          {!showResults && (
+            <div className="mt-6">
+              <Button handleClick={handleSubmit}>
+                Submit
+              </Button>
+            </div>
+          )}
+          {showResults && !allCorrect && (
+            <div className="mt-4 p-4 bg-red-100 border border-red-400 rounded-lg">
+              <p className="text-sm text-red-600">You didn't answer all questions correctly. Please review the instructions and try again.</p>
+              <Button handleClick={previous} className="mt-2">
+                Back to Instructions
+              </Button>
+            </div>
+          )}
+          {showResults && allCorrect && (
+            <div className="mt-4 p-4 bg-green-100 border border-green-400 rounded-lg">
+              <p className="text-sm text-green-600">Well done! You answered all the questions correctly.</p>
+              <Button handleClick={next} className="mt-2">
+                Proceed to Multiplayer Game
+              </Button>
+            </div>
+          )}
+        </div>
+      );
+    }
