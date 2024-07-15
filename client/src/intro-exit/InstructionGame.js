@@ -1,7 +1,8 @@
 // InstructionGame.js
 import Phaser from 'phaser';
+import { Scene, Input } from 'phaser';
 
-export class InstructionGame extends Phaser.Scene {
+export class InstructionGame extends Scene {
     constructor() {
         super('InstructionGame');
     }
@@ -9,7 +10,6 @@ export class InstructionGame extends Phaser.Scene {
     preload() {
         this.load.setPath('assets');
 
-        this.load.image('tiles', 'cloud_tileset.png'); // demo
         this.load.image('Water_1', 'Water_1.png');
         this.load.image('Grass_tiles_v2', 'Grass_tiles_v2.png');
         this.load.image('Water well', 'Water well.png');
@@ -64,25 +64,26 @@ export class InstructionGame extends Phaser.Scene {
                 offsetY: 16,
                 container: this.container,
                 startPosition: { x: 8, y: 8 },
+                speed: 3
               },
             ],
           };
         
         this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
         this.createPlayerAnimations();
-        this.playerSprite.anims.play('idle_down');
+        this.playerSprite.anims.play('idle_down', true);
 
         this.gridEngine.movementStarted().subscribe(({ direction }) => {
-            this.playerSprite.anims.play(direction);
+            this.playerSprite.anims.play('walk_'+direction, true);
         });
         
         this.gridEngine.movementStopped().subscribe(({ direction }) => {
           this.playerSprite.anims.stop();
-          this.playerSprite.anims.play('idle_'+direction);
+          this.playerSprite.anims.play('idle_'+direction, true);
         });
     
         this.gridEngine.directionChanged().subscribe(({ direction }) => {
-          this.playerSprite.anims.play('idle_'+direction);
+          this.playerSprite.anims.play('idle_'+direction, true);
           //this.playerSprite.setFrame(this.getStopFrame(direction));
         });
 
@@ -149,7 +150,7 @@ export class InstructionGame extends Phaser.Scene {
             this.anims.create({
                 key: `walk_${dir}`,
                 frames: this.anims.generateFrameNumbers('bunny', animsConfig[dir]),
-                frameRate: 4,
+                frameRate: 8,
                 repeat: -1,
             });
 

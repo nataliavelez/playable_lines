@@ -1,6 +1,7 @@
 // InstructionPhaserGame.jsx
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
+import { GridEngine } from "grid-engine";
 import { InstructionGame } from './InstructionGame';
 
 export function InstructionPhaserGame() {
