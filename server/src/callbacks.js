@@ -16,7 +16,7 @@ Empirica.onGameStart(({ game }) => {
       type: (i !== numRounds-1) ? "learn" : "test",
       universalizability: (i !== numRounds-1) ? universalizability : "medium"
     });
-    round.addStage({ name: "Game", duration: 30 });  
+    round.addStage({ name: "Game", duration: 90 });  
     round.addStage({ name: "Feedback", duration: 30 });
 
   }

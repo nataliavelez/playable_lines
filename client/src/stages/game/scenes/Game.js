@@ -75,31 +75,28 @@ export class Game extends Scene {
         //console.log("Initializing players:", playerStates);
 
         Object.entries(playerStates).forEach(([id, state]) => {
-            const sprite = this.add.sprite(state.position.x, state.position.y, 'bunny');
+            const sprite = this.add.sprite(0, 0, 'bunny');
             const carrying = state.carrying;
             const score = state.score;
             const name = state.name;
 
             sprite.setTint(this.playerColors[state.color]);
-            sprite.setOrigin(0.5, 0.5); // set origin of sprite
-            sprite.setScale(1.5); // set size of sprite 
+            sprite.setScale(2); // set size of sprite 
             sprite.setDepth(1); // set depth of sprite
-            //sprite.tintFill = true;
 
 
             // Create water indicator for is carrying
-            const indicator = this.add.sprite(45, 25, "indicator");
+            const indicator = this.add.sprite(48, 25, "indicator");
 
             // create plumbob (which in this case is rectangle showing active player)
             const plumbob = this.add.graphics();
             plumbob.lineStyle(2, 0xFFFFFF, .75);  
-            plumbob.strokeRect(35, 42, 20, 20);
-            //plumbob.strokeRect(-sprite.width / 2, -sprite.height / 2, sprite.width, sprite.height)
+            plumbob.strokeRect(38, 52, 20, 20);
             plumbob.visible = id === this.playerId // only show for active player
             indicator.visible = state.carrying;
 
             // Create name text
-            const nameText = this.add.text(44, 10, name, { fontSize: '12px', fill: '#FFFFFF' });
+            const nameText = this.add.text(48, 10, name, { fontSize: '12px', fill: '#FFFFFF', fontStyle: 'bold'});
             nameText.setOrigin(0.5, 0.5); // Center the text horizontally
 
             // Create container for the plumbob, water indicator, name text and sprite
@@ -116,10 +113,10 @@ export class Game extends Scene {
                 id,
                 sprite: player.sprite,
                 container: player.container,
-                //offsetY: 16,
+                offsetY: 16,
                 //offsetx: 16,
                 startPosition: { x: player.container.x , y: player.container.y  },
-                speed: 2 // Adjust this value to control movement speed
+                speed: 2.5 // Adjust this value to control movement speed
             }))
         };
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
