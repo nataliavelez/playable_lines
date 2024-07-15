@@ -4,4 +4,4 @@ This repository contains the code to create a playable multiplayer (currently up
 
 The experiment is implemented using [Empirica](https://docs.empirica.ly/), with the 2D gridworld game being implemented in [Phaser](https://phaser.io/) (with the support of [Grid-Engine](https://annoraaq.github.io/grid-engine/)).
 
-A current (playable) version of the game can be found (here)[https://www.experiment.joshuapwhite.com/]. 
+A current (playable) version of the game can be found [here](https://www.experiment.joshuapwhite.com/). 
