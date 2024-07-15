@@ -35,7 +35,7 @@ export function Introduction({ next }) {
       <div className="mb-6">
         <InstructionPhaserGame />
       </div>
-      <Button handleClick={next} autoFocus>
+      <Button handleClick={next} >
         <p>Next</p>
       </Button>
     </div>
