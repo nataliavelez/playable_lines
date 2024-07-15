@@ -63,7 +63,7 @@ export class InstructionGame extends Scene {
                 sprite: this.playerSprite,
                 offsetY: 16,
                 container: this.container,
-                startPosition: { x: 8, y: 8 },
+                startPosition: { x: 7, y: 7 },
                 speed: 3
               },
             ],
