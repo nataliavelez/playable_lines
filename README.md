@@ -1,12 +1,7 @@
-# Empirica-Phaser template
-Natalia Velez, June 2024
+# Playable lines experiment
 
-This repository is a basic template to get started embedding video games into Enmpirica experiments with Phaser!
+This repository contains the code to create a playable multiplayer (currently up to 8 players) experiment investigating the role of universalization in norm formation/learning and moral judgement, based of the previous work of [Kwon et al. (2023)](https://ztangent.github.io/assets/pdf/2023-universalization-rule-breaking.pdf).
 
-Supported game types:
-* Top-down 2D gridworld games (implemented using [Grid-Engine](https://annoraaq.github.io/grid-engine/))
-* (TODO) Pong
+The experiment is implemented using [Empirica](https://docs.empirica.ly/), with the 2D gridworld game being implemented in [Phaser](https://phaser.io/) (with the support of [Grid-Engine](https://annoraaq.github.io/grid-engine/)).
 
-Uri's Commit from 6/5:
-update to client/src/Stages/GridWorld.jsx  - save the emited player location from phaser and update the other players' location. This saves this information to the database and also propagates it to other players using empirica.
-update to client/src/Stages/game/scences/game.js  - added an gridEngine.positionChangeStarted event detector that emits an event to react when player's position changes. 
+A current (playable) version of the game can be found [here](https://www.experiment.joshuapwhite.com/).
