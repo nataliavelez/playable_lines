@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../components/Button";
-import './KeySymbols.css';
+import '../components/KeySymbols.css';
 import { InstructionPhaserGame } from "./InstructionPhaserGame";
 
 export function Introduction({ next }) {
@@ -12,24 +12,23 @@ export function Introduction({ next }) {
       <div className="mt-2 mb-6">
         <p className="text-sm text-gray-500">
           You will be playing a multiplayer game with up to 8 other players. 
-          In the game you will walk around in various environments and collect water (from the ground or from a well) and use that to water nearby plants.  
-          Your goal is to water as many plants as possible (you may water the same plant twice!). 
-          Your remuneration for the experiment will depend on how well you do in the task. 
-          <b>For each plant you water you will receive $X.XX</b>. There will be four rounds (different environments) in the game.
+          In the game you will walk around in various environments and collect water, and water nearby plants.  
+          There will be four different environments in the game. 
+          In each environment, you will have <b>3 minutes</b> to water as many plants as possible (and you can water the same plant more than once).  
+          <b> For each plant you water you will receive $X.XX</b>. 
           <br /><br />
-          Below, we quickly explain how to play the game (don't worry it is very simple), 
-          before giving you a chance to practice by yourself (it will not yet be multiplayer).
-          When you are confident with the instructions of the game, please press 'next' to proceed to the multiplayer verison of the game.   
+          Below, we explain how to play the game, before giving you a chance to practice by yourself.
+          When you are confident with the instructions and gameplay, please press 'next' to proceed to the multiplayer game.   
           <br /><br />
-          <b>Game play Instructions:</b>          
+          <b>Gameplay instructions</b> <br />         
           Use the arrow keys 
             (<span className="key-styling">&larr;</span>
              <span className="key-styling">&uarr;</span>
              <span className="key-styling">&rarr;</span>
              <span className="key-styling">&darr;</span>)
           to move your character around the screen. 
-          When you are near a water source press the <span className="key-styling space-key">SPACE BAR</span> to collect water, 
-          and when you are near a plant press the <span className="key-styling space-key">SPACE BAR</span> to water the plant. 
+          When you are next to and facing a water source (either a well or ground water) press the <span className="key-styling space-key">SPACE BAR</span> to collect water, 
+          and when you are next to and facing a plant press the <span className="key-styling space-key">SPACE BAR</span> to water the plant. 
           An animation will show when you are collecting/disposing water and when you are holding water.  
         </p>
       </div>
