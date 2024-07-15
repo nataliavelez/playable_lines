@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "../components/Button";
 import './KeySymbols.css';
+import { InstructionPhaserGame } from "./InstructionPhaserGame";
 
 export function Introduction({ next }) {
   return (
@@ -31,6 +32,9 @@ export function Introduction({ next }) {
           and when you are near a plant press the <span className="key-styling space-key">SPACE BAR</span> to water the plant. 
           An animation will show when you are collecting/disposing water and when you are holding water.  
         </p>
+      </div>
+      <div className="mb-6">
+        <InstructionPhaserGame />
       </div>
       <Button handleClick={next} autoFocus>
         <p>Next</p>
