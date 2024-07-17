@@ -86,15 +86,15 @@ export function GridWorld() {
             }
             
             //Stores every state update with a timestamp, appended into an array for the whole round.
-            // round.set('stateUpdates', [
-            //      ...(round.get('stateUpdates') || []),
-            //      {
-            //          playerId: playerId,
-            //          ...updates,
-            //          timestamp: Date.now()
-            //      }
-            //  ]);
-            // console.log('upates:', round.get('stateUpdates'));
+            round.set('stateUpdates', [
+                ...(round.get('stateUpdates') || []),
+                {
+                    playerId: playerId,
+                    ...updates,
+                    timestamp: Date.now()
+                }
+            ]);
+            console.log('updates:', round.get('stateUpdates'));
         };
 
         EventBus.on('player-state-change', handlePlayerStateChange);

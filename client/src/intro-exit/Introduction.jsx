@@ -12,8 +12,8 @@ export function Introduction({ next }) {
       <div className="mt-2 mb-6">
         <p className="text-sm text-gray-500">
           You will be playing a multiplayer game with up to 8 other players. 
-          In the game you will walk around in various environments and collect water, and water nearby plants.  
-          There will be four different environments in the game. 
+          In the game you will walk around in various environments, collect water, and water nearby plants.  
+          There will be four different environments (rounds) in the game. 
           In each environment, you will have <b>3 minutes</b> to water as many plants as possible (and you can water the same plant more than once).  
           <b> For each plant you water you will receive $X.XX</b>. 
           <br /><br />
