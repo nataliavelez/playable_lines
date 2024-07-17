@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@empirica/core": "1.11.2",
+    "@empirica/core": "1.11.3",
     "esbuild": "0.17.15",
     "grid-engine": "^2.45.0",
     "phaser": "^3.80.1",
