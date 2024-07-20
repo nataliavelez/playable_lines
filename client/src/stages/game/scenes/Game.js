@@ -27,16 +27,6 @@ export class Game extends Scene {
       this.isVisible = isVisible;
     }
 
-    checkGridEngineState() {
-      console.log("Checking GridEngine state:");
-      console.log("GridEngine initialized:", !!this.gridEngine);
-      console.log("Current player ID:", this.playerId);
-      if (this.gridEngine) {
-          console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
-          console.log("Current player in GridEngine:", this.gridEngine.hasCharacter(this.playerId));
-      }
-  }
-
     create(){
       this.players = [];
       this.playerId = null;
@@ -319,27 +309,6 @@ export class Game extends Scene {
       });
 
 
-    }
-
-    getMovementDirection(from, to) {
-      if (from.x < to.x) return 'right';
-      if (from.x > to.x) return 'left';
-      if (from.y < to.y) return 'down';
-      if (from.y > to.y) return 'up';
-      return null; // default direction
-    }
-
-    getStopFrame(direction) {
-      switch(direction) {
-        case 'up':
-          return 4;
-        case 'right':
-          return 12;
-        case 'down':
-          return 0;
-        case 'left':
-          return 8;
-      }
     }
 
     // helpers for carrying
