@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
-export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerId, playerStates, isVisible }, ref) {
+export const PhaserGame = forwardRef(function PhaserGame({ mapName, playerId, playerStates, isVisible }, ref) {
     const game = useRef();
 
     useLayoutEffect(() => {
@@ -30,21 +29,6 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
     }, [isVisible]);
 
     useEffect(() => {
-        const handleSceneChange = (scene) => {
-            if (currentActiveScene instanceof Function) {
-                currentActiveScene(scene);
-            }
-            ref.current.scene = scene;
-        };
-
-        EventBus.on('current-scene-ready', handleSceneChange);
-
-        return () => {
-            EventBus.off('current-scene-ready', handleSceneChange);
-        }
-    }, [currentActiveScene, ref]); 
-
-    useEffect(() => {
         if (game.current) {
             EventBus.emit('update-player-states', playerStates);
         }
@@ -52,9 +36,3 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
 
     return  <div id="game-container"> </div>
 });
-
-// Props definitions
-PhaserGame.propTypes = {
-    currentActiveScene: PropTypes.func,
-    updateScore: PropTypes.func
-}
