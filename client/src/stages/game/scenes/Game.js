@@ -23,8 +23,34 @@ export class Game extends Scene {
         //this.moveDelay = 100;
     }
 
-    handleVisibilityChange = (isVisible) => {
-      this.isVisible = isVisible;
+    init() {
+      // get map name from registry
+      this.mapName = this.registry.get('mapName');
+      this.mapFileName = `maps/${this.mapName}.json`;
+    }
+
+    preload() { 
+      this.load.setPath('assets');
+
+      // Tile Images
+      this.load.image('Water_1', 'Water_1.png');
+      this.load.image('Grass_tiles_v2', 'Grass_tiles_v2.png');
+      this.load.image('Water well', 'Water well.png');
+      this.load.image('Farming Plants', 'Farming Plants.png');
+      this.load.image('Tilled_Dirt', 'Tilled_Dirt.png');
+      this.load.image('Fences', 'Fences.png');
+      this.load.image('Mushrooms, Flowers, Stones', 'Mushrooms, Flowers, Stones.png');
+      this.load.image('Trees, stumps and bushes', 'Trees, stumps and bushes.png');
+      this.load.image('indicator', 'water_ready.png');
+      
+      // Tile Maps
+      this.load.tilemapTiledJSON(this.mapName, this.mapFileName);
+
+      // Spritesheet
+      this.load.spritesheet('bunny', 'bunny_spritesheet.png', {
+          frameWidth: 48,
+          frameHeight: 48
+      }); 
     }
 
     create(){
@@ -342,6 +368,10 @@ export class Game extends Scene {
             () => {player.sprite.anims.play('idle_' + direction)}
         );
       }
-  }
+    }
+
+    handleVisibilityChange = (isVisible) => {
+      this.isVisible = isVisible;
+    }
     
 }
