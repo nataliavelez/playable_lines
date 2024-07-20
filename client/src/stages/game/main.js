@@ -1,4 +1,4 @@
-import { Game } from 'Game';
+import { Game } from './Game';
 import Phaser from 'phaser';
 import { GridEngine } from 'grid-engine';
 
@@ -22,9 +22,10 @@ const config = {
       }
 };
 
-const StartGame = (mapName, playerStates, playerId) => {
+const StartGame = (parent, mapName, playerStates, playerId) => {
     return new Phaser.Game({
         ...config,
+        parent,
         callbacks: {
           preBoot: (game) => {
               game.registry.set('mapName', mapName);
