@@ -4,34 +4,22 @@ export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
-  const { numRounds, playerCount, universalizability, debug } = treatment;
+  const { numRounds, playerCount, universalizability } = treatment;
   const randIndices = [...Array(numRounds-1).keys()].sort(() => Math.random() - 0.5)
 
-  
   // add rounds
-  if (!debug) {
-      for (let i = 0; i < numRounds; i++) { 
-        const round = game.addRound({
-          name: `Round ${i + 1}`,
-          number: i + 1,
-          randIndex: randIndices[i],
-          type: (i !== numRounds-1) ? "learn" : "test",
-          universalizability: (i !== numRounds-1) ? universalizability : "medium"
-        });
-        round.addStage({ name: "Game", duration: 90 });  
-        round.addStage({ name: "Feedback", duration: 30 });
-      }
-    } else {
-      const round = game.addRound({
-        name: `Round 1`,
-        number: 1,
-        randIndex: 0,
-        type: "learn",
-        universalizability: universalizability
-      });
-      round.addStage({ name: "Game", duration: 1000 });  
-      round.addStage({ name: "Feedback", duration: 30 });
-    }
+  for (let i = 0; i < numRounds; i++) { 
+    const round = game.addRound({
+      name: `Round ${i + 1}`,
+      number: i + 1,
+      randIndex: randIndices[i],
+      type: (i !== numRounds-1) ? "learn" : "test",
+      universalizability: (i !== numRounds-1) ? universalizability : "medium"
+    });
+    round.addStage({ name: "Game", duration: 90 });  
+    round.addStage({ name: "Feedback", duration: 30 });
+
+  }
 
   //Randomly set colours for players
   // for now just with two players, but need to change for more players
