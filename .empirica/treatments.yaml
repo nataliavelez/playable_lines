@@ -51,7 +51,7 @@ treatments:
       numRounds: 6
       exp1MapOrder: "HML"
       chatEnabled: false
-    - desc: "Exp1 Two Players, MLH"
+  - desc: "Exp1 Two Players, MLH"
     name: Exp1TwoPlayersMLH
     factors:
       playerCount: 2
@@ -79,7 +79,7 @@ treatments:
       numRounds: 6
       exp1MapOrder: "HML"
       chatEnabled: false
-    - desc: "Exp1 Four Players, MLH"
+  - desc: "Exp1 Four Players, MLH"
     name: Exp1FourPlayersMLH
     factors:
       playerCount: 4
@@ -107,7 +107,7 @@ treatments:
       numRounds: 6
       exp1MapOrder: "HML"
       chatEnabled: false
-    - desc: "Exp1 Eight Players, MLH"
+  - desc: "Exp1 Eight Players, MLH"
     name: Exp1EightPlayersMLH
     factors:
       playerCount: 8

@@ -4,7 +4,7 @@ export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
-  const { numRounds, playerCount, exp1Order } = treatment;
+  const { numRounds, playerCount, exp1MapOrder } = treatment;
 
   // Get universalizability of each round from the order string
   function expandOrderString(str) {
@@ -20,7 +20,7 @@ Empirica.onGameStart(({ game }) => {
         return [expanded, expanded];
       });
   }
-  const universalizabiltyOrder = expandOrderString(exp1Order);
+  const universalizabiltyOrder = expandOrderString(exp1MapOrder);
 
   // get random index for each round
   function generateRandomSequence(x, n) {
