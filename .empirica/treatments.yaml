@@ -22,66 +22,158 @@ factors:
       - value: 2
       - value: 3
       - value: 4
+      - value: 6
   - desc: "The universalizabiliity of learning maps"
     name: universalizability
     values:
       - value: "high"
       - value: "low"
+  - desc: "The order of maps for experiment 1"
+    name: exp1MapOrder
+    values:
+      - value: "LMH"
+      - value: "HML"
+      - value: "MLH"
+      - value: "MHL"
 
 treatments:
-  - desc: "High Universalizability Two Players"
-    name: HighUniversalizabilityTwoPlayers
+  - desc: "Exp1 Two Players, LMH"
+    name: Exp1TwoPlayersLMH
     factors:
       playerCount: 2
-      numRounds: 4
-      universalizability: "high"
+      numRounds: 6
+      exp1MapOrder: "LMH"
       chatEnabled: false
-  - desc: "Low Universalizability Two Players"
-    name: LowUniversalizabilityTwoPlayers
-    factors: 
+  - desc: "Exp1 Two Players, HML"
+    name: Exp1TwoPlayersHML
+    factors:
       playerCount: 2
-      numRounds: 4
-      universalizability: "low"
+      numRounds: 6
+      exp1MapOrder: "HML"
       chatEnabled: false
-  - desc: "High Universalizability Four Players"
-    name: HighUniversalizabilityFourPlayers
+    - desc: "Exp1 Two Players, MLH"
+    name: Exp1TwoPlayersMLH
+    factors:
+      playerCount: 2
+      numRounds: 6
+      exp1MapOrder: "MLH"
+      chatEnabled: false
+  - desc: "Exp1 Two Players, MHL"
+    name: Exp1TwoPlayersMHL
+    factors:
+      playerCount: 2
+      numRounds: 6
+      exp1MapOrder: "MHL"
+      chatEnabled: false
+  - desc: "Exp1 Four Players, LMH"
+    name: Exp1FourPlayersLMH
     factors:
       playerCount: 4
-      numRounds: 4
-      universalizability: "high"
+      numRounds: 6
+      exp1MapOrder: "LMH"
       chatEnabled: false
-  - desc: "Low Universalizability Four Players"
-    name: LowUniversalizabilityFourPlayers
-    factors: 
+  - desc: "Exp1 Four Players, HML"
+    name: Exp1FourPlayersHML
+    factors:
       playerCount: 4
-      numRounds: 4
-      universalizability: "low"
+      numRounds: 6
+      exp1MapOrder: "HML"
       chatEnabled: false
-  - desc: "High Universalizability Six Players"
-    name: HighUniversalizabilitySixPlayers
+    - desc: "Exp1 Four Players, MLH"
+    name: Exp1FourPlayersMLH
     factors:
-      playerCount: 6
-      numRounds: 4
-      universalizability: "high"
+      playerCount: 4
+      numRounds: 6
+      exp1MapOrder: "MLH"
       chatEnabled: false
-  - desc: "Low Universalizability Six Players"
-    name: LowUniversalizabilitySixPlayers
-    factors: 
-      playerCount: 6
-      numRounds: 4
-      universalizability: "low"
+  - desc: "Exp1 Four Players, MHL"
+    name: Exp1TwoPlayersMHL
+    factors:
+      playerCount: 4
+      numRounds: 6
+      exp1MapOrder: "MHL"
       chatEnabled: false
-  - desc: "High Universalizability Eight Players"
-    name: HighUniversalizabilityEightPlayers
+  - desc: "Exp1 Eight Players, LMH"
+    name: Exp1EightPlayersLMH
     factors:
       playerCount: 8
-      numRounds: 4
-      universalizability: "high"
+      numRounds: 6
+      exp1MapOrder: "LMH"
       chatEnabled: false
-  - desc: "Low Universalizability Eight Players"
-    name: LowUniversalizabilityEightPlayers
-    factors: 
+  - desc: "Exp1 Eight Players, HML"
+    name: Exp1EightPlayersHML
+    factors:
       playerCount: 8
-      numRounds: 4
-      universalizability: "low"
+      numRounds: 6
+      exp1MapOrder: "HML"
       chatEnabled: false
+    - desc: "Exp1 Eight Players, MLH"
+    name: Exp1EightPlayersMLH
+    factors:
+      playerCount: 8
+      numRounds: 6
+      exp1MapOrder: "MLH"
+      chatEnabled: false
+  - desc: "Exp1 Eight Players, MHL"
+    name: Exp1TwoPlayersMHL
+    factors:
+      playerCount: 8
+      numRounds: 6
+      exp1MapOrder: "MHL"
+      chatEnabled: false
+  # - desc: "High Universalizability Two Players"
+  #   name: HighUniversalizabilityTwoPlayers
+  #   factors:
+  #     playerCount: 2
+  #     numRounds: 4
+  #     universalizability: "high"
+  #     chatEnabled: false
+  # - desc: "Low Universalizability Two Players"
+  #   name: LowUniversalizabilityTwoPlayers
+  #   factors: 
+  #     playerCount: 2
+  #     numRounds: 4
+  #     universalizability: "low"
+  #     chatEnabled: false
+  # - desc: "High Universalizability Four Players"
+  #   name: HighUniversalizabilityFourPlayers
+  #   factors:
+  #     playerCount: 4
+  #     numRounds: 4
+  #     universalizability: "high"
+  #     chatEnabled: false
+  # - desc: "Low Universalizability Four Players"
+  #   name: LowUniversalizabilityFourPlayers
+  #   factors: 
+  #     playerCount: 4
+  #     numRounds: 4
+  #     universalizability: "low"
+  #     chatEnabled: false
+  # - desc: "High Universalizability Six Players"
+  #   name: HighUniversalizabilitySixPlayers
+  #   factors:
+  #     playerCount: 6
+  #     numRounds: 4
+  #     universalizability: "high"
+  #     chatEnabled: false
+  # - desc: "Low Universalizability Six Players"
+  #   name: LowUniversalizabilitySixPlayers
+  #   factors: 
+  #     playerCount: 6
+  #     numRounds: 4
+  #     universalizability: "low"
+  #     chatEnabled: false
+  # - desc: "High Universalizability Eight Players"
+  #   name: HighUniversalizabilityEightPlayers
+  #   factors:
+  #     playerCount: 8
+  #     numRounds: 4
+  #     universalizability: "high"
+  #     chatEnabled: false
+  # - desc: "Low Universalizability Eight Players"
+  #   name: LowUniversalizabilityEightPlayers
+  #   factors: 
+  #     playerCount: 8
+  #     numRounds: 4
+  #     universalizability: "low"
+  #     chatEnabled: false
