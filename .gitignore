@@ -4,3 +4,4 @@
 *.tiled-project
 server/package-lock.json
 client/package-lock.json
+replay/node_modules/.package-lock.json
