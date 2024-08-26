@@ -5,7 +5,6 @@ export const Empirica = new ClassicListenersCollector();
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
   const { numRounds, playerCount, exp1Order } = treatment;
-  const randIndices = [...Array(numRounds-1).keys()].sort(() => Math.random() - 0.5)
 
   // Get universalizability of each round from the order string
   function expandOrderString(str) {
@@ -25,11 +24,21 @@ Empirica.onGameStart(({ game }) => {
 
   // get random index for each round
   function generateRandomSequence(x, n) {
-    const result = [];
-    for (let i = 0; i < n * x; i++) {
-      result.push(Math.floor(Math.random() * x));
-    }
-    return result;
+    // Create base sequence [0, 1, ..., x-1]
+    const baseSequence = Array.from({length: x}, (_, i) => i);
+    
+    // Function to shuffle an array
+    const shuffle = array => {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    };
+
+    // Generate n shuffled permutations
+    return Array.from({length: n}, () => shuffle(baseSequence)).flat();
   }
   const randIndices = generateRandomSequence(2, 3); // that is two maps, for each of 3 universaliabilty levels
 
