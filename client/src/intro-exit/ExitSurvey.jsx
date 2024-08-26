@@ -1,6 +1,5 @@
 import { usePlayer } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
-import { Alert } from "../components/Alert";
 import { Button } from "../components/Button";
 
 export function ExitSurvey({ next }) {
@@ -11,7 +10,9 @@ export function ExitSurvey({ next }) {
 
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
-  const [strength, setStrength] = useState("");
+  const [race, setRace] = useState("");
+  const [performanceSelf, setPerformanceSelf] = useState("");
+  const [performanceOthers, setPerformanceOthers] = useState("");
   const [fair, setFair] = useState("");
   const [feedback, setFeedback] = useState("");
   const [education, setEducation] = useState("");
@@ -35,17 +36,6 @@ export function ExitSurvey({ next }) {
 
   return (
     <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Alert title="Bonus">
-        <p>
-          Please submit the following code to receive your bonus:{" "}
-          <strong>{player.id}</strong>.
-        </p>
-        <p className="pt-1">
-          Your final <strong>bonus</strong> is in addition of the{" "}
-          <strong>1 base reward</strong> for completing the HIT.
-        </p>
-      </Alert>
-
       <form
         className="mt-12 space-y-8 divide-y divide-gray-200"
         onSubmit={handleSubmit}
@@ -57,8 +47,8 @@ export function ExitSurvey({ next }) {
                 Exit Survey
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Please answer the following short survey. You do not have to
-                provide any information you feel uncomfortable with.
+                <b>You have finished the game!</b> Please fill out the following form 
+                to complete the experiment.
               </p>
             </div>
 
@@ -95,6 +85,21 @@ export function ExitSurvey({ next }) {
                     />
                   </div>
                 </div>
+                <div className="ml-5">
+                  <label htmlFor="email" className={labelClassName}>
+                    Race/Ethnicity
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      id="race-ethnicity"
+                      name="race-ethnicity"
+                      autoComplete="off"
+                      className={inputClassName}
+                      value={race}
+                      onChange={(e) => setRace(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -113,7 +118,7 @@ export function ExitSurvey({ next }) {
                     selected={education}
                     name="education"
                     value="bachelor"
-                    label="US Bachelor's Degree"
+                    label="Bachelor's Degree"
                     onChange={handleEducationChange}
                   />
                   <Radio
@@ -135,35 +140,35 @@ export function ExitSurvey({ next }) {
 
               <div className="grid grid-cols-3 gap-x-6 gap-y-3">
                 <label className={labelClassName}>
-                  How would you describe your strength in the game?
+                  How did you perform in the game? Did you cooperate/coordinate with the other players?
                 </label>
 
                 <label className={labelClassName}>
-                  Do you feel the pay was fair?
+                  How about the other players? Did they cooperate/coordinate? 
                 </label>
 
                 <label className={labelClassName}>
-                  Feedback, including problems you encountered.
+                  Feedback, including problems or bugs you encountered.
                 </label>
 
                 <textarea
                   className={inputClassName}
                   dir="auto"
-                  id="strength"
-                  name="strength"
+                  id="performanceSelf"
+                  name="performanceSelf"
                   rows={4}
-                  value={strength}
-                  onChange={(e) => setStrength(e.target.value)}
+                  value={performanceSelf}
+                  onChange={(e) => setPerformanceSelf(e.target.value)}
                 />
 
                 <textarea
                   className={inputClassName}
                   dir="auto"
-                  id="fair"
-                  name="fair"
+                  id="performanceOthers"
+                  name="performanceOthers"
                   rows={4}
-                  value={fair}
-                  onChange={(e) => setFair(e.target.value)}
+                  value={performanceOthers}
+                  onChange={(e) => setPerformanceOthers(e.target.value)}
                 />
 
                 <textarea
