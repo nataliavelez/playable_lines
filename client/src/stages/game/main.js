@@ -1,8 +1,5 @@
-import { Boot } from './scenes/Boot';
-import { Game } from './scenes/Game';
-import { GameOver } from './scenes/GameOver';
+import { Game } from './Game';
 import Phaser from 'phaser';
-import { Preloader } from './scenes/Preloader';
 import { GridEngine } from 'grid-engine';
 
 // Find out more information about the Game Config at:
@@ -13,12 +10,7 @@ const config = {
     height: 512,
     parent: 'game-container',
     backgroundColor: '#028af8',
-    scene: [
-        Boot,
-        Preloader,
-        Game,
-        GameOver
-    ],
+    scene: [Game],
     plugins: {
         scene: [
           {
@@ -42,7 +34,6 @@ const StartGame = (parent, mapName, playerStates, playerId) => {
           }
       }
     });
-
 
 }
 

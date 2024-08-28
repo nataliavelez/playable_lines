@@ -1,4 +1,4 @@
-import { EventBus } from '../EventBus';
+import { EventBus } from './EventBus';
 import { Scene } from 'phaser';
 
 export class Game extends Scene {
@@ -23,19 +23,35 @@ export class Game extends Scene {
         //this.moveDelay = 100;
     }
 
-    handleVisibilityChange = (isVisible) => {
-      this.isVisible = isVisible;
+    init() {
+      // get map name from registry
+      this.mapName = this.registry.get('mapName');
+      this.mapFileName = `maps/${this.mapName}.json`;
     }
 
-    checkGridEngineState() {
-      console.log("Checking GridEngine state:");
-      console.log("GridEngine initialized:", !!this.gridEngine);
-      console.log("Current player ID:", this.playerId);
-      if (this.gridEngine) {
-          console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
-          console.log("Current player in GridEngine:", this.gridEngine.hasCharacter(this.playerId));
-      }
-  }
+    preload() { 
+      this.load.setPath('assets');
+
+      // Tile Images
+      this.load.image('Water_1', 'Water_1.png');
+      this.load.image('Grass_tiles_v2', 'Grass_tiles_v2.png');
+      this.load.image('Water well', 'Water well.png');
+      this.load.image('Farming Plants', 'Farming Plants.png');
+      this.load.image('Tilled_Dirt', 'Tilled_Dirt.png');
+      this.load.image('Fences', 'Fences.png');
+      this.load.image('Mushrooms, Flowers, Stones', 'Mushrooms, Flowers, Stones.png');
+      this.load.image('Trees, stumps and bushes', 'Trees, stumps and bushes.png');
+      this.load.image('indicator', 'water_ready.png');
+      
+      // Tile Maps
+      this.load.tilemapTiledJSON(this.mapName, this.mapFileName);
+
+      // Spritesheet
+      this.load.spritesheet('bunny', 'bunny_spritesheet.png', {
+          frameWidth: 48,
+          frameHeight: 48
+      }); 
+    }
 
     create(){
       this.players = [];
@@ -315,27 +331,6 @@ export class Game extends Scene {
 
     }
 
-    getMovementDirection(from, to) {
-      if (from.x < to.x) return 'right';
-      if (from.x > to.x) return 'left';
-      if (from.y < to.y) return 'down';
-      if (from.y > to.y) return 'up';
-      return null; // default direction
-    }
-
-    getStopFrame(direction) {
-      switch(direction) {
-        case 'up':
-          return 4;
-        case 'right':
-          return 12;
-        case 'down':
-          return 0;
-        case 'left':
-          return 8;
-      }
-    }
-
     // helpers for carrying
     nearSource(id) {
       const position = this.gridEngine.getFacingPosition(id);
@@ -367,6 +362,10 @@ export class Game extends Scene {
             () => {player.sprite.anims.play('idle_' + direction)}
         );
       }
-  }
+    }
+
+    handleVisibilityChange = (isVisible) => {
+      this.isVisible = isVisible;
+    }
     
 }
