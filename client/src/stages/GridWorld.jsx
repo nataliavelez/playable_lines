@@ -97,6 +97,47 @@ export function GridWorld() {
             console.log('updates:', round.get('stateUpdates'));
         };
 
+        const handlePlayerStateChangeNoSpread = (playerId, updates) => {
+            if (updates.x !== undefined || updates.y !== undefined) {
+                const playerPositions = round.get('playerPositions');
+                if (!playerPositions[playerId]) {
+                  playerPositions[playerId] = {};
+                }
+                if (updates.x !== undefined) playerPositions[playerId].x = updates.x;
+                if (updates.y !== undefined) playerPositions[playerId].y = updates.y;
+                round.set('playerPositions', playerPositions);
+              }
+            
+              if (updates.direction !== undefined) {
+                const playerDirections = round.get('playerDirections');
+                playerDirections[playerId] = updates.direction;
+                round.set('playerDirections', playerDirections);
+              }
+            
+              if (updates.carrying !== undefined) {
+                const playerCarrying = round.get('playerCarrying');
+                playerCarrying[playerId] = updates.carrying;
+                round.set('playerCarrying', playerCarrying);
+              }
+            
+              if (updates.score !== undefined) {
+                const playerScores = round.get('playerScores');
+                playerScores[playerId] = updates.score;
+                round.set('playerScores', playerScores);
+            
+                if (playerId === player.id) {
+                  player.round.set("score", updates.score);
+                  const prevCumScore = player.get("cumScore") || 0;
+                  const newCumScore = prevCumScore + 1;
+                  player.set("cumScore", newCumScore);
+                  console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
+                }
+              }
+        };
+
+        window.oldupdate = handlePlayerStateChange;
+        window.newupdate = handlePlayerStateChangeNoSpread;
+
         EventBus.on('player-state-change', handlePlayerStateChange);
 
         // stop listening to player state changes when component unmounts (i.e., if player leaves the game)
