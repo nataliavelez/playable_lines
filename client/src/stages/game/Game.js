@@ -205,11 +205,10 @@ export class Game extends Scene {
             const currentlyCarrying = this.isCarrying(id);
 
             if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-              if (this.isVisible) {
-                this.gridEngine.moveTo(id, state.position);
-            } else {
+              if (this.canMoveTo(id, state.position)) {
                 this.gridEngine.setPosition(id, state.position);
-            }
+                this.playMoveAnimation(id, currentDirection);
+              }
             }
 
             if (currentDirection !== state.direction) {
@@ -329,6 +328,62 @@ export class Game extends Scene {
       });
 
 
+    }
+
+    //helpers for movement
+    canMoveTo(id, newPosition) {
+      // Check if the new position is within the map bounds
+      if (newPosition.x < 0 || newPosition.y < 0 || 
+          newPosition.x >= this.trialTilemap.width || newPosition.y >= this.trialTilemap.height) {
+        return false;
+      }
+
+      // Check for collisions with map objects
+      const collisionLayers = this.trialTilemap.layers.filter(layer => layer.properties.collides);
+      for (const layer of collisionLayers) {
+        const tile = this.trialTilemap.getTileAt(newPosition.x, newPosition.y, false, layer.name);
+        if (tile && tile.properties.collides) {
+          return false;
+        }
+      }
+
+      // Check for collisions with other players
+      for (const playerId in this.players) {
+        if (playerId !== id) {
+          const playerPos = this.gridEngine.getPosition(playerId);
+          if (playerPos.x === newPosition.x && playerPos.y === newPosition.y) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    getNewPosition(currentPos, direction) {
+      switch (direction) {
+        case 'left':
+          return { x: currentPos.x - 1, y: currentPos.y };
+        case 'right':
+          return { x: currentPos.x + 1, y: currentPos.y };
+        case 'up':
+          return { x: currentPos.x, y: currentPos.y - 1 };
+        case 'down':
+          return { x: currentPos.x, y: currentPos.y + 1 };
+        default:
+          return currentPos;
+      }
+    }
+
+    playMoveAnimation(id, direction) {
+      const player = this.players[id];
+      if (player && player.sprite.anims) {
+        player.sprite.anims.play(`walk_${direction}`, true);
+        // Stop the walking animation after a short delay
+        this.time.delayedCall(250, () => {
+          player.sprite.anims.play(`idle_${direction}`, true);
+        });
+      }
     }
 
     // helpers for carrying
