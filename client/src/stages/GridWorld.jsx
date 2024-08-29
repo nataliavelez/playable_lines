@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { usePlayer, usePlayers, useRound } from "@empirica/core/player/classic/react";
 import { PhaserGame } from './game/PhaserGame';
 import { EventBus } from './game/EventBus';
+import { runPerformanceTest } from './game/performanceTest.js';
 
 export function GridWorld() {
     const phaserRef = useRef();
@@ -97,47 +98,6 @@ export function GridWorld() {
             console.log('updates:', round.get('stateUpdates'));
         };
 
-        const handlePlayerStateChangeNoSpread = (playerId, updates) => {
-            if (updates.x !== undefined || updates.y !== undefined) {
-                const playerPositions = round.get('playerPositions');
-                if (!playerPositions[playerId]) {
-                  playerPositions[playerId] = {};
-                }
-                if (updates.x !== undefined) playerPositions[playerId].x = updates.x;
-                if (updates.y !== undefined) playerPositions[playerId].y = updates.y;
-                round.set('playerPositions', playerPositions);
-              }
-            
-              if (updates.direction !== undefined) {
-                const playerDirections = round.get('playerDirections');
-                playerDirections[playerId] = updates.direction;
-                round.set('playerDirections', playerDirections);
-              }
-            
-              if (updates.carrying !== undefined) {
-                const playerCarrying = round.get('playerCarrying');
-                playerCarrying[playerId] = updates.carrying;
-                round.set('playerCarrying', playerCarrying);
-              }
-            
-              if (updates.score !== undefined) {
-                const playerScores = round.get('playerScores');
-                playerScores[playerId] = updates.score;
-                round.set('playerScores', playerScores);
-            
-                if (playerId === player.id) {
-                  player.round.set("score", updates.score);
-                  const prevCumScore = player.get("cumScore") || 0;
-                  const newCumScore = prevCumScore + 1;
-                  player.set("cumScore", newCumScore);
-                  console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
-                }
-              }
-        };
-
-        window.oldupdate = handlePlayerStateChange;
-        window.newupdate = handlePlayerStateChangeNoSpread;
-
         EventBus.on('player-state-change', handlePlayerStateChange);
 
         // stop listening to player state changes when component unmounts (i.e., if player leaves the game)
@@ -160,6 +120,86 @@ export function GridWorld() {
     if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
         return <div>Loading...</div>;
     }
+
+    // Tests
+    const setupPerformanceTest = () => {
+
+        const handlePlayerStateChangeOld = (playerId, updates, round, player) => {
+            round.set('playerStates', {
+                ...round.get('playerStates'),
+                [playerId]: {
+                    ...round.get('playerStates')[playerId],
+                    ...(updates.x !== undefined || updates.y !== undefined ? {
+                        position: {
+                            ...round.get('playerStates')[playerId].position,
+                            ...(updates.x !== undefined ? { x: updates.x } : {}),
+                            ...(updates.y !== undefined ? { y: updates.y } : {})
+                        }
+                    } : {}),
+                    ...(updates.direction !== undefined ? { direction: updates.direction } : {}),
+                    ...(updates.carrying !== undefined ? { carrying: updates.carrying } : {}),
+                    ...(updates.score !== undefined ? { score: updates.score } : {}),
+                    ...(updates.name !== undefined ? { name: updates.name } : {}),
+                    ...(updates.color !== undefined ? { color: updates.color } : {})
+                }
+            });
+
+            if (updates.score !== undefined && playerId === player.id) {
+                const newScore = updates.score;
+                player.round.set("score", newScore);
+                
+                // Update cumulative score
+                const prevCumScore = player.get("cumScore") || 0;
+                const newCumScore = prevCumScore + 1; // Increment by 1 for each successful water delivery
+                player.set("cumScore", newCumScore);
+        
+                console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
+            };
+                
+            //Stores every state update with a timestamp, appended into an array for the whole round.
+            round.set('stateUpdates', [
+                ...(round.get('stateUpdates') || []),
+                {
+                    playerId: playerId,
+                    ...updates,
+                    timestamp: Date.now()
+                }
+            ]);
+            //console.log('updates:', round.get('stateUpdates'));
+        };
+
+        const handlePlayerStateChangeNoSpread = (playerId, updates, round, player) => {
+            const playerStates = round.get('playerStates');
+            if (updates.x !== undefined) playerStates[playerId].position.x = updates.x;
+            if (updates.y !== undefined) playerStates[playerId].position.y = updates.y;
+            if (updates.direction !== undefined) {
+              playerStates[playerId].direction = updates.direction;
+            }
+            if (updates.carrying !== undefined) {
+              playerStates[playerId].carrying = updates.carrying;
+            }
+            if (updates.score !== undefined) {
+              playerStates[playerId].score = updates.score;
+              if (playerId === player.id) {
+                player.round.set("score", updates.score);
+                const prevCumScore = player.get("cumScore") || 0;
+                const newCumScore = prevCumScore + 1;
+                player.set("cumScore", newCumScore);
+              }
+            }
+            round.set('playerStates', playerStates);
+        };
+
+        // Make the test function available globally
+        window.runGridWorldPerformanceTest = (iterations) => {
+            runPerformanceTest(handlePlayerStateChangeOld, handlePlayerStateChangeNoSpread, round, player, iterations);
+        };
+    };
+
+    // Call setupPerformanceTest in a useEffect to ensure it's only set up once
+    React.useEffect(() => {
+        setupPerformanceTest();
+    }, []);
 
     return (
         <div id="app">

@@ -11,7 +11,7 @@ Empirica.onGameStart(({ game }) => {
     name: `Debug`,
     universalizability: universalizability
   })
-  round.addStage({ name: "Game", duration: 300 });  
+  round.addStage({ name: "Game", duration: 10000 });  
   round.addStage({ name: "Feedback", duration: 30 });
 
   //Randomly set colours for players
