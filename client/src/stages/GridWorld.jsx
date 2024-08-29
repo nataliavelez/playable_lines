@@ -17,12 +17,11 @@ export function GridWorld() {
             round.set('playerStates', {});
         }
 
-
         //players order is different for different players, so can't just do this. 
         const sortedPlayers = [...players].sort((a, b) => a.id.localeCompare(b.id));
         sortedPlayers.forEach((p, i) => {
             if (!round.get('playerStates')[p.id]) {
-                console.log(`Player ${p.id}, index ${i}, position:`, round.get('startPositions'));
+                //console.log(`Player ${p.id}, index ${i}, position:`, round.get('startPositions'));
                 round.set('playerStates', {
                     ...round.get('playerStates'),
                     [p.id]: { 
@@ -83,7 +82,7 @@ export function GridWorld() {
                 const newCumScore = prevCumScore + 1; // Increment by 1 for each successful water delivery
                 player.set("cumScore", newCumScore);
         
-                console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
+                //console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
             }
             
             //Stores every state update with a timestamp, appended into an array for the whole round.
@@ -95,7 +94,7 @@ export function GridWorld() {
                     timestamp: Date.now()
                 }
             ]);
-            console.log('updates:', round.get('stateUpdates'));
+            //console.log('updates:', round.get('stateUpdates'));
         };
 
         EventBus.on('player-state-change', handlePlayerStateChange);
@@ -153,18 +152,19 @@ export function GridWorld() {
                 const newCumScore = prevCumScore + 1; // Increment by 1 for each successful water delivery
                 player.set("cumScore", newCumScore);
         
-                console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
+                //console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
             };
                 
             //Stores every state update with a timestamp, appended into an array for the whole round.
-            round.set('stateUpdates', [
-                ...(round.get('stateUpdates') || []),
-                {
-                    playerId: playerId,
-                    ...updates,
-                    timestamp: Date.now()
-                }
-            ]);
+            //round.set('stateUpdates', [
+            //    ...(round.get('stateUpdates') || []),
+            //    {
+            //       playerId: playerId,
+            //        ...updates,
+            //        timestamp: Date.now()
+            //    }
+            //]);
+            //console.log(round.get('playerStates'))
             //console.log('updates:', round.get('stateUpdates'));
         };
 
@@ -197,9 +197,10 @@ export function GridWorld() {
     };
 
     // Call setupPerformanceTest in a useEffect to ensure it's only set up once
-    React.useEffect(() => {
+    useEffect(() => {
         setupPerformanceTest();
     }, []);
+
 
     return (
         <div id="app">

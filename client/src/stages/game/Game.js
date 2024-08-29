@@ -73,7 +73,7 @@ export class Game extends Scene {
           if (this.trialTilemap.layers[i].name == 'Top View') {
             layer.depth = 10;
           }
-          console.log(layer.depth);
+          //console.log(layer.depth);
       }
 
       this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
@@ -119,7 +119,7 @@ export class Game extends Scene {
             const container = this.add.container(state.position.x, state.position.y, [plumbob, sprite, indicator, nameText]);
 
             this.players[id] = { sprite, container, indicator, carrying, score };
-            console.log(`Created sprite for player ${id} at position:`, state.position, `, direction:`, state.direction, `, tint: `, state.color, `, carrying: `, state.carrying, `, score: `, state.score, `, name: `, state.name);
+            //console.log(`Created sprite for player ${id} at position:`, state.position, `, direction:`, state.direction, `, tint: `, state.color, `, carrying: `, state.carrying, `, score: `, state.score, `, name: `, state.name);
 
         });
 
@@ -132,7 +132,7 @@ export class Game extends Scene {
                 offsetY: 16,
                 //offsetx: 16,
                 startPosition: { x: player.container.x , y: player.container.y  },
-                speed: 2.5 // Adjust this value to control movement speed
+                speed: 2 // Adjust this value to control movement speed
             }))
         };
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
@@ -154,7 +154,7 @@ export class Game extends Scene {
 
     setupGridEngineEvents() {
       this.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
-          console.log(`Movement started for ${charId} in direction ${direction}`);
+          //console.log(`Movement started for ${charId} in direction ${direction}`);
           const player = this.players[charId];
           if (player && player.sprite.anims) {
               player.sprite.anims.play(`walk_${direction}`, true);
@@ -162,7 +162,7 @@ export class Game extends Scene {
       });
   
       this.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
-          console.log(`Movement stopped for ${charId} in direction ${direction}`);
+          //console.log(`Movement stopped for ${charId} in direction ${direction}`);
           const player = this.players[charId];
 
           //animations
@@ -174,7 +174,7 @@ export class Game extends Scene {
       });
   
       this.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
-          console.log(`direction changed for ${charId} in direction ${direction}`);
+          //console.log(`direction changed for ${charId} in direction ${direction}`);
           const player = this.players[charId];
           if (player && player.sprite.anims) {
               player.sprite.anims.play(`idle_${direction}`, true);
@@ -185,7 +185,7 @@ export class Game extends Scene {
       });
   
       this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
-          console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
+          //console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
           const direction = this.gridEngine.getFacingDirection(charId);
           if (charId === this.playerId) {
               EventBus.emit('player-state-change', this.playerId, { x: enterTile.x, y: enterTile.y, direction: direction } );
@@ -196,7 +196,7 @@ export class Game extends Scene {
 
   // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
-      console.log("Updating player states:", playerStates);
+      //console.log("Updating player states:", playerStates);
       //this means that updates happen in order of player id (might want to randomise or something.)
       Object.entries(playerStates).forEach(([id, state]) => {
           if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
@@ -284,7 +284,7 @@ export class Game extends Scene {
     }
 
     createPlayerAnimations() {
-      console.log("Creating player animations")
+      //console.log("Creating player animations")
       const directions = ['up', 'down', 'left', 'right'];
       const animsConfig = {
           up: { start: 4, end: 7 },
