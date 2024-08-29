@@ -33,22 +33,48 @@ const performanceMeasure = {
   }
 };
 
-async export function runPerformanceTest(OldFn, NewFn, round, player, iterations = 100) {
+export async function runPerformanceTest(OldFn, NewFn, round, player, iterations = 100) {
   console.log(`Running performance test for ${iterations} iterations...`);
   // get player ids
-  const players = Object.keys(round.get('playerStates'))
+  const players = Object.keys(round.get('playerStates'));
+
+  function generateUpdates(playerId) {
+    return (() => {
+      const updateX = Math.random() < 0.5;
+      const change = Math.random() < 0.5 ? 1 : -1;
+      
+      let x = round.get('playerStates')[playerId].position.x;
+      let y = round.get('playerStates')[playerId].position.y;
+      
+      if (updateX) {
+        x = Math.max(1, Math.min(16, x + change));
+      } else {
+        y = Math.max(1, Math.min(16, y + change));
+      }
+
+      let score = round.get('playerStates')[playerId].score;
+      if (Math.random() < 0.1) {
+        score = Math.max(0, score + 1);
+      }
+
+      return {
+        x,
+        y,
+        direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
+        carrying: Math.random() < 0.2,
+        score: score
+      };
+    })();
+  }
+
   for (let i = 0; i < iterations; i++) {
     const playerId = getRandomItem(players);
     console.log("Player ID:", playerId);
-    const updates = {
-      x: players[playerId].position.x + Math.random() * 1,
-      y: players[playerId].position.x + Math.random() * 1,
-      direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
-      carrying: Math.random() > 0.5,
-      score: Math.floor(Math.random() * 100)
-    };
+    
+    const updates = generateUpdates(playerId);
+    
     // add 200 ms delay to simulate real game
-    await delay(200);
+    await delay(500);
 
     performanceMeasure.start();
     OldFn(playerId, updates, round, player);
