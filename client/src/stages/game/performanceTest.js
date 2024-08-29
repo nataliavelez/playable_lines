@@ -47,9 +47,9 @@ export async function runPerformanceTest(OldFn, NewFn, round, player, iterations
       let y = round.get('playerStates')[playerId].position.y;
       
       if (updateX) {
-        x = Math.max(1, Math.min(16, x + change));
+        x = Math.max(1, Math.min(14, x + change));
       } else {
-        y = Math.max(1, Math.min(16, y + change));
+        y = Math.max(1, Math.min(14, y + change));
       }
 
       let score = round.get('playerStates')[playerId].score;
@@ -58,8 +58,8 @@ export async function runPerformanceTest(OldFn, NewFn, round, player, iterations
       }
 
       return {
-        x,
-        y,
+        x: x,
+        y: y,
         direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
         carrying: Math.random() < 0.2,
         score: score
@@ -71,15 +71,19 @@ export async function runPerformanceTest(OldFn, NewFn, round, player, iterations
     const playerId = getRandomItem(players);
     console.log("Player ID:", playerId);
     
-    const updates = generateUpdates(playerId);
+    let updates = generateUpdates(playerId);
     
-    // add 200 ms delay to simulate real game
-    await delay(500);
+    // add 65ms delay to simulate real game at speed of 2 (2 tiles per second)
+    // which is 500ms per round, 
+    // with 8 players, would expect one update every 62.5ms per player
+    await delay(30);
 
     performanceMeasure.start();
     OldFn(playerId, updates, round, player);
     performanceMeasure.end("Current Setup Update");
 
+    updates = generateUpdates(playerId);
+    await delay(30);
     performanceMeasure.start();
     NewFn(playerId, updates, round, player);
     performanceMeasure.end("New Setup Update");
