@@ -286,11 +286,17 @@ export class Game extends Scene {
     createPlayerAnimations() {
       console.log("Creating player animations")
       const directions = ['up', 'down', 'left', 'right'];
-      const animsConfig = {
-          up: { start: 4, end: 7 },
-          down: { start: 0, end: 3 },
-          left: { start: 8, end: 11 },
-          right: { start: 12, end: 15 }
+      const walkingAnimsConfig = {
+          up: { start: 6, end: 7 },
+          down: { start: 2, end: 3 },
+          left: { start: 10, end: 11 },
+          right: { start: 14, end: 15 }
+      }
+      const idleAnimsConfig = {
+          up: { start: 4, end: 5 },
+          down: { start: 0, end: 1 },
+          left: { start: 8, end: 9 },
+          right: { start: 12, end: 13 }
       };
       const waterAnimsConfig = {
         up: 22, 
@@ -303,15 +309,15 @@ export class Game extends Scene {
           // Walking animations
           this.anims.create({
               key: `walk_${dir}`,
-              frames: this.anims.generateFrameNumbers('bunny', animsConfig[dir]),
-              frameRate: 8,
+              frames: this.anims.generateFrameNumbers('bunny', walkingAnimsConfig[dir]),
+              frameRate: 4,
               repeat: -1,
           });
 
           // Idle animations (using the first frame of each direction)
           this.anims.create({
               key: `idle_${dir}`,
-              frames: this.anims.generateFrameNumbers('bunny', { start: animsConfig[dir].start, end: animsConfig[dir].start + 1 }),
+              frames: this.anims.generateFrameNumbers('bunny', idleAnimsConfig),
               frameRate: 4,
               repeat: -1,
               yoyo: true
