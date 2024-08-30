@@ -199,7 +199,7 @@ export class Game extends Scene {
       //console.log("Updating player states:", playerStates);
       //this means that updates happen in order of player id (might want to randomise or something.)
       Object.entries(playerStates).forEach(([id, state]) => {
-         // if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
+          if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
             const currentPos = this.gridEngine.getPosition(id);
             const currentDirection = this.gridEngine.getFacingDirection(id);
             const currentlyCarrying = this.isCarrying(id);
@@ -226,7 +226,7 @@ export class Game extends Scene {
               this.playWaterAnimation(id, currentDirection);
             }
 
-        //}
+        }
     });
 }
 
