@@ -199,15 +199,18 @@ export class Game extends Scene {
       //console.log("Updating player states:", playerStates);
       //this means that updates happen in order of player id (might want to randomise or something.)
       Object.entries(playerStates).forEach(([id, state]) => {
-          if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
+         // if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
             const currentPos = this.gridEngine.getPosition(id);
             const currentDirection = this.gridEngine.getFacingDirection(id);
             const currentlyCarrying = this.isCarrying(id);
 
             if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-              if (this.canMoveTo(id, state.position)) {
-                this.gridEngine.setPosition(id, state.position);
-                this.playMoveAnimation(id, currentDirection);
+              const dx = state.position.x - currentPos.x;
+              const dy = state.position.y - currentPos.y;
+              const direction = this.getDirectionFromDelta(dx, dy);
+              
+              if (direction) {
+                this.gridEngine.move(id, direction);
               }
             }
 
@@ -223,7 +226,7 @@ export class Game extends Scene {
               this.playWaterAnimation(id, currentDirection);
             }
 
-        }
+        //}
     });
 }
 
@@ -360,30 +363,12 @@ export class Game extends Scene {
       return true;
     }
 
-    getNewPosition(currentPos, direction) {
-      switch (direction) {
-        case 'left':
-          return { x: currentPos.x - 1, y: currentPos.y };
-        case 'right':
-          return { x: currentPos.x + 1, y: currentPos.y };
-        case 'up':
-          return { x: currentPos.x, y: currentPos.y - 1 };
-        case 'down':
-          return { x: currentPos.x, y: currentPos.y + 1 };
-        default:
-          return currentPos;
-      }
-    }
-
-    playMoveAnimation(id, direction) {
-      const player = this.players[id];
-      if (player && player.sprite.anims) {
-        player.sprite.anims.play(`walk_${direction}`, true);
-        // Stop the walking animation after a short delay
-        this.time.delayedCall(250, () => {
-          player.sprite.anims.play(`idle_${direction}`, true);
-        });
-      }
+    getDirectionFromDelta(dx, dy) {
+      if (dx > 0) return 'right';
+      if (dx < 0) return 'left';
+      if (dy > 0) return 'down';
+      if (dy < 0) return 'up';
+      return null;
     }
 
     // helpers for carrying

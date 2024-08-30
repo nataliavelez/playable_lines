@@ -59,37 +59,36 @@ export async function runPerformanceTest(OldFn, NewFn, round, player, iterations
 
       return {
         x: x,
-        y: y,
-        direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
-        carrying: Math.random() < 0.2,
-        score: score
+        y: y//,
+        //direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
+        //carrying: Math.random() < 0.2,
+        //score: score
       };
     })();
   }
 
   for (let i = 0; i < iterations; i++) {
-    const playerId = getRandomItem(players);
-    console.log("Player ID:", playerId);
+    const playerId = players[i % players.length];
     
     let updates = generateUpdates(playerId);
     
     // add 65ms delay to simulate real game at speed of 2 (2 tiles per second)
     // which is 500ms per round, 
     // with 8 players, would expect one update every 62.5ms per player
-    await delay(30);
+    await delay(50);
 
-    performanceMeasure.start();
+    //performanceMeasure.start();
     OldFn(playerId, updates, round, player);
-    performanceMeasure.end("Current Setup Update");
+    //performanceMeasure.end("Current Setup Update");
 
-    updates = generateUpdates(playerId);
-    await delay(30);
-    performanceMeasure.start();
-    NewFn(playerId, updates, round, player);
-    performanceMeasure.end("New Setup Update");
+    //updates = generateUpdates(playerId);
+    //await delay(60);
+    //performanceMeasure.start();
+    //NewFn(playerId, updates, round, player);
+    //performanceMeasure.end("New Setup Update");
   }
 
-  performanceMeasure.printAverages();
+  //performanceMeasure.printAverages();
 }
 
 function getRandomItem(array) {
