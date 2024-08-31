@@ -13,7 +13,6 @@ export function ExitSurvey({ next }) {
   const [race, setRace] = useState("");
   const [performanceSelf, setPerformanceSelf] = useState("");
   const [performanceOthers, setPerformanceOthers] = useState("");
-  const [fair, setFair] = useState("");
   const [feedback, setFeedback] = useState("");
   const [education, setEducation] = useState("");
 
@@ -22,8 +21,9 @@ export function ExitSurvey({ next }) {
     player.set("exitSurvey", {
       age,
       gender,
-      strength,
-      fair,
+      race,
+      performanceSelf,
+      performanceOthers,
       feedback,
       education,
     });
