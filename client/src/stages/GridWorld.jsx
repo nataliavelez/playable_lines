@@ -13,26 +13,27 @@ export function GridWorld() {
     const [isVisible, setIsVisible] = useState(!document.hidden);
   
     const initializePlayers = () => {
-        if (!round.get('playerStates')) {
-            round.set('playerStates', {});
+        if (!round.get('playerX')) {
+            round.set('playerX', {});
+            round.set('playerY', {});
+            round.set('playerDirection', {});
+            round.set('playerCarrying', {});
+            round.set('playerScore', {});
+            round.set('playerColor', {});
+            round.set('playerName', {});
         }
 
-        //players order is different for different players, so can't just do this. 
         const sortedPlayers = [...players].sort((a, b) => a.id.localeCompare(b.id));
         sortedPlayers.forEach((p, i) => {
-            if (!round.get('playerStates')[p.id]) {
-                //console.log(`Player ${p.id}, index ${i}, position:`, round.get('startPositions'));
-                round.set('playerStates', {
-                    ...round.get('playerStates'),
-                    [p.id]: { 
-                        position: round.get('startPositions')[i],
-                        direction: 'down',
-                        carrying: false,
-                        score: 0,   
-                        color: p.get('color'),
-                        name: p.get('participantIdentifier'),
-                    }
-                });
+            if (!round.get('playerX')[p.id]) {
+                const startPosition = round.get('startPositions')[i];
+                round.set('playerX', { ...round.get('playerX'), [p.id]: startPosition.x });
+                round.set('playerY', { ...round.get('playerY'), [p.id]: startPosition.y });
+                round.set('playerDirection', { ...round.get('playerDirection'), [p.id]: 'down' });
+                round.set('playerCarrying', { ...round.get('playerCarrying'), [p.id]: false });
+                round.set('playerScore', { ...round.get('playerScore'), [p.id]: 0 });
+                round.set('playerColor', { ...round.get('playerColor'), [p.id]: p.get('color') });
+                round.set('playerName', { ...round.get('playerName'), [p.id]: p.get('participantIdentifier') });
             }
         });
     };
@@ -52,56 +53,44 @@ export function GridWorld() {
     }, []);
 
     useEffect(() => {
-
-        const handlePlayerStateChange = (playerId, updates) => {
-            round.set('playerStates', {
-                ...round.get('playerStates'),
-                [playerId]: {
-                    ...round.get('playerStates')[playerId],
-                    ...(updates.x !== undefined || updates.y !== undefined ? {
-                        position: {
-                            ...round.get('playerStates')[playerId].position,
-                            ...(updates.x !== undefined ? { x: updates.x } : {}),
-                            ...(updates.y !== undefined ? { y: updates.y } : {})
-                        }
-                    } : {}),
-                    ...(updates.direction !== undefined ? { direction: updates.direction } : {}),
-                    ...(updates.carrying !== undefined ? { carrying: updates.carrying } : {}),
-                    ...(updates.score !== undefined ? { score: updates.score } : {}),
-                    ...(updates.name !== undefined ? { name: updates.name } : {}),
-                    ...(updates.color !== undefined ? { color: updates.color } : {})
-                }
-            });
-
-            if (updates.score !== undefined && playerId === player.id) {
-                const newScore = updates.score;
-                player.round.set("score", newScore);
-                
-                // Update cumulative score
-                const prevCumScore = player.get("cumScore") || 0;
-                const newCumScore = prevCumScore + 1; // Increment by 1 for each successful water delivery
-                player.set("cumScore", newCumScore);
-        
-                //console.log(`Player ${playerId}: Round Score: ${updates.score}, Cumulative Score: ${newCumScore}`);
-            }
-            
-            //Stores every state update with a timestamp, appended into an array for the whole round.
-            round.set('stateUpdates', [
-                ...(round.get('stateUpdates') || []),
-                {
-                    playerId: playerId,
-                    ...updates,
-                    timestamp: Date.now()
-                }
-            ]);
-            //console.log('updates:', round.get('stateUpdates'));
+        const handlePlayerXChange = (playerId, x) => {
+            round.set('playerX', { ...round.get('playerX'), [playerId]: x });
         };
 
-        EventBus.on('player-state-change', handlePlayerStateChange);
+        const handlePlayerYChange = (playerId, y) => {
+            round.set('playerX', { ...round.get('playerY'), [playerId]: y });
+        };
 
-        // stop listening to player state changes when component unmounts (i.e., if player leaves the game)
+        const handlePlayerDirectionChange = (playerId, direction) => {
+            round.set('playerDirection', { ...round.get('playerDirection'), [playerId]: direction });
+        };
+
+        const handlePlayerCarryingChange = (playerId, carrying) => {
+            round.set('playerCarrying', { ...round.get('playerCarrying'), [playerId]: carrying });
+        };
+
+        const handlePlayerScoreChange = (playerId, score) => {
+            round.set('playerScore', { ...round.get('playerScore'), [playerId]: score });
+            if (playerId === player.id) {
+                player.round.set("score", score);
+                const prevCumScore = player.get("cumScore") || 0;
+                const newCumScore = prevCumScore + 1;
+                player.set("cumScore", newCumScore);
+            }
+        };
+
+        EventBus.on('player-x-change', handlePlayerXChange);
+        EventBus.on('player-y-change', handlePlayerYChange);
+        EventBus.on('player-direction-change', handlePlayerDirectionChange);
+        EventBus.on('player-carrying-change', handlePlayerCarryingChange);
+        EventBus.on('player-score-change', handlePlayerScoreChange);
+
         return () => {
-            EventBus.off('player-state-change', handlePlayerStateChange);
+            EventBus.off('player-x-change', handlePlayerXChange);
+            EventBus.off('player-y-change', handlePlayerYChange);
+            EventBus.off('player-direction-change', handlePlayerDirectionChange);
+            EventBus.off('player-carrying-change', handlePlayerCarryingChange);
+            EventBus.off('player-score-change', handlePlayerScoreChange);
         };
     }, []);
 
@@ -116,9 +105,9 @@ export function GridWorld() {
 
     };
     
-    if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
-        return <div>Loading...</div>;
-    }
+    //if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
+    //    return <div>Loading...</div>;
+    //}
 
     // Tests
     const setupPerformanceTest = () => {
@@ -209,7 +198,13 @@ export function GridWorld() {
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
                 playerId={player.id}
-                playerStates={round.get('playerStates')}
+                playerX={round.get('playerX')}
+                playerY={round.get('playerY')}
+                playerDirection={round.get('playerDirection')}
+                playerCarrying={round.get('playerCarrying')}
+                playerScore={round.get('playerScore')}
+                playerColor={round.get('playerColor')}
+                playerName={round.get('playerName')} 
                 isVisible={isVisible}
             />
         </div>

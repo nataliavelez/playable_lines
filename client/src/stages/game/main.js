@@ -23,6 +23,7 @@ const config = {
 };
 
 const StartGame = (parent, mapName, playerStates, playerId) => {
+
     return new Phaser.Game({
         ...config,
         parent,

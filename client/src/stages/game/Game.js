@@ -1,3 +1,4 @@
+import { object } from 'prop-types';
 import { EventBus } from './EventBus';
 import { Scene } from 'phaser';
 
@@ -79,9 +80,14 @@ export class Game extends Scene {
       this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
 
       EventBus.emit('current-scene-ready', this);
-      EventBus.on('update-player-states', this.updatePlayerStates.bind(this));
       EventBus.on('visibility-change', this.handleVisibilityChange.bind(this));
-      //console.log("Game scene created");
+
+      //Update states
+      EventBus.on('update-player-x', this.updatePlayerX.bind(this));
+      EventBus.on('update-player-y', this.updatePlayerY.bind(this));
+      EventBus.on('update-player-direction', this.updatePlayerDirection.bind(this));
+      EventBus.on('update-player-carrying', this.updatePlayerCarrying.bind(this));
+      EventBus.on('update-player-score', this.updatePlayerScore.bind(this));
     }
       
     initPlayers(playerStates, currentPlayerId) {
@@ -89,6 +95,7 @@ export class Game extends Scene {
         this.player = this.players[currentPlayerId];
         //console.log("Current player ID:", this.playerId)
         //console.log("Initializing players:", playerStates);
+
 
         Object.entries(playerStates).forEach(([id, state]) => {
             const sprite = this.add.sprite(0, 0, 'bunny');
@@ -125,15 +132,15 @@ export class Game extends Scene {
 
         this.gridEngineConfig = {
           cacheTileCollisions: true,
-            characters: Object.entries(this.players).map(([id, player]) => ({
-                id,
-                sprite: player.sprite,
-                container: player.container,
-                offsetY: 16,
-                //offsetx: 16,
-                startPosition: { x: player.container.x , y: player.container.y  },
-                speed: 2 // Adjust this value to control movement speed
-            }))
+          characters: Object.entries(this.players).map(([id, player]) => ({
+              id,
+              sprite: player.sprite,
+              container: player.container,
+              offsetY: 16,
+              //offsetx: 16,
+              startPosition: { x: player.container.x , y: player.container.y  },
+              speed: 2 // Adjust this value to control movement speed
+          }))
         };
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
             
@@ -180,109 +187,138 @@ export class Game extends Scene {
               player.sprite.anims.play(`idle_${direction}`, true);
           }
           if (charId === this.playerId) {
-            EventBus.emit('player-state-change', this.playerId, { direction: direction } );
+            EventBus.emit('player-direction-change', this.playerId, direction);
         }
       });
   
       this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
           //console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
-          const direction = this.gridEngine.getFacingDirection(charId);
           if (charId === this.playerId) {
-              EventBus.emit('player-state-change', this.playerId, { x: enterTile.x, y: enterTile.y, direction: direction } );
+            if (exitTile.x !== enterTile.x) {
+              EventBus.emit('player-x-change', this.playerId, enterTile.x);
+            } else if (exitTile.y !== enterTile.y) {
+              EventBus.emit('player-y-change', this.playerId, enterTile.y);
           }
+        }
       });
 
     }
 
-  // Gets states for all other players from empirica and does stuff in the game with them
-    updatePlayerStates(playerStates) {
-      //console.log("Updating player states:", playerStates);
-      //this means that updates happen in order of player id (might want to randomise or something.)
-      Object.entries(playerStates).forEach(([id, state]) => {
-          if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
-            const currentPos = this.gridEngine.getPosition(id);
-            const currentDirection = this.gridEngine.getFacingDirection(id);
-            const currentlyCarrying = this.isCarrying(id);
 
-            if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-              const dx = state.position.x - currentPos.x;
-              const dy = state.position.y - currentPos.y;
-              const direction = this.getDirectionFromDelta(dx, dy);
-              
-              if (direction) {
-                this.gridEngine.move(id, direction);
-              }
-            }
+    // Propogate updates from shared state into the game.
+    updatePlayerX(xPositions) {
+      Object.entries(xPositions).forEach(([id, x]) => {
+        if (id === this.playerId) return;
+        const player = this.players[id];
+        if (player.x !== x) {
+          if (x > player.x) {
+            this.gridEngine.move(id, 'right');
+          } else {
+            this.gridEngine.move(id, 'left');
+          }
+          player.x = x;
+        }
+      });
+    }
 
-            if (currentDirection !== state.direction) {
-                this.gridEngine.turnTowards(id, state.direction);
-            }
+    updatePlayerY(yPositions) {
+      Object.entries(yPositions).forEach(([id, y]) => {
+        if (id === this.playerId) return;
+        const player = this.players[id];
+        if (player.y !== y) {
+          if (y > player.y) {
+            this.gridEngine.move(id, 'down');
+          } else {
+            this.gridEngine.move(id, 'up');
+          }
+          player.y = y;
+        }
+      });
+    }
+    updatePlayerDirection(directions) {
+      Object.entries(directions).forEach(([id, direction]) => {
+        if (id === this.playerId) return;
+        const player = this.players[id];
+        if (player.direction !== direction) {
+          this.gridEngine.turnTowards(id, direction);
+          player.direction = direction;
+        }
+      });
+    }
 
-            if (currentlyCarrying !== state.carrying) {
-              this.players[id].carrying = state.carrying;
-              this.players[id].indicator.visible = state.carrying;
-              
-              // Play water animation
-              this.playWaterAnimation(id, currentDirection);
-            }
-
+    updatePlayerCarrying(carryings) {
+      Object.entries(carryings).forEach(([id, carrying]) => {
+        if (id === this.playerId) return;
+        const player = this.players[id];
+        if (player.carrying !== carrying) {
+          player.carrying = carrying;
+          player.indicator.visible = carrying
+          this.playWaterAnimation(id, player.direction);
         }
     });
-}
+  }
+
+    updatePlayerScore(scores) {
+      Object.entries(scores).forEach(([id, score]) => {
+        if (id === this.playerId) return;
+        const player = this.players[id];
+        if (player.score !== score) {
+          player.score = score;
+        }
+      });
+    }
 
     update() {
       if (!this.playerId) return;
-        const cursors = this.input.keyboard.createCursorKeys();
-        const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        let direction = null;
-        let player = this.players[this.playerId];
-      
-        if (cursors.left.isDown) { 
-          direction = "left";
-        } else if (cursors.right.isDown) {
-            direction = "right";
-        } else if (cursors.up.isDown) {
-            direction = "up";
-        } else if (cursors.down.isDown) {
-            direction = "down";
-        }
-  
-      if (direction) {
-          this.gridEngine.move(this.playerId, direction);
+      const cursors = this.input.keyboard.createCursorKeys();
+      const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+      let direction = null;
+      let player = this.players[this.playerId];
+    
+      if (cursors.left.isDown) { 
+        direction = "left";
+      } else if (cursors.right.isDown) {
+          direction = "right";
+      } else if (cursors.up.isDown) {
+          direction = "up";
+      } else if (cursors.down.isDown) {
+          direction = "down";
       }
 
-      // Use space bay to load and unload water
-      if (Phaser.Input.Keyboard.JustDown(action)) {
-        const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
+    if (direction) {
+        this.gridEngine.move(this.playerId, direction);
+    }
 
-        if (!player.carrying && this.nearSource(this.playerId)) {
-            player.carrying = true;
-            EventBus.emit('player-state-change', this.playerId, {carrying: player.carrying});
+    // Use space bay to load and unload water
+    if (Phaser.Input.Keyboard.JustDown(action)) {
+      const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
 
-            // Play animation whens loading water
-            this.playWaterAnimation(this.playerId, currentDirection);
+      if (!player.carrying && this.nearSource(this.playerId)) {
+          player.carrying = true;
+          EventBus.emit('player-carrying-change', this.playerId, player.carrying);
 
-        } else if (player.carrying && this.nearTarget(this.playerId)) {
-            player.carrying = false;
-            player.score = player.score + 1; // Increment score
-            //player.score = currentScore; //update in local game
-            
-            // Emit the updated score in playerStates
-            EventBus.emit('player-state-change', this.playerId, {
-              carrying: player.carrying, 
-              score: player.score
-          });
+          // Play animation whens loading water
+          this.playWaterAnimation(this.playerId, currentDirection);
 
-            // play animation when unloading water
-            // placing here means that main player can NOT do the animation whenever they press spacebar (like others who can only when loading or unloading)
-            // regardless of if they are near a target or not. Putting belwo allows them to do it whenever (but not other players).
-            this.playWaterAnimation(this.playerId, currentDirection);
-        }
+      } else if (player.carrying && this.nearTarget(this.playerId)) {
+          player.carrying = false;
+          player.score = player.score + 1; // Increment score
+          //player.score = currentScore; //update in local game
+          
+          // Emit the updated score and carrying
+          EventBus.emit('player-carrying-change', this.playerId, player.carrying);
+          EventBus.emit('player-score-change', this.playerId, player.score);
 
-        // Update indicator visibility
-        player.indicator.visible = player.carrying;
+          // play animation when unloading water
+          // placing here means that main player can NOT do the animation whenever they press spacebar (like others who can only when loading or unloading)
+          // regardless of if they are near a target or not. Putting belwo allows them to do it whenever (but not other players).
+          this.playWaterAnimation(this.playerId, currentDirection);
       }
-  
+
+      // Update indicator visibility
+      player.indicator.visible = player.carrying;
+    }
+
     }
 
     createPlayerAnimations() {
@@ -339,43 +375,6 @@ export class Game extends Scene {
 
     }
 
-    //helpers for movement
-    canMoveTo(id, newPosition) {
-      // Check if the new position is within the map bounds
-      if (newPosition.x < 0 || newPosition.y < 0 || 
-          newPosition.x >= this.trialTilemap.width || newPosition.y >= this.trialTilemap.height) {
-        return false;
-      }
-
-      // Check for collisions with map objects
-      const collisionLayers = this.trialTilemap.layers.filter(layer => layer.properties.collides);
-      for (const layer of collisionLayers) {
-        const tile = this.trialTilemap.getTileAt(newPosition.x, newPosition.y, false, layer.name);
-        if (tile && tile.properties.collides) {
-          return false;
-        }
-      }
-
-      // Check for collisions with other players
-      for (const playerId in this.players) {
-        if (playerId !== id) {
-          const playerPos = this.gridEngine.getPosition(playerId);
-          if (playerPos.x === newPosition.x && playerPos.y === newPosition.y) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    }
-
-    getDirectionFromDelta(dx, dy) {
-      if (dx > 0) return 'right';
-      if (dx < 0) return 'left';
-      if (dy > 0) return 'down';
-      if (dy < 0) return 'up';
-      return null;
-    }
 
     // helpers for carrying
     nearSource(id) {
