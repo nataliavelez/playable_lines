@@ -355,7 +355,7 @@ export class Game extends Scene {
           // Idle animations (using the first frame of each direction)
           this.anims.create({
               key: `idle_${dir}`,
-              frames: this.anims.generateFrameNumbers('bunny', idleAnimsConfig),
+              frames: this.anims.generateFrameNumbers('bunny', idleAnimsConfig[dir]),
               frameRate: 4,
               repeat: -1,
               yoyo: true
