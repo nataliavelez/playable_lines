@@ -11,6 +11,7 @@ export function GridWorld() {
     const players = usePlayers();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
+    const [isReady, setIsReady] = useState(false);
   
     const initializePlayers = () => {
         if (!round.get('playerX')) {
@@ -21,6 +22,7 @@ export function GridWorld() {
             round.set('playerScore', {});
             round.set('playerColor', {});
             round.set('playerName', {});
+            round.set('playerReady', {});
         }
 
         const sortedPlayers = [...players].sort((a, b) => a.id.localeCompare(b.id));
@@ -34,10 +36,14 @@ export function GridWorld() {
                 round.set('playerScore', { ...round.get('playerScore'), [p.id]: 0 });
                 round.set('playerColor', { ...round.get('playerColor'), [p.id]: p.get('color') });
                 round.set('playerName', { ...round.get('playerName'), [p.id]: p.get('participantIdentifier') });
+                round.set('playerReady', { ...round.get('playerReady'), [p.id]: false });
             }
         });
     };
-    initializePlayers();
+
+    useEffect(() => {
+        initializePlayers();
+    }, []);
 
     useEffect(() => {
         const handleVisibilityChange = () => {
@@ -79,11 +85,18 @@ export function GridWorld() {
             }
         };
 
+        const handlePlayerReady = () => {
+            const currentPlayerReady = round.get('playerReady') || {};
+            round.set('playerReady', { ...currentPlayerReady, [player.id]: true });
+            setIsReady(true);
+        };
+
         EventBus.on('player-x-change', handlePlayerXChange);
         EventBus.on('player-y-change', handlePlayerYChange);
         EventBus.on('player-direction-change', handlePlayerDirectionChange);
         EventBus.on('player-carrying-change', handlePlayerCarryingChange);
         EventBus.on('player-score-change', handlePlayerScoreChange);
+        EventBus.on('player-ready', handlePlayerReady);
 
         return () => {
             EventBus.off('player-x-change', handlePlayerXChange);
@@ -91,6 +104,7 @@ export function GridWorld() {
             EventBus.off('player-direction-change', handlePlayerDirectionChange);
             EventBus.off('player-carrying-change', handlePlayerCarryingChange);
             EventBus.off('player-score-change', handlePlayerScoreChange);
+            EventBus.off('player-ready', handlePlayerReady);
         };
     }, []);
 
@@ -104,10 +118,9 @@ export function GridWorld() {
         }
 
     };
-    
-    //if (!round.get('playerStates') || Object.keys(round.get('playerStates')).length !== players.length) {
-    //    return <div>Loading...</div>;
-    //}
+
+    const allPlayersReady = Object.values(round.get('playerReady') || {}).every(ready => ready);
+    console.log("All players ready: ", allPlayersReady);
 
     // Tests
     const setupPerformanceTest = () => {
@@ -193,20 +206,20 @@ export function GridWorld() {
 
     return (
         <div id="app">
-            <PhaserGame 
-                ref={phaserRef} 
-                currentActiveScene={currentScene} 
-                mapName={round.get('mapName')}
-                playerId={player.id}
-                playerX={round.get('playerX')}
-                playerY={round.get('playerY')}
-                playerDirection={round.get('playerDirection')}
-                playerCarrying={round.get('playerCarrying')}
-                playerScore={round.get('playerScore')}
-                playerColor={round.get('playerColor')}
-                playerName={round.get('playerName')} 
-                isVisible={isVisible}
-            />
+                <PhaserGame 
+                    ref={phaserRef} 
+                    currentActiveScene={currentScene} 
+                    mapName={round.get('mapName')}
+                    playerId={player.id}
+                    playerX={round.get('playerX')}
+                    playerY={round.get('playerY')}
+                    playerDirection={round.get('playerDirection')}
+                    playerCarrying={round.get('playerCarrying')}
+                    playerScore={round.get('playerScore')}
+                    playerColor={round.get('playerColor')}
+                    playerName={round.get('playerName')} 
+                    isVisible={isVisible}
+                />
         </div>
     )
 }

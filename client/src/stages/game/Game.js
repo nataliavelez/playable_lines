@@ -88,6 +88,9 @@ export class Game extends Scene {
       EventBus.on('update-player-direction', this.updatePlayerDirection.bind(this));
       EventBus.on('update-player-carrying', this.updatePlayerCarrying.bind(this));
       EventBus.on('update-player-score', this.updatePlayerScore.bind(this));
+
+      //emit that player has loaded everything and is ready
+      EventBus.emit('player-ready');
     }
       
     initPlayers(playerStates, currentPlayerId) {
@@ -240,7 +243,7 @@ export class Game extends Scene {
         if (id === this.playerId) return;
         const player = this.players[id];
         if (player.direction !== direction) {
-          this.gridEngine.turnTowards(id, direction);
+          //this.gridEngine.turnTowards(id, direction);
           player.direction = direction;
         }
       });
