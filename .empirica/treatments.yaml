@@ -115,7 +115,7 @@ treatments:
       exp1MapOrder: "MLH"
       chatEnabled: false
   - desc: "Exp1 Eight Players, MHL"
-    name: Exp1TwoPlayersMHL
+    name: Exp1EightPlayersMHL
     factors:
       playerCount: 8
       numRounds: 6
