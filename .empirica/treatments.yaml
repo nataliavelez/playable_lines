@@ -93,6 +93,34 @@ treatments:
       numRounds: 6
       exp1MapOrder: "MHL"
       chatEnabled: false
+  - desc: "Exp1 Six Players, LMH"
+    name: Exp1SixPlayersLMH
+    factors:
+      playerCount: 6
+      numRounds: 6
+      exp1MapOrder: "LMH"
+      chatEnabled: false
+  - desc: "Exp1 Six Players, HML"
+    name: Exp1SixPlayersHML
+    factors:
+      playerCount: 6
+      numRounds: 6
+      exp1MapOrder: "HML"
+      chatEnabled: false
+  - desc: "Exp1 Six Players, MLH"
+    name: Exp1SixPlayersMLH
+    factors:
+      playerCount: 6
+      numRounds: 6
+      exp1MapOrder: "MLH"
+      chatEnabled: false
+  - desc: "Exp1 Six Players, MHL"
+    name: Exp1SixPlayersMHL
+    factors:
+      playerCount: 6
+      numRounds: 6
+      exp1MapOrder: "MHL"
+      chatEnabled: false
   - desc: "Exp1 Eight Players, LMH"
     name: Exp1EightPlayersLMH
     factors:
