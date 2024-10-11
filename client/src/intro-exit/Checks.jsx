@@ -29,9 +29,9 @@ const originalQuestions = [
       "2 rounds",
       "3 rounds",
       "4 rounds",
-      "5 rounds"
+      "6 rounds"
     ],
-    correctAnswer: 2
+    correctAnswer: 3
   },
   {
     question: "Where can you get water from?",
