@@ -52,6 +52,11 @@ export class Game extends Scene {
           frameWidth: 48,
           frameHeight: 48
       }); 
+
+      // Sounds
+      this.load.audio('success', '352661__foolboymedia__complete-chime.mp3');
+      this.load.audio('othersSuccess', '342759__rhodesmas__score-counter-01.wav');
+      this.load.audio('collectWater', '135936__bradwesson__collectcoin.wav');
     }
 
     create(){
@@ -76,6 +81,11 @@ export class Game extends Scene {
           }
           console.log(layer.depth);
       }
+
+      // Sounds
+      this.collectWaterSound = this.sound.add('collectWater');
+      this.successSound = this.sound.add('success');
+      this.othersSuccessSound = this.sound.add('othersSuccess');
 
       this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
 
@@ -208,16 +218,13 @@ export class Game extends Scene {
             if (currentPos.x !== state.position.x || currentPos.y !== state.position.y || currentDirection !== state.direction) {
               if (this.canMoveTo(id, state.position)) {
                   // Set position first
-                this.gridEngine.setPosition(id, state.position);
-                this.playMoveAnimation(id, currentDirection);
-              }
-            }
-
+                  this.gridEngine.setPosition(id, state.position);
+                  
                   // Immediately set direction after position
-            if (currentDirection !== state.direction) {
-                this.gridEngine.turnTowards(id, state.direction);
-            }
-
+                  if (currentDirection !== state.direction) {
+                      this.gridEngine.turnTowards(id, state.direction);
+                  }
+                  
                   // Play movement animation with the new direction
                   this.playMoveAnimation(id, state.direction);
               }
@@ -232,6 +239,7 @@ export class Game extends Scene {
               if (!state.carrying) {
                 const position = this.gridEngine.getFacingPosition(id);
                 this.createSparkleEffect(position.x, position.y);
+                this.othersSuccessSound.play();
               }
             }
 
@@ -257,7 +265,7 @@ export class Game extends Scene {
         }
   
       if (direction) {
-          this.gridEngine.move(this.playerId, direction);
+        this.gridEngine.move(this.playerId, direction);
       }
 
       // Use space bay to load and unload water
@@ -271,6 +279,7 @@ export class Game extends Scene {
 
             // Play animation whens loading water
             this.playWaterAnimation(this.playerId, currentDirection);
+            this.collectWaterSound.play();
 
         } else if (player.carrying && this.nearTarget(this.playerId)) {
             player.carrying = false;
@@ -288,6 +297,7 @@ export class Game extends Scene {
             // regardless of if they are near a target or not. Putting belwo allows them to do it whenever (but not other players).
             this.playWaterAnimation(this.playerId, currentDirection);
             this.createSparkleEffect(facingPosition.x, facingPosition.y);
+            this.successSound.play();
         }
 
         // Update indicator visibility
@@ -345,6 +355,7 @@ export class Game extends Scene {
     }
 
     //helpers for movement
+    // should just be able to use gridEngine.isTileBlocked() 
     canMoveTo(id, newPosition) {
       // Check if the new position is within the map bounds
       if (newPosition.x < 0 || newPosition.y < 0 || 
