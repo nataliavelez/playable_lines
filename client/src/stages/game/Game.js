@@ -204,16 +204,23 @@ export class Game extends Scene {
             const currentDirection = this.gridEngine.getFacingDirection(id);
             const currentlyCarrying = this.isCarrying(id);
 
-            if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+            if (currentPos.x !== state.position.x || currentPos.y !== state.position.y || currentDirection !== state.direction) {
               if (this.canMoveTo(id, state.position)) {
+                  // Set position first
                 this.gridEngine.setPosition(id, state.position);
                 this.playMoveAnimation(id, currentDirection);
               }
             }
 
+                  // Immediately set direction after position
             if (currentDirection !== state.direction) {
                 this.gridEngine.turnTowards(id, state.direction);
             }
+
+                  // Play movement animation with the new direction
+                  this.playMoveAnimation(id, state.direction);
+              }
+          }
 
             if (currentlyCarrying !== state.carrying) {
               this.players[id].carrying = state.carrying;
