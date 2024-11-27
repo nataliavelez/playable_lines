@@ -1,5 +1,6 @@
 import { EventBus } from './EventBus';
 import { Scene } from 'phaser';
+//import Phaser from 'phaser';
 
 export class Game extends Scene {
     constructor () {
@@ -228,6 +229,10 @@ export class Game extends Scene {
               
               // Play water animation
               this.playWaterAnimation(id, currentDirection);
+              if (!state.carrying) {
+                const position = this.gridEngine.getFacingPosition(id);
+                this.createSparkleEffect(position.x, position.y);
+              }
             }
 
         }
@@ -258,6 +263,7 @@ export class Game extends Scene {
       // Use space bay to load and unload water
       if (Phaser.Input.Keyboard.JustDown(action)) {
         const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
+        const facingPosition = this.gridEngine.getFacingPosition(this.playerId);
 
         if (!player.carrying && this.nearSource(this.playerId)) {
             player.carrying = true;
@@ -281,6 +287,7 @@ export class Game extends Scene {
             // placing here means that main player can NOT do the animation whenever they press spacebar (like others who can only when loading or unloading)
             // regardless of if they are near a target or not. Putting belwo allows them to do it whenever (but not other players).
             this.playWaterAnimation(this.playerId, currentDirection);
+            this.createSparkleEffect(facingPosition.x, facingPosition.y);
         }
 
         // Update indicator visibility
@@ -424,6 +431,38 @@ export class Game extends Scene {
             () => {player.sprite.anims.play('idle_' + direction)}
         );
       }
+    }
+
+    createSparkleEffect(x, y) {
+      console.log(Phaser.GameObjects.Star);
+      // Create particle manager
+      const emitter = this.add.particles(x*32 + 16, y*32 + 16, 'indicator', {
+        x: x,
+        y: y,
+        lifespan: { min: 600, max: 800 },
+        speed: { min: 40, max: 80 },
+        angle: { min: 0, max: 360 },
+        scale: { start: 0.6, end: 0 },
+        quantity: 2,
+        frequency: 25,
+        emitting: true,
+       // particleClass: Phaser.GameObjects.Star,
+        tint: [ 0x10a5f5 ],
+        alpha: { start: 1, end: 0 },
+        blendMode: 'ADD',
+        //points: 5,
+        //innerRadius: 3,
+        //outerRadius: 6,
+        rotate: { min: -180, max: 180 },
+        gravityY: -20  // Makes particles float upward slightly
+    });
+      emitter.setDepth(2);
+
+      // Clean up after animation
+      this.time.delayedCall(750, () => {
+          //console.log('Cleaning up sparkle effect');
+          emitter.destroy();
+      });
     }
 
     handleVisibilityChange = (isVisible) => {
