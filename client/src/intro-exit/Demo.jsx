@@ -19,7 +19,7 @@ export function Demo({ next }) {
         </p>
         <ul className="list-disc list-inside text-sm text-gray-500 space-y-1.5">
           <li>
-            To move your character, use the arrow keys
+            To move your character, <img src="assets/bunny.png" alt="bunny" className="inline-block align-middle w-8 h-8 m-1"></img>, use the arrow keys
             (<span className="key-styling">&larr;</span>
              <span className="key-styling">&uarr;</span>
              <span className="key-styling">&rarr;</span>
