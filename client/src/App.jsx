@@ -5,6 +5,8 @@ import React from "react";
 import { Game } from "./Game";
 import { ExitSurvey } from "./intro-exit/ExitSurvey";
 import { Introduction } from "./intro-exit/Introduction";
+import { Demo } from "./intro-exit/Demo";
+import { MultiplayerInfo } from "./intro-exit/MultiplayerInfo";
 import { Checks } from "./intro-exit/Checks"; 
 import { MyConsent } from "./intro-exit/MyConsent";
 
@@ -16,8 +18,10 @@ export default function App() {
   const url = `${protocol}//${host}/query`;
 
   function introSteps({ game, player }) {
-    return [
+        return [
       Introduction,
+      Demo,
+      MultiplayerInfo,
       Checks
     ];
   }

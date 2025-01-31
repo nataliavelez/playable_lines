@@ -1,5 +1,6 @@
 // UnderstandingCheck.jsx
 import React, { useState, useEffect } from 'react';
+import { usePlayer } from "@empirica/core/player/classic/react";
 import { Button } from "../components/Button"; // Adjust the import path as necessary
 
 const originalQuestions = [
@@ -64,11 +65,15 @@ function shuffleArray(array) {
     return shuffled;
   }
   
-  export function Checks({ previous, next }) {
+  export function Checks({ previous, next}) {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [showResults, setShowResults] = useState(false);
     const [allCorrect, setAllCorrect] = useState(false);
+
+    // save attempts at instruction checks
+    const player = usePlayer();
+    const attempts = player.get("instructionCheckAttempts") || 0;
   
     useEffect(() => {
       const shuffledQuestions = originalQuestions.map(q => {
@@ -100,6 +105,9 @@ function shuffleArray(array) {
   
       setShowResults(true);
       setAllCorrect(score === questions.length);
+
+      // Save attempts to player state
+      player.set("instructionCheckAttempts", attempts + 1);     
     };
   
     if (questions.length === 0) {
@@ -113,34 +121,34 @@ function shuffleArray(array) {
       return (
         <div className="mt-3 sm:mt-5 p-20">
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-            Understanding Check
+        Understanding Check
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {questions.map((q, qIndex) => (
-              <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm font-medium text-gray-900 mb-2">{q.question}</p>
-                {q.options.map((option, oIndex) => (
-                  <div key={oIndex} className="flex items-center mb-2">
-                    <input
-                      type="radio"
-                      id={`q${qIndex}a${oIndex}`}
-                      name={`question${qIndex}`}
-                      checked={answers[qIndex] === oIndex}
-                      onChange={() => handleAnswer(qIndex, oIndex)}
-                      className="mr-2"
-                    />
-                    <label htmlFor={`q${qIndex}a${oIndex}`} className="text-sm text-gray-700">
-                      {option}
-                    </label>
-                  </div>
-                ))}
-                {showResults && (
-                  <p className={`text-sm ${answers[qIndex] === q.correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
-                    {answers[qIndex] === q.correctAnswer ? '✅ Correct!' : '❌ Incorrect'}
-                  </p>
-                )}
-              </div>
+        {questions.map((q, qIndex) => (
+          <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm font-medium text-gray-900 mb-2">{q.question}</p>
+            {q.options.map((option, oIndex) => (
+          <div key={oIndex} className="flex items-center mb-2">
+            <input
+              type="radio"
+              id={`q${qIndex}a${oIndex}`}
+              name={`question${qIndex}`}
+              checked={answers[qIndex] === oIndex}
+              onChange={() => handleAnswer(qIndex, oIndex)}
+              className="mr-2"
+            />
+            <label htmlFor={`q${qIndex}a${oIndex}`} className="text-sm text-gray-700">
+              {option}
+            </label>
+          </div>
             ))}
+            {showResults && (
+          <p className={`text-sm ${answers[qIndex] === q.correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
+            {answers[qIndex] === q.correctAnswer ? '✅ Correct!' : '❌ Incorrect'}
+          </p>
+            )}
+          </div>
+        ))}
           </div>
           {!showResults && (
             <div className="mt-6">
@@ -149,21 +157,29 @@ function shuffleArray(array) {
               </Button>
             </div>
           )}
+          
           {showResults && !allCorrect && (
             <div className="mt-4 p-4 bg-red-100 border border-red-400 rounded-lg">
-              <p className="text-sm text-red-600">You didn't answer all questions correctly. Please review the instructions and try again.</p>
-              <Button handleClick={previous} className="mt-2">
-                Back to Instructions
+              <p className="text-sm text-red-600">
+                Not quite right. Please review your answers and try again. 
+                (Attempt {attempts})
+              </p>
+              <Button handleClick={() => {
+                setShowResults(false);
+                setAnswers(new Array(questions.length).fill(null));
+              }} className="mt-2">
+                Try Again
               </Button>
             </div>
           )}
+
           {showResults && allCorrect && (
-            <div className="mt-4 p-4 bg-green-100 border border-green-400 rounded-lg">
-              <p className="text-sm text-green-600">Well done! You answered all the questions correctly.</p>
-              <Button handleClick={next} className="mt-2">
-                Proceed to Multiplayer Game
-              </Button>
-            </div>
+        <div className="mt-4 p-4 bg-green-100 border border-green-400 rounded-lg">
+          <p className="text-sm text-green-600">Well done! You answered all the questions correctly.</p>
+          <Button handleClick={next} className="mt-2">
+            Proceed to Multiplayer Game
+          </Button>
+        </div>
           )}
         </div>
       );
