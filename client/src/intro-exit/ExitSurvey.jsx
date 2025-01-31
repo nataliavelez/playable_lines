@@ -1,4 +1,4 @@
-import { usePlayer } from "@empirica/core/player/classic/react";
+import { usePlayer, useGame } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
 import { Button } from "../components/Button";
 
@@ -7,6 +7,8 @@ export function ExitSurvey({ next }) {
   const inputClassName =
     "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
   const player = usePlayer();
+  const roundsData = player.get("roundsData") || [];
+  const mapNames = roundsData.map(round => round.mapName);
 
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
@@ -15,6 +17,45 @@ export function ExitSurvey({ next }) {
   const [performanceOthers, setPerformanceOthers] = useState("");
   const [feedback, setFeedback] = useState("");
   const [education, setEducation] = useState("");
+  const [mapFeedback, setMapFeedback] = useState(
+    Object.fromEntries(mapNames.map(name => [name, ""]))
+  );
+  const [gelfandTightness, setGelfandTightness] = useState({
+    socialNorms: "",
+    clearExpectations: "",
+    behaviorAgreement: "",
+    behaviorFreedom: "",
+    inappropriateBehavior: "",
+    normCompliance: ""
+  });
+
+  const gelfandQuestions = [
+    {
+      id: "socialNorms",
+      text: "There are many social norms that people are supposed to abide by in this country."
+    },
+    {
+      id: "clearExpectations",
+      text: "In this country, there are very clear expectations for how people should act in most situations."
+    },
+    {
+      id: "behaviorAgreement",
+      text: "People agree upon what behaviors are appropriate versus inappropriate in most situations this country."
+    },
+    {
+      id: "behaviorFreedom",
+      text: "People in this country have a great deal of freedom in deciding how they want to behave in most situations."
+    },
+    {
+      id: "inappropriateBehavior",
+      text: "In this country, if someone acts in an inappropriate way, others will strongly disapprove."
+    },
+    {
+      id: "normCompliance",
+      text: "People in this country almost always comply with social norms."
+    }
+  ];
+
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -26,6 +67,8 @@ export function ExitSurvey({ next }) {
       performanceOthers,
       feedback,
       education,
+      mapFeedback,
+      gelfandTightness
     });
     next();
   }
@@ -47,10 +90,97 @@ export function ExitSurvey({ next }) {
                 Exit Survey
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                <b>You have finished the game!</b> Please fill out the following form 
-                to complete the experiment.
+                <b>You have finished the game!</b> Now, we’ll ask you to reflect on how you played and what happened.
               </p>
             </div>
+          
+          <div className="space-y-8 mt-6">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900">Map Feedback</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                For each round, tell us a bit about how you played. Did any particular problems or opportunities arise?
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {mapNames.map((mapName, index) => (
+                <div key={mapName} className="space-y-2">
+                  <div className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
+                    <label className={`${labelClassName} block`}>
+                      <b>Round {index + 1}</b>
+                    </label>
+                    <img
+                      src={`/assets/maps/${mapName}.png`}
+                      alt={`Map: ${mapName}`}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <div>
+                    <textarea
+                      rows={3}
+                      className={inputClassName}
+                      value={mapFeedback[mapName]}
+                      onChange={(e) => setMapFeedback(prev => ({
+                        ...prev,
+                        [mapName]: e.target.value
+                      }))}
+                      placeholder="Share your thoughts about this round..."
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>    
+
+          <div className="space-y-8 mt-6">
+  <div>
+    <h3 className="text-lg font-medium text-gray-900">Social Norms Assessment</h3>
+    
+    {/* Scale labels - only above radio buttons */}
+    <div className="grid grid-cols-2 gap-4 mt-4">
+      <div></div> {/* Empty space above question text */}
+      <div className="grid grid-cols-6 gap-2">
+        {[
+          ['Strongly', 'Disagree'],
+          ['Moderately', 'Disagree'],
+          ['Slightly', 'Disagree'],
+          ['Slightly', 'Agree'],
+          ['Moderately', 'Agree'],
+          ['Strongly', 'Agree']
+        ].map(([line1, line2], i) => (
+          <div key={i} className="flex flex-col items-center space-y-0.5">
+            <span className="text-xs text-gray-500">{line1}</span>
+            <span className="text-xs text-gray-500">{line2}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div className="space-y-4">
+      {gelfandQuestions.map(({ id, text }) => (
+        <div key={id} className="grid grid-cols-2 gap-4 items-center">
+          <p className="text-sm text-gray-700">{text}</p>
+          <div className="grid grid-cols-6 gap-2">
+            {[1, 2, 3, 4, 5, 6].map((num) => (
+              <div key={num} className="flex justify-center">
+                <input
+                  type="radio"
+                  name={id}
+                  value={num}
+                  checked={gelfandTightness[id] === num.toString()}
+                  onChange={(e) => setGelfandTightness(prev => ({
+                    ...prev,
+                    [id]: e.target.value
+                  }))}
+                  className="h-4 w-4"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
 
             <div className="space-y-8 mt-6">
               <div className="flex flex-row">
@@ -206,5 +336,26 @@ export function Radio({ selected, name, value, label, onChange }) {
       />
       {label}
     </label>
+  );
+}
+
+// Add RadioGroup component
+export function RadioGroup({ name, value, onChange }) {
+  return (
+    <div className="flex justify-between mt-2 space-x-2">
+      {[1, 2, 3, 4, 5, 6].map((num) => (
+        <label key={num} className="flex flex-col items-center">
+          <input
+            type="radio"
+            name={name}
+            value={num}
+            checked={value === num}
+            onChange={(e) => onChange(parseInt(e.target.value))}
+            className="form-radio h-4 w-4"
+          />
+          <span className="text-xs text-gray-500 mt-1">{num}</span>
+        </label>
+      ))}
+    </div>
   );
 }

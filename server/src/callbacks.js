@@ -50,8 +50,8 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 90 });  
-    round.addStage({ name: "Feedback", duration: 30 });
+    round.addStage({ name: "Game", duration: 5 });  
+    round.addStage({ name: "Feedback", duration: 5 });
 
   }
 
@@ -99,4 +99,19 @@ Empirica.onStageEnded(({ stage }) => {});
 
 Empirica.onRoundEnded(({ round }) => {});
 
-Empirica.onGameEnded(({ game }) => {});
+Empirica.onGameEnded(({ game }) => {
+  // For each player, save their round data
+  game.players.forEach((player) => {
+    // Get all rounds data
+    const roundData = game.rounds.map(round => ({
+      roundNumber: round.get("number"),
+      mapName: round.get("mapName"),
+      universalizability: round.get("universalizability")
+    }));
+
+    // Store rounds data on player for exit survey access
+    player.set("roundsData", roundData);
+    
+    console.log("Saved round data for player:", player.id, roundData);
+  });
+});
