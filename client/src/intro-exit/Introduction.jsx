@@ -17,10 +17,11 @@ export function Introduction({ next }) {
           <img src="assets/test_map.png" alt="map image" className="m-4"></img>
         </div>
         <p className="text-sm text-gray-500">
-          In each environment (round), you will have <b>3 minutes</b> to water the saplings as many times as possible (that is, you can water the same plant more than once).  
-          <b> For each plant you water you will receive $X.XX</b>. 
+          In each environment (round), you will have <b>1 minute 30 seconds</b> to water the saplings as many times as possible (that is, you can water the same plant more than once).  
+          In addition to your base payment for completing this experiment, <b> for each sapling you water you will receive a 2 cent bonus. 
+          Over the course of the entire game, this could result in a total bonus of approximately $1 or $2 dollars!</b>
           <br /><br />
-          On the next page, we explain how to play the game, and then give you a chance to practice by yourself before the game actually begins. Please press 'next' to proceed.   
+          On the next page, we explain how to play the game, and then give you a chance to practice by yourself before the game actually begins with other players. Please press 'next' to proceed.   
           <br /><br />
         </p>
       </div>

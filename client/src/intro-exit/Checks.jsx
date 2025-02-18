@@ -8,7 +8,7 @@ const originalQuestions = [
     question: "What is your goal in the game?",
     options: [
       "Collect as much water as possible",
-      "Water as many plants as possible",
+      "Water as many saplings as possible",
       "Just explore the environment",
       "Look at the cute bunnies"
     ],
@@ -40,12 +40,12 @@ const originalQuestions = [
       "Only from wells",
       "Only from ground water",
       "From wells or ground water",
-      "From plants"
+      "From saplings"
     ],
     correctAnswer: 2
   },
   {
-    question: "How many times can you water each plant?",
+    question: "How many times can you water each sapling?",
     options: [
       "Only once",
       "Twice",
@@ -53,8 +53,71 @@ const originalQuestions = [
       "As many times as you want"
     ],
     correctAnswer: 3
+  },
+  {
+    question: "What is the bonus for watering each sapling?",
+    options: [
+      "There is no bonus",
+      "1 dollar",
+      "5 cents",
+      "2 cents"
+    ],
+    correctAnswer: 3
   }
 ];
+
+const renderWithInlineImages = (text) => {
+  const imageMap = {
+    'sapling': "assets/sapling.png",
+    'well': "assets/Water well.png",
+    'ground water': "assets/Water_1.png"
+  };
+
+  return Object.entries(imageMap).reduce((acc, [keyword, imageSrc]) => {
+    if (typeof acc === 'string') {
+      const regex = new RegExp(`(${keyword}s?)`, 'gi');
+      return acc.split(regex).map((part, index) => {
+        if (part.toLowerCase().startsWith(keyword.toLowerCase())) {
+          return (
+            <React.Fragment key={`${keyword}-${index}`}>
+              {part}
+              <img 
+                src={imageSrc}
+                alt={`${keyword} icon`}
+                className="inline-block align-text-bottom w-4 h-4 ml-1"
+              />
+            </React.Fragment>
+          );
+        }
+        return part;
+      });
+    } else {
+      return acc.map((element, index) => {
+        if (typeof element !== 'string') return element;
+        const regex = new RegExp(`(${keyword}s?)`, 'gi');
+        const parts = element.split(regex);
+        if (parts.length === 1) return element;
+        
+        return parts.map((part, partIndex) => {
+          if (part.toLowerCase().startsWith(keyword.toLowerCase())) {
+            return (
+              <React.Fragment key={`${keyword}-${index}-${partIndex}`}>
+                {part}
+                <img 
+                  src={imageSrc}
+                  alt={`${keyword} icon`}
+                  className="inline-block align-text-bottom w-4 h-4 ml-1"
+                />
+              </React.Fragment>
+            );
+          }
+          return part;
+        });
+      }).flat();
+    }
+  }, text);
+};
+
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -118,30 +181,32 @@ function shuffleArray(array) {
         );
       }
     
-      return (
-        <div className="mt-3 sm:mt-5 p-20">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-        Understanding Check
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {questions.map((q, qIndex) => (
-          <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium text-gray-900 mb-2">{q.question}</p>
-            {q.options.map((option, oIndex) => (
-          <div key={oIndex} className="flex items-center mb-2">
-            <input
-              type="radio"
-              id={`q${qIndex}a${oIndex}`}
-              name={`question${qIndex}`}
-              checked={answers[qIndex] === oIndex}
-              onChange={() => handleAnswer(qIndex, oIndex)}
-              className="mr-2"
-            />
-            <label htmlFor={`q${qIndex}a${oIndex}`} className="text-sm text-gray-700">
-              {option}
-            </label>
-          </div>
-            ))}
+    return (
+      <div className="mt-3 sm:mt-5 p-20">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+          Understanding Check
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {questions.map((q, qIndex) => (
+            <div key={qIndex} className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm font-medium text-gray-900 mb-2">
+                {renderWithInlineImages(q.question)}
+              </p>
+              {q.options.map((option, oIndex) => (
+                <div key={oIndex} className="flex items-center mb-2">
+                  <input
+                    type="radio"
+                    id={`q${qIndex}a${oIndex}`}
+                    name={`question${qIndex}`}
+                    checked={answers[qIndex] === oIndex}
+                    onChange={() => handleAnswer(qIndex, oIndex)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`q${qIndex}a${oIndex}`} className="text-sm text-gray-700">
+                    {renderWithInlineImages(option)}
+                  </label>
+                </div>
+              ))}
             {showResults && (
           <p className={`text-sm ${answers[qIndex] === q.correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
             {answers[qIndex] === q.correctAnswer ? '✅ Correct!' : '❌ Incorrect'}
