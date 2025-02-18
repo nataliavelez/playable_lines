@@ -3,7 +3,10 @@ import { EmpiricaContext } from "@empirica/core/player/classic/react";
 import { EmpiricaMenu, EmpiricaParticipant } from "@empirica/core/player/react";
 import React from "react";
 import { Game } from "./Game";
-import { ExitSurvey } from "./intro-exit/ExitSurvey";
+import { ExitSurvey1 } from "./intro-exit/ExitSurvey1";
+import { ExitSurvey2 } from "./intro-exit/ExitSurvey2";
+import { ExitSurvey3 } from "./intro-exit/ExitSurvey3";
+import { ExitSurvey4 } from "./intro-exit/ExitSurvey4";
 import { Introduction } from "./intro-exit/Introduction";
 import { Demo } from "./intro-exit/Demo";
 import { MultiplayerInfo } from "./intro-exit/MultiplayerInfo";
@@ -27,7 +30,7 @@ export default function App() {
   }
 
   function exitSteps({ game, player }) {
-    return [ExitSurvey];
+    return [ExitSurvey1, ExitSurvey2, ExitSurvey3, ExitSurvey4];
   }
 
   return (
