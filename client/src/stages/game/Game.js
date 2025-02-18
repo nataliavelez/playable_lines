@@ -79,7 +79,7 @@ export class Game extends Scene {
           if (this.trialTilemap.layers[i].name == 'Top View') {
             layer.depth = 10;
           }
-          console.log(layer.depth);
+          //console.log(layer.depth);
       }
 
       // Sounds
@@ -207,7 +207,20 @@ export class Game extends Scene {
 
   // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
-      console.log("Updating player states:", playerStates);
+      console.log("1. Starting updatePlayerStates");
+    
+      // Add multiple safety checks
+      if (!this.scene || !this.scene.manager || !this.gridEngine) {
+          console.log("2. Failed initialization check with:", {
+              hasScene: !!this.scene,
+              hasManager: !!(this.scene && this.scene.manager),
+              hasGridEngine: !!this.gridEngine
+          });
+          console.warn('Scene not fully initialized');
+          return;
+      }
+      
+      console.log("3. Passed initialization check");
       //this means that updates happen in order of player id (might want to randomise or something.)
       Object.entries(playerStates).forEach(([id, state]) => {
           if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
@@ -445,35 +458,46 @@ export class Game extends Scene {
     }
 
     createSparkleEffect(x, y) {
-      console.log(Phaser.GameObjects.Star);
-      // Create particle manager
-      const emitter = this.add.particles(x*32 + 16, y*32 + 16, 'indicator', {
-        x: x,
-        y: y,
-        lifespan: { min: 600, max: 800 },
-        speed: { min: 40, max: 80 },
-        angle: { min: 0, max: 360 },
-        scale: { start: 0.6, end: 0 },
-        quantity: 2,
-        frequency: 25,
-        emitting: true,
-       // particleClass: Phaser.GameObjects.Star,
-        tint: [ 0x10a5f5 ],
-        alpha: { start: 1, end: 0 },
-        blendMode: 'ADD',
-        //points: 5,
-        //innerRadius: 3,
-        //outerRadius: 6,
-        rotate: { min: -180, max: 180 },
-        gravityY: -20  // Makes particles float upward slightly
-    });
-      emitter.setDepth(2);
+      // Add safety checks
+      if (!this.scene || !this.scene.isActive()) {
+        console.warn('Scene not ready for particle effects');
+        return;
+      }
 
-      // Clean up after animation
-      this.time.delayedCall(750, () => {
-          //console.log('Cleaning up sparkle effect');
-          emitter.destroy();
-      });
+      try {
+        // Create particle manager
+          const emitter = this.add.particles(x*32 + 16, y*32 + 16, 'indicator', {
+            x: x,
+            y: y,
+            lifespan: { min: 600, max: 800 },
+            speed: { min: 40, max: 80 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 0.6, end: 0 },
+            quantity: 2,
+            frequency: 25,
+            emitting: true,
+          // particleClass: Phaser.GameObjects.Star,
+            tint: [ 0x10a5f5 ],
+            alpha: { start: 1, end: 0 },
+            blendMode: 'ADD',
+            //points: 5,
+            //innerRadius: 3,
+            //outerRadius: 6,
+            rotate: { min: -180, max: 180 },
+            gravityY: -20  // Makes particles float upward slightly
+        });
+
+        if (emitter) {
+          emitter.setDepth(2);
+          this.time.delayedCall(750, () => {
+              if (emitter && !emitter.destroyed) {
+                  emitter.destroy();
+              }
+          });
+        }
+      } catch (error) {
+        console.warn('Failed to create sparkle effect:', error);
+      }
     }
 
     handleVisibilityChange = (isVisible) => {
