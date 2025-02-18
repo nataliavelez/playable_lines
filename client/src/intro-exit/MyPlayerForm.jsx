@@ -47,7 +47,7 @@ export function MyPlayerForm({ onPlayerID, connecting }) {
                   type="text"
                   required
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-empirica-500 focus:border-empirica-500"
-                  value={prolificId}
+                  value={workerId}
                   onChange={(e) => setWorkerId(e.target.value)}
                 />
               </div>
