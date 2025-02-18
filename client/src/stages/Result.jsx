@@ -21,10 +21,10 @@ export function Result() {
   return (
     <div>
         <h2>Last Round: </h2>
-      <p>You watered {playerRoundScore} plants in the last round! This earned you ${roundEarnings}</p>
+      <p>You watered {playerRoundScore} saplings in the last round! This earned you ${roundEarnings}</p>
       <br /> <br />
         <h2>Overall: </h2>
-      <p>In total, you have watered {playerCumScore} plants and earned ${totalEarnings}. </p>
+      <p>In total, you have watered {playerCumScore} saplings and earned ${totalEarnings}. </p>
       <br /> <br />
       <p>Press the button to continue to the next round</p>
 
