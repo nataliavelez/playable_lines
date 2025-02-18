@@ -1,17 +1,22 @@
 import React from "react";
-import { usePlayer, useRound } from "@empirica/core/player/classic/react";
+import { usePlayer, useRound, useGame } from "@empirica/core/player/classic/react";
 import { Button } from "../components/Button";
 
 export function Result() {
     const player = usePlayer();
     const round = useRound();
+    const game = useGame();
 
     const playerStates = round.get("playerStates");
     const playerRoundScore = playerStates[player.id]?.score; // get the player's score from the round
     const playerCumScore = player.get("cumScore"); // get the player's cumulative score
-  
-    const roundEarnings = (playerRoundScore * 0.10).toFixed(2);
-    const totalEarnings = (playerCumScore * 0.10).toFixed(2);
+
+    // get bonus amount
+    const treatment = game.get("treatment");
+    const centsPerSapling = treatment.bonusPerSapling / 100
+
+    const roundEarnings = (playerRoundScore * centsPerSapling).toFixed(2);
+    const totalEarnings = (playerCumScore * centsPerSapling).toFixed(2);
 
   return (
     <div>
