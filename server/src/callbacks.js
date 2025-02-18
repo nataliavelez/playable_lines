@@ -99,7 +99,7 @@ Empirica.onRoundStart(({ round }) => {
   round.set("startPositions", startPositions);
 
   // Log details of each round
-  console.log(`Round ${roundNumber} map universalizability:`, round.get("mapUniversalizablity"));
+  console.log(`Round ${roundNumber} map universalizability:`, round.get("universalizablity"));
   console.log(`Round ${roundNumber} map name:`, round.get("mapName")); 
   console.log(`Round ${roundNumber} Starting positions:`, round.get("startPositions")); 
 });
@@ -122,7 +122,6 @@ Empirica.onGameEnded(({ game }) => {
 
     // Store rounds data on player for exit survey access
     player.set("roundsData", roundData);
-    
     console.log("Saved round data for player:", player.id, roundData);
   });
 });
