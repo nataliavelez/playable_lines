@@ -12,6 +12,7 @@ import { Demo } from "./intro-exit/Demo";
 import { MultiplayerInfo } from "./intro-exit/MultiplayerInfo";
 import { Checks } from "./intro-exit/Checks"; 
 import { MyConsent } from "./intro-exit/MyConsent";
+import { MyPlayerForm } from "./intro-exit/MyPlayerForm";
 
 export default function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -38,7 +39,11 @@ export default function App() {
       <div className="h-screen relative">
         <EmpiricaMenu position="bottom-left" />
         <div className="h-full overflow-auto">
-          <EmpiricaContext consent={MyConsent} introSteps={introSteps} exitSteps={exitSteps}>
+          <EmpiricaContext 
+            playerCreate={MyPlayerForm}
+            consent={MyConsent} 
+            introSteps={introSteps} 
+            exitSteps={exitSteps}>
             <Game />
           </EmpiricaContext>
         </div>

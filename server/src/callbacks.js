@@ -50,8 +50,8 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 5 });  
-    round.addStage({ name: "Feedback", duration: 5 });
+    round.addStage({ name: "Game", duration: 30 });  
+    round.addStage({ name: "Feedback", duration: 30 });
 
   }
 
@@ -59,10 +59,21 @@ Empirica.onGameStart(({ game }) => {
   // for now just with two players, but need to change for more players
   const colors = ["white", "red", "green", "blue", "yellow", "cyan", "orange", "purple"].slice(0, playerCount);
   const shuffledColors = colors.sort(() => Math.random() - 0.5); //permute colours array
-  game.players.forEach((player, i) => player.set("color", shuffledColors[i]));
-
-  // Set cum score
-  game.players.forEach((player) => player.set("cumScore", 0)); // init cumulative Scores
+  
+  
+  // Set player attributes
+  game.players.forEach((player, i) => {
+    // Parse the JSON string from participantIdentifier
+    const playerData = JSON.parse(player.get("participantIdentifier"));
+    
+    // Set individual fields
+    player.set("workerId", playerData.workerId);
+    player.set("nickname", playerData.nickname);
+    
+    // Initialize other player attributes
+    player.set("cumScore", 0);
+    player.set("color", shuffledColors[i]);
+  });
 });
 
 

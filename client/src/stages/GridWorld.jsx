@@ -30,8 +30,8 @@ export function GridWorld() {
                         carrying: false,
                         score: 0,   
                         color: p.get('color'),
-                        name: p.get('participantIdentifier'),
-                    }
+                        name: p.get('nickname'),
+                    }   
                 });
             }
         });
