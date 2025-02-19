@@ -13,6 +13,7 @@ import { MultiplayerInfo } from "./intro-exit/MultiplayerInfo";
 import { Checks } from "./intro-exit/Checks"; 
 import { MyConsent } from "./intro-exit/MyConsent";
 import { MyPlayerForm } from "./intro-exit/MyPlayerForm";
+import { MyFinished } from "./intro-exit/MyFinished";
 
 export default function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -43,7 +44,8 @@ export default function App() {
             playerCreate={MyPlayerForm}
             consent={MyConsent} 
             introSteps={introSteps} 
-            exitSteps={exitSteps}>
+            exitSteps={exitSteps}
+            finished={MyFinished}>
             <Game />
           </EmpiricaContext>
         </div>
