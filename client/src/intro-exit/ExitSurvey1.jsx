@@ -41,6 +41,7 @@ export function ExitSurvey1({ next }) {
                 Tell us a bit about your strategy for playing the game.  Did you cooperate/coordinate with the other players in some way?
                 </label>
                 <textarea
+                  required
                   rows={3}
                   className={inputClassName}
                   value={strategySelf}
@@ -54,6 +55,7 @@ export function ExitSurvey1({ next }) {
                 How about the other players? Did they cooperate/coordinate?
                 </label>
                 <textarea
+                  required
                   rows={3}
                   className={inputClassName}
                   value={strategyOthers}
@@ -68,6 +70,7 @@ export function ExitSurvey1({ next }) {
                 Is there anything else you’d like to tell us about your experience in the experiment?
                 </label>
                 <textarea
+                  required
                   rows={3}
                   className={inputClassName}
                   value={feedback}
