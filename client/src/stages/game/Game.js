@@ -1,11 +1,13 @@
 import { EventBus } from './EventBus';
 import { Scene } from 'phaser';
+import _ from 'lodash';
 //import Phaser from 'phaser';
 
 export class Game extends Scene {
     constructor () {
         super('Game');
         this.isVisible = true;
+        this.handleAllPlayersLoaded = this.handleAllPlayersLoaded.bind(this);
 
         // TO DO, move this elswhere, prob just need to have the numbers in the vallback
         this.playerColors = {
@@ -22,7 +24,66 @@ export class Game extends Scene {
         // to allow for better updating 
         //this.lastMoveTime = 0;
         //this.moveDelay = 100;
+        // Throttle function to limit updates to every 100ms
+        this.emitPlayerStateChange = _.throttle((playerId, updates) => {
+          EventBus.emit('player-state-change', playerId, updates);
+        }, 100); // Limits updates to every 100ms
     }
+
+    createWaitingOverlay() {
+      // Create semi-transparent black overlay
+      this.waitingOverlay = this.add.rectangle(0, 0, 
+          this.cameras.main.width, 
+          this.cameras.main.height, 
+          0x000000, 0.7);
+      this.waitingOverlay.setOrigin(0);
+      this.waitingOverlay.setDepth(999);  // High depth to appear on top
+  
+      // Create "Waiting for players" text
+      this.waitingText = this.add.text(
+          this.cameras.main.width / 2,
+          this.cameras.main.height / 2,
+          'Waiting for all players...',
+          {
+              font: '24px Arial',
+              fill: '#ffffff'
+          }
+      );
+      this.waitingText.setOrigin(0.5);
+      this.waitingText.setDepth(1000);  // Even higher depth than overlay
+    }
+
+    setWaitingState(isWaiting) {
+      console.log('Setting waiting state:', isWaiting);
+      if (this.waitingOverlay && this.waitingText) {
+          this.waitingOverlay.visible = isWaiting;
+          this.waitingText.visible = isWaiting;
+          
+          // Disable input while waiting
+          this.input.keyboard.enabled = !isWaiting;
+      }
+    }
+
+    shutdown() {
+      // Clear all event listeners
+      this.events.removeAllListeners();
+      
+      // Clear sounds
+      if (this.othersSuccessSound) {
+          this.othersSuccessSound.destroy();
+      }
+      
+      // Clear grid engine
+      if (this.gridEngine) {
+          this.gridEngine.removeAllCharacters();
+      }
+
+      // Clear player references
+      this.players = {};
+      this.playerId = null;
+
+      EventBus.off('all-players-loaded', this.handleAllPlayersLoaded);
+  }
 
     init() {
       // get map name from registry
@@ -93,7 +154,31 @@ export class Game extends Scene {
       EventBus.on('update-player-states', this.updatePlayerStates.bind(this));
       EventBus.on('visibility-change', this.handleVisibilityChange.bind(this));
       //console.log("Game scene created");
+
+     // Get playerId from registry first
+     this.playerId = this.registry.get("playerId");
+
+      // ✅ Ensure event listener is set BEFORE emitting game-loaded
+      EventBus.on('all-players-loaded', this.handleAllPlayersLoaded.bind(this));
+
+      // ✅ Log to check if event listener is active
+      console.log(`🎧 Listening for all-players-loaded in player: ${this.registry.get("playerId")}`);
+
+      // ✅ Emit game-loaded after ensuring listener is ready
+      console.log(`🎮 Emitting game-loaded for player: ${this.playerId}`);
+      EventBus.emit('game-loaded', this.playerId);
     }
+
+    handleAllPlayersLoaded(allLoaded) {
+      console.log('📢 Received all-players-loaded event:', allLoaded);
+      
+      if (allLoaded) {
+          console.log('✅ All players confirmed loaded! Removing waiting overlay.');
+          this.setWaitingState(false);
+      } else {
+          console.warn('❌ Unexpected: allLoaded was false!');
+      }
+  }
       
     initPlayers(playerStates, currentPlayerId) {
         this.playerId = currentPlayerId;
@@ -191,7 +276,7 @@ export class Game extends Scene {
               player.sprite.anims.play(`idle_${direction}`, true);
           }
           if (charId === this.playerId) {
-            EventBus.emit('player-state-change', this.playerId, { direction: direction } );
+            this.emitPlayerStateChange(this.playerId, { direction: direction } );
         }
       });
   
@@ -199,7 +284,7 @@ export class Game extends Scene {
           console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
           const direction = this.gridEngine.getFacingDirection(charId);
           if (charId === this.playerId) {
-              EventBus.emit('player-state-change', this.playerId, { x: enterTile.x, y: enterTile.y, direction: direction } );
+            this.emitPlayerStateChange(this.playerId, { x: enterTile.x, y: enterTile.y, direction: direction } );
           }
       });
 
@@ -207,20 +292,17 @@ export class Game extends Scene {
 
   // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
-      console.log("1. Starting updatePlayerStates");
-    
-      // Add multiple safety checks
-      if (!this.scene || !this.scene.manager || !this.gridEngine) {
-          console.log("2. Failed initialization check with:", {
-              hasScene: !!this.scene,
-              hasManager: !!(this.scene && this.scene.manager),
-              hasGridEngine: !!this.gridEngine
-          });
-          console.warn('Scene not fully initialized');
-          return;
+      // Only check for critical dependencies
+      if (!this.scene || !this.gridEngine) {
+        console.warn('Critical game components not initialized, queuing update...');
+        // Queue update for next frame if scene isn't ready
+        this.events.once('update', () => {
+            this.updatePlayerStates(playerStates);
+        });
+        return;
       }
       
-      console.log("3. Passed initialization check");
+      console.log("Passed initialization check");
       //this means that updates happen in order of player id (might want to randomise or something.)
       Object.entries(playerStates).forEach(([id, state]) => {
           if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
@@ -252,7 +334,14 @@ export class Game extends Scene {
               if (!state.carrying) {
                 const position = this.gridEngine.getFacingPosition(id);
                 this.createSparkleEffect(position.x, position.y);
-                this.othersSuccessSound.play();
+                // Only play sound if sound system is ready
+                if (this.isVisible && this.othersSuccessSound) {
+                  try {
+                    this.othersSuccessSound.play();
+                  } catch (error) {
+                    console.warn('⚠️ Failed to play sound:', error);
+                  }
+                }
               }
             }
 
@@ -458,9 +547,11 @@ export class Game extends Scene {
     }
 
     createSparkleEffect(x, y) {
-      // Add safety checks
-      if (!this.scene || !this.scene.isActive()) {
-        console.warn('Scene not ready for particle effects');
+    // Queue sparkle effect if scene not ready
+      if (!this.scene?.manager) {
+        this.events.once('update', () => {
+            this.createSparkleEffect(x, y);
+        });
         return;
       }
 
@@ -503,5 +594,6 @@ export class Game extends Scene {
     handleVisibilityChange = (isVisible) => {
       this.isVisible = isVisible;
     }
+    
     
 }

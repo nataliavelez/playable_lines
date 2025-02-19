@@ -16,7 +16,6 @@ export function GridWorld() {
             round.set('playerStates', {});
         }
 
-
         //players order is different for different players, so can't just do this. 
         const sortedPlayers = [...players].sort((a, b) => a.id.localeCompare(b.id));
         sortedPlayers.forEach((p, i) => {
@@ -39,18 +38,49 @@ export function GridWorld() {
     initializePlayers();
 
     useEffect(() => {
-        const handleVisibilityChange = () => {
-            setIsVisible(!document.hidden);
-            EventBus.emit('visibility-change', !document.hidden);
+        if (!Array.isArray(round.get('loadedPlayers'))) {
+            console.log('⚠️ Fixing loadedPlayers state (was not an array)');
+            round.set('loadedPlayers', []);
+        }
+    
+        if (!round.get('allPlayersLoaded')) {
+            round.set('allPlayersLoaded', false);
+        }
+    
+        const handleGameLoaded = (loadedPlayerId) => {
+            console.log(`🔹 Player ${loadedPlayerId} just loaded`);
+    
+            const loadedPlayers = round.get('loadedPlayers') || [];
+    
+            // 🔥 Ensure no duplicates and force sync across clients
+            const newLoadedPlayers = [...new Set([...loadedPlayers, loadedPlayerId])];
+    
+            console.log(`🔹 New loaded players:`, newLoadedPlayers, `Total needed: ${players.length}`);
+    
+            round.set('loadedPlayers', newLoadedPlayers);
+    
+            // 🔥 RECHECK AFTER A SHORT DELAY (ensures data syncs properly)
+            setTimeout(() => {
+                const finalCheck = round.get('loadedPlayers') || [];
+                console.log(`🔍 Final verification of loadedPlayers:`, finalCheck);
+    
+                if (finalCheck.length === players.length && !round.get('allPlayersLoaded')) {
+                    console.log('✅ All players loaded! Emitting event.');
+                    round.set('allPlayersLoaded', true);
+                    EventBus.emit('all-players-loaded', true);
+                }
+            }, 500);
         };
-
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-
+    
+        EventBus.on('game-loaded', handleGameLoaded);
+    
         return () => {
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            EventBus.off('game-loaded', handleGameLoaded);
         };
-    }, []);
-
+    }, [players, round]);
+    
+    
+    
     useEffect(() => {
 
         const handlePlayerStateChange = (playerId, updates) => {
@@ -104,8 +134,26 @@ export function GridWorld() {
             EventBus.off('player-state-change', handlePlayerStateChange);
         };
     }, []);
+    
+    useEffect(() => {
+        if (!round.get('browserActive')) {
+            round.set('browserActive', []);
+        }
+    
+    // Append the new activity update to the existing array
+        round.set('browserActive', [
+            ...(round.get('browserActive') || []),
+            {
+                playerId: player.id,
+                browserActive: isVisible,
+                timestamp: Date.now()
+            }
+        ]);
 
+        console.log(`🔄 Updated browser activity for ${player.id}: ${isVisible} at ${new Date().toISOString()}`);
+    }, [isVisible])
 
+    
 
     const currentScene = (scene) => {
         // Allow player to submit to move to next stage, 
