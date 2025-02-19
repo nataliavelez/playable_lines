@@ -80,16 +80,16 @@ export function GridWorld() {
     }, [players, round]);
     
     
-    
+    // handle player state changes, and update to empirica state
     useEffect(() => {
 
         const handlePlayerStateChange = (playerId, updates) => {
             round.set('playerStates', {
                 ...round.get('playerStates'),
                 [playerId]: {
-                    ...round.get('playerStates')[playerId],
+                    ...round.get('playerStates')[playerId], 
                     ...(updates.x !== undefined || updates.y !== undefined ? {
-                        position: {
+                        position: { 
                             ...round.get('playerStates')[playerId].position,
                             ...(updates.x !== undefined ? { x: updates.x } : {}),
                             ...(updates.y !== undefined ? { y: updates.y } : {})
@@ -125,6 +125,7 @@ export function GridWorld() {
                 }
             ]);
             console.log('updates:', round.get('stateUpdates'));
+            //EventBus.emit('update-player-states', newPlayerStates);
         };
 
         EventBus.on('player-state-change', handlePlayerStateChange);
@@ -134,6 +135,41 @@ export function GridWorld() {
             EventBus.off('player-state-change', handlePlayerStateChange);
         };
     }, []);
+
+    // handle move request to make sure player doesn't collide with other players
+    useEffect(() => {
+        const handleMoveRequest = (playerId, move) => {
+            const playerStates = round.get('playerStates') || {};
+            const currentDirection = playerStates[playerId].direction;
+
+            // Only check for player collisions since obstacles were already checked
+            const playerCollision = Object.entries(playerStates).some(([otherId, p]) =>
+                otherId !== playerId && 
+                p.position.x === move.x && 
+                p.position.y === move.y
+            );
+        
+            if (!playerCollision) {
+                // Use handlePlayerStateChange through EventBus to ensure updates
+                EventBus.emit('player-state-change', playerId, {
+                    x: move.x,
+                    y: move.y,
+                    direction: move.direction
+                });
+
+            } else if (currentDirection !== move.direction) {
+                EventBus.emit('player-state-change', playerId, {
+                    direction: move.direction
+                });     
+            }
+        };
+        
+        EventBus.on('move-request', handleMoveRequest);
+        return () => {
+            EventBus.off('move-request', handleMoveRequest);
+        };
+    }, []);
+    
     
     useEffect(() => {
         if (!round.get('browserActive')) {

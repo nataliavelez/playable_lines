@@ -25,9 +25,9 @@ export class Game extends Scene {
         //this.lastMoveTime = 0;
         //this.moveDelay = 100;
         // Throttle function to limit updates to every 100ms
-        this.emitPlayerStateChange = _.throttle((playerId, updates) => {
-          EventBus.emit('player-state-change', playerId, updates);
-        }, 100); // Limits updates to every 100ms
+        this.emitMoveRequest = _.throttle((playerId, move) => {
+          EventBus.emit('move-request', playerId, move);
+        }, 300); // Limit to one move every 100ms
     }
 
     createWaitingOverlay() {
@@ -244,169 +244,147 @@ export class Game extends Scene {
           player.sprite.play(`idle_${direction}`);
       });
 
-        this.setupGridEngineEvents();
         //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
     }
 
-    setupGridEngineEvents() {
-      this.gridEngine.movementStarted().subscribe(({ charId, direction }) => {
-          console.log(`Movement started for ${charId} in direction ${direction}`);
-          const player = this.players[charId];
-          if (player && player.sprite.anims) {
-              player.sprite.anims.play(`walk_${direction}`, true);
-          }
-      });
-  
-      this.gridEngine.movementStopped().subscribe(({ charId, direction }) => {
-          console.log(`Movement stopped for ${charId} in direction ${direction}`);
-          const player = this.players[charId];
 
-          //animations
-          if (player && player.sprite.anims) {
-              player.sprite.anims.stop();
-              player.sprite.anims.play(`idle_${direction}`, true);
-          }  
-
-      });
-  
-      this.gridEngine.directionChanged().subscribe(({ charId, direction }) => {
-          console.log(`direction changed for ${charId} in direction ${direction}`);
-          const player = this.players[charId];
-          if (player && player.sprite.anims) {
-              player.sprite.anims.play(`idle_${direction}`, true);
-          }
-          if (charId === this.playerId) {
-            this.emitPlayerStateChange(this.playerId, { direction: direction } );
-        }
-      });
-  
-      this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
-          console.log(`Position change started for ${charId} from (${exitTile.x}, ${exitTile.y}) to (${enterTile.x}, ${enterTile.y})`)
-          const direction = this.gridEngine.getFacingDirection(charId);
-          if (charId === this.playerId) {
-            this.emitPlayerStateChange(this.playerId, { x: enterTile.x, y: enterTile.y, direction: direction } );
-          }
-      });
-
-    }
-
-  // Gets states for all other players from empirica and does stuff in the game with them
+    // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
-      // Only check for critical dependencies
-      if (!this.scene || !this.gridEngine) {
-        console.warn('Critical game components not initialized, queuing update...');
-        // Queue update for next frame if scene isn't ready
-        this.events.once('update', () => {
-            this.updatePlayerStates(playerStates);
-        });
-        return;
-      }
-      
-      console.log("Passed initialization check");
-      //this means that updates happen in order of player id (might want to randomise or something.)
-      Object.entries(playerStates).forEach(([id, state]) => {
-          if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
-            const currentPos = this.gridEngine.getPosition(id);
-            const currentDirection = this.gridEngine.getFacingDirection(id);
-            const currentlyCarrying = this.isCarrying(id);
 
-            if (currentPos.x !== state.position.x || currentPos.y !== state.position.y || currentDirection !== state.direction) {
-              if (this.canMoveTo(id, state.position)) {
-                  // Set position first
+      Object.entries(playerStates).forEach(([id, state]) => {
+          if (!this.gridEngine.hasCharacter(id)) {
+              console.warn(`Character ${id} not found in GridEngine`);
+              return;
+          }
+
+          const currentPos = this.gridEngine.getPosition(id);
+          const currentDirection = this.gridEngine.getFacingDirection(id);
+          const currentlyCarrying = this.isCarrying(id);
+
+          // Handle position and direction changes
+          if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+              // Only update position if the tile isn't blocked
+              if (!this.gridEngine.isTileBlocked(state.position)) {
                   this.gridEngine.setPosition(id, state.position);
                   
-                  // Immediately set direction after position
-                  if (currentDirection !== state.direction) {
-                      this.gridEngine.turnTowards(id, state.direction);
-                  }
-                  
-                  // Play movement animation with the new direction
+                  // Play movement animation
                   this.playMoveAnimation(id, state.direction);
               }
           }
 
-            if (currentlyCarrying !== state.carrying) {
+          // Handle direction changes separately
+          if (currentDirection !== state.direction) {
+              this.gridEngine.turnTowards(id, state.direction);
+          }
+
+          // Handle carrying state changes
+          if (currentlyCarrying !== state.carrying) {
               this.players[id].carrying = state.carrying;
               this.players[id].indicator.visible = state.carrying;
               
               // Play water animation
               this.playWaterAnimation(id, currentDirection);
+              
+              // Handle water drop-off effects
               if (!state.carrying) {
-                const position = this.gridEngine.getFacingPosition(id);
-                this.createSparkleEffect(position.x, position.y);
-                // Only play sound if sound system is ready
-                if (this.isVisible && this.othersSuccessSound) {
-                  try {
-                    this.othersSuccessSound.play();
-                  } catch (error) {
-                    console.warn('⚠️ Failed to play sound:', error);
+                  const position = this.gridEngine.getFacingPosition(id);
+                  this.createSparkleEffect(position.x, position.y);
+                  
+                  // Play sound if visible and sound system is ready
+                  if (this.isVisible && this.othersSuccessSound) {
+                      try {
+                          this.othersSuccessSound.play();
+                      } catch (error) {
+                          console.warn('⚠️ Failed to play sound:', error);
+                      }
                   }
-                }
               }
-            }
-
-        }
-    });
-}
-
-    update() {
-      if (!this.playerId) return;
-        const cursors = this.input.keyboard.createCursorKeys();
-        const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        let direction = null;
-        let player = this.players[this.playerId];
-      
-        if (cursors.left.isDown) { 
-          direction = "left";
-        } else if (cursors.right.isDown) {
-            direction = "right";
-        } else if (cursors.up.isDown) {
-            direction = "up";
-        } else if (cursors.down.isDown) {
-            direction = "down";
-        }
-  
-      if (direction) {
-        this.gridEngine.move(this.playerId, direction);
-      }
-
-      // Use space bay to load and unload water
-      if (Phaser.Input.Keyboard.JustDown(action)) {
-        const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
-        const facingPosition = this.gridEngine.getFacingPosition(this.playerId);
-
-        if (!player.carrying && this.nearSource(this.playerId)) {
-            player.carrying = true;
-            EventBus.emit('player-state-change', this.playerId, {carrying: player.carrying});
-
-            // Play animation whens loading water
-            this.playWaterAnimation(this.playerId, currentDirection);
-            this.collectWaterSound.play();
-
-        } else if (player.carrying && this.nearTarget(this.playerId)) {
-            player.carrying = false;
-            player.score = player.score + 1; // Increment score
-            //player.score = currentScore; //update in local game
-            
-            // Emit the updated score in playerStates
-            EventBus.emit('player-state-change', this.playerId, {
-              carrying: player.carrying, 
-              score: player.score
-          });
-
-            // play animation when unloading water
-            // placing here means that main player can NOT do the animation whenever they press spacebar (like others who can only when loading or unloading)
-            // regardless of if they are near a target or not. Putting belwo allows them to do it whenever (but not other players).
-            this.playWaterAnimation(this.playerId, currentDirection);
-            this.createSparkleEffect(facingPosition.x, facingPosition.y);
-            this.successSound.play();
-        }
-
-        // Update indicator visibility
-        player.indicator.visible = player.carrying;
-      }
-  
+          }
+      });
     }
+
+    update(time) {
+      if (!this.playerId) return;
+  
+      const cursors = this.input.keyboard.createCursorKeys();
+      const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  
+      let direction = null;
+      let player = this.players[this.playerId];
+  
+      // Movement cooldown (adjust delay as needed)
+      const moveDelay = 200; // Move every 200ms
+      if (!this.lastMoveTime || time - this.lastMoveTime > moveDelay) {
+          if (!this.isMoving) { // Prevent multiple moves per key press
+              if (cursors.left.isDown) direction = "left";
+              else if (cursors.right.isDown) direction = "right";
+              else if (cursors.up.isDown) direction = "up";
+              else if (cursors.down.isDown) direction = "down";
+  
+              if (direction) {
+                  this.isMoving = true; // Lock movement to prevent duplicates
+  
+                  const currentPos = this.gridEngine.getPosition(this.playerId);
+                  const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
+                  const newPosition = this.getNewPosition(currentPos, direction);
+  
+                  if (this.gridEngine.isTileBlocked(newPosition)) {
+                      // If movement is blocked, still change direction
+                      if (currentDirection !== direction) {
+                          EventBus.emit('player-state-change', this.playerId, { direction: direction });
+                      }
+                  } else {
+                      // Move player if tile is not blocked
+                      this.emitMoveRequest(this.playerId, {
+                          x: newPosition.x,
+                          y: newPosition.y,
+                          direction: direction
+                      });
+                  }
+  
+                  this.lastMoveTime = time; // Update Phaser's time tracker
+                  
+                  // 🔥 Unlock movement after short delay
+                  this.time.delayedCall(moveDelay, () => {
+                      this.isMoving = false;
+                  });
+              }
+          }
+      }
+  
+      // Handle spacebar action for carrying water
+      if (Phaser.Input.Keyboard.JustDown(action)) {
+          const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
+          const facingPosition = this.gridEngine.getFacingPosition(this.playerId);
+  
+          if (!player.carrying && this.nearSource(this.playerId)) {
+              player.carrying = true;
+              EventBus.emit('player-state-change', this.playerId, { carrying: player.carrying });
+  
+              this.playWaterAnimation(this.playerId, currentDirection);
+              this.collectWaterSound.play();
+  
+          } else if (player.carrying && this.nearTarget(this.playerId)) {
+              player.carrying = false;
+              player.score = player.score + 1;
+  
+              EventBus.emit('player-state-change', this.playerId, {
+                  carrying: player.carrying,
+                  score: player.score
+              });
+  
+              this.playWaterAnimation(this.playerId, currentDirection);
+              this.createSparkleEffect(facingPosition.x, facingPosition.y);
+              this.successSound.play();
+          }
+  
+          player.indicator.visible = player.carrying;
+      }
+  }
+  
+  
+  
+
 
     createPlayerAnimations() {
       console.log("Creating player animations")
@@ -457,35 +435,10 @@ export class Game extends Scene {
     }
 
     //helpers for movement
-    // should just be able to use gridEngine.isTileBlocked() 
-    canMoveTo(id, newPosition) {
-      // Check if the new position is within the map bounds
-      if (newPosition.x < 0 || newPosition.y < 0 || 
-          newPosition.x >= this.trialTilemap.width || newPosition.y >= this.trialTilemap.height) {
-        return false;
-      }
-
-      // Check for collisions with map objects
-      const collisionLayers = this.trialTilemap.layers.filter(layer => layer.properties.collides);
-      for (const layer of collisionLayers) {
-        const tile = this.trialTilemap.getTileAt(newPosition.x, newPosition.y, false, layer.name);
-        if (tile && tile.properties.collides) {
-          return false;
-        }
-      }
-
-      // Check for collisions with other players
-      for (const playerId in this.players) {
-        if (playerId !== id) {
-          const playerPos = this.gridEngine.getPosition(playerId);
-          if (playerPos.x === newPosition.x && playerPos.y === newPosition.y) {
-            return false;
-          }
-        }
-      }
-
-      return true;
+    canMoveTo(newPosition) {
+      return !this.gridEngine.isTileBlocked(newPosition);
     }
+  
 
     getNewPosition(currentPos, direction) {
       switch (direction) {
