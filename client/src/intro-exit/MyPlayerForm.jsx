@@ -7,10 +7,14 @@ export function MyPlayerForm({ onPlayerID, connecting }) {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    console.log("URL search params:", urlParams.toString());
     const workerId = urlParams.get("workerId");
+    console.log("Found workerId:", workerId);
+    
     if (workerId) {
       setWorkerId(workerId);
       setIsAutodetected(true);
+      console.log("Set workerId and isAutodetected to true");
     }
   }, []);
 
