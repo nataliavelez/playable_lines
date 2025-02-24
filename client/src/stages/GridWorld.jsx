@@ -24,7 +24,16 @@ export function GridWorld() {
         };
     }, []);
     
-    
+    //visibility change listener
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            setIsVisible(!document.hidden);
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
+
+    // saving visibility changes to the round
     useEffect(() => {
         if (!round.get('browserActive')) {
             round.set('browserActive', []);
