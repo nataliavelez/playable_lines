@@ -244,11 +244,7 @@ export class Game extends Scene {
     // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
       Object.entries(playerStates).forEach(([id, state]) => {
-          if (!this.gridEngine.hasCharacter(id)) {
-              console.warn(`Character ${id} not found in GridEngine`);
-              return;
-          }
-
+        if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
           const currentPos = this.gridEngine.getPosition(id);
           const currentDirection = this.gridEngine.getFacingDirection(id);
           const currentlyCarrying = this.isCarrying(id);
@@ -315,9 +311,10 @@ export class Game extends Scene {
                   const newPosition = this.getNewPosition(currentPos, direction);
   
                       // Move player if tile is not blocked
-                  EventBus.emit("moveRequest",{
-                      x: newPosition.x,
-                      y: newPosition.y,
+          this.gridEngine.move(this.playerId, direction);
+          EventBus.emit("moveRequest", {
+              curPos: currentPos,
+              newPos: newPosition,
                       direction: direction
                   });
 

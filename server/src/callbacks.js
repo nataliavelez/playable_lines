@@ -2,8 +2,6 @@ import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 import { getMapInfo } from './getMapInfo.js';
 
 export const Empirica = new ClassicListenersCollector();
-// To run GridEngineHeadless on the server 
-import { GridEngineHeadless, ArrayTilemap, CollisionStrategy } from 'grid-engine';
 import fs from "fs";
 import path from "path";
 
@@ -127,22 +125,16 @@ Empirica.onRoundStart(({ round }) => {
   round.set('playerStates', playerStates); // set 
   console.log("🔹 Server initialized player states:", round.get("playerStates"));
 
-  // Get tilemap (in array form from the map json file)
-  const tilemap = processTilemap(mapName);
-  console.log("🔹 Server loaded tilemap:", tilemap);
+  // Get obstacles from tilemap and make bitmash
+  const obstacles = getObstaclesFromTilemap(mapName);
+  const obstaclesBitmask = setToBitmask(obstacles);
 
-  // Initialize GridEngine
-  const gridEngine = new GridEngineHeadless();
-  gridEngine.create(tilemap, {
-    characters: Object.entries(playerStates).map(([id, state]) => ({
-      id,
-      position: state.position,
-      speed: 2.5
-    })),
-    characterCollisionStrategy: CollisionStrategy.BLOCK_ONE_TILE_AHEAD
-  });
-  console.log("🔹 Server initialized GridEngine:", gridEngine);
-  round.set('gridEngine', gridEngine);
+  round.set("obstacles", obstacles);
+  round.set("obstaclesBitmask", obstaclesBitmask);
+
+  //  get player positions into bitmask
+  const playerPosSet = new Set(startPositions.map(({ x, y }) => `${x},${y}`));
+  round.set("playerPosBitmask", setToBitmask(playerPosSet));
 
 });
 
@@ -171,31 +163,35 @@ Empirica.onGameEnded(({ game }) => {
 });
 
 //function to move game in server
-Empirica.on("player", "moveRequest", ({ player, round, moveRequest }) => {
-    const gridEngine = round.get("gridEngine");
-    const playerId = player.id;
+Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
+  //get vars
+  const round = player.currentRound;
+  const { curPos, newPos, direction } = moveRequest;
+  const obstaclesBitmask = round.get("obstaclesBitmask");
+  const playerPosBitmask = round.get("playerPosBitmask");
+  //console.log("🔹 Player move request:", moveRequest);
 
-    if (!gridEngine) {
-        console.error("❌ GridEngine instance not found on server!");
-        return;
-    }
-
-      gridEngine.move(playerId, moveRequest.direction);
-
-      // Get the new position after movement
-      const newPos = gridEngine.getPosition(playerId);
-      const newDir = gridEngine.getFacingDirection(playerId);
+  // Check and make move if valid
+  if (
+    newPos.x >= 0 && newPos.x < 16 && newPos.y >= 0 && newPos.y < 16 &&
+    !(obstaclesBitmask[newPos.x] & (1 << newPos.y)) &&  // Check static obstacles
+    !(playerPosBitmask[newPos.x] & (1 << newPos.y))     // Check dynamic entities
+  ) {
+    //move player in bitmask and save
+    playerPosBitmask[curPos.x] ^= (1 << curPos.y); // Remove old position
+    playerPosBitmask[newPos.x] |= (1 << newPos.y); // Add new position
+    round.set("playerPosBitmask", playerPosBitmask);
 
       // Update the authoritative state
-      const playerStates = round.get("playerStates") || {};
-      playerStates[playerId].position = newPos;
-      playerStates[playerId].direction = newDir;
-
+    const playerStates = round.get("playerStates")
+    playerStates[player.id].position = newPos;
+    playerStates[player.id].direction = direction;
       round.set("playerStates", playerStates);
+  }
 });
 
 // Function to process Tilemap from JSON file
-function processTilemap(mapName) {
+function getObstaclesFromTilemap(mapName) {
   // Read the JSON file
   filePath = path.resolve("../client/public/assets/maps", `${mapName}.json`);
   const fileContent = fs.readFileSync(filePath, "utf8");
@@ -207,21 +203,41 @@ function processTilemap(mapName) {
   if (!obstaclesLayer) {
     throw new Error("Layer 'obstacles' not found");
   }
-
-  // Extract dimensions
   const { width, height, data } = obstaclesLayer;
+  // Extract (x, y) coordinates of all non-zero values
+  const staticObstacles = new Set();
 
-  // Convert data: replace every non-0 value with 1
-  const transformedData = Array.from({ length: height }, (_, row) =>
-    data.slice(row * width, (row + 1) * width).map(value => (value !== 0 ? 1 : 0))
-  );
-
-  // Create the tilemap object
-  const tilemap = new ArrayTilemap({
-    someLayer: {
-      data: transformedData
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const index = y * width + x;
+      if (data[index] !== 0) {
+        staticObstacles.add(`${x},${y}`); // Store as "x,y"
+      }
     }
-  });
+  }
+  return staticObstacles;
+}
 
-  return tilemap;
+function setToBitmask(set) {
+  const bitmask = new Uint16Array(16); // Initialize empty bitmask
+
+  for (const pos of set) {
+      const [x, y] = pos.split(',').map(Number);
+      if (x >= 0 && x < 16 && y >= 0 && y < 16) {
+          bitmask[x] |= (1 << y); // Set bit at (x, y)
+      }
+  }
+  return bitmask;
+}
+
+
+function arrayToBitmask(arr) {
+  const bitmask = new Uint16Array(16); // Initialize bitmask
+
+  for (const { x, y } of arr) {
+      if (x >= 0 && x < 16 && y >= 0 && y < 16) {
+          bitmask[x] |= (1 << y); // Set bit at (x, y)
+    }
+  }
+  return bitmask;
 }
