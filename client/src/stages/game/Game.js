@@ -232,11 +232,18 @@ export class Game extends Scene {
 
           // Handle position and direction changes
           if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-          if(this.isVisible) {
+          if (id === this.playerId) {
+            // Local player moves smoothly
+            if (this.isVisible) {
               this.gridEngine.move(id, state.direction);
               this.playMoveAnimation(id, state.direction);
+            }
           } else { 
+            // Remote players teleport to maintain sync
               this.gridEngine.setPosition(id, state.position);
+            if (this.isVisible) {
+              this.playMoveAnimation(id, state.direction);
+            }
           }
         }
       
