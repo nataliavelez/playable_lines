@@ -75,7 +75,7 @@
             93, 102, 102, 102, 102, 102, 102, 102, 102, 102, 102, 102, 102, 102, 102, 95],
          "height":16,
          "id":5,
-         "name":"obstacle",
+         "name":"obstacles",
          "opacity":1,
          "properties":[
                 {

@@ -1425,7 +1425,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="5" name="obstacle" width="16" height="16">
+ <layer id="5" name="obstacles" width="16" height="16">
   <properties>
    <property name="ge_collide" type="bool" value="true"/>
   </properties>
