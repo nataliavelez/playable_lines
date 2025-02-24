@@ -1,6 +1,12 @@
 import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 import { getMapInfo } from './getMapInfo.js';
+
 export const Empirica = new ClassicListenersCollector();
+// To run GridEngineHeadless on the server 
+import { GridEngineHeadless, ArrayTilemap, CollisionStrategy } from 'grid-engine';
+import fs from "fs";
+import path from "path";
+
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
@@ -121,8 +127,29 @@ Empirica.onRoundStart(({ round }) => {
   round.set('playerStates', playerStates); // set 
   console.log("🔹 Server initialized player states:", round.get("playerStates"));
 
+  // Get tilemap (in array form from the map json file)
+  const tilemap = processTilemap(mapName);
+  console.log("🔹 Server loaded tilemap:", tilemap);
+
+  // Initialize GridEngine
+  const gridEngine = new GridEngineHeadless();
+  gridEngine.create(tilemap, {
+    characters: Object.entries(playerStates).map(([id, state]) => ({
+      id,
+      position: state.position,
+      speed: 2.5
+    })),
+    characterCollisionStrategy: CollisionStrategy.BLOCK_ONE_TILE_AHEAD
+  });
+  console.log("🔹 Server initialized GridEngine:", gridEngine);
+  round.set('gridEngine', gridEngine);
 
 });
+
+Empirica.onStageStart(({ stage }) => {
+
+});
+
 Empirica.onStageEnded(({ stage }) => {});
 
 Empirica.onRoundEnded(({ round }) => {});
