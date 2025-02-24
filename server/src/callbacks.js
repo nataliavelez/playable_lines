@@ -167,27 +167,36 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   //get vars
   const round = player.currentRound;
   const { curPos, newPos, direction } = moveRequest;
-  const obstaclesBitmask = round.get("obstaclesBitmask");
-  const playerPosBitmask = round.get("playerPosBitmask");
-  //console.log("🔹 Player move request:", moveRequest);
 
-  // Check and make move if valid
+  const obstacles = new Set(round.get("obstacles"));
+  const playerStates = round.get("playerStates");
+
+  // Get current positions from playerStates
+  const playerPositions = new Set(
+    Object.values(playerStates).map(state => 
+      positionToKey(state.position.x, state.position.y)
+    )
+  );
+
+  // Check if move is valid
   if (
-    newPos.x >= 0 && newPos.x < 16 && newPos.y >= 0 && newPos.y < 16 &&
-    !(obstaclesBitmask[newPos.x] & (1 << newPos.y)) &&  // Check static obstacles
-    !(playerPosBitmask[newPos.x] & (1 << newPos.y))     // Check dynamic entities
+    newPos.x > 0 && newPos.x < 15 && 
+    newPos.y > 0 && newPos.y < 15 &&
+    !obstacles.has(positionToKey(newPos.x, newPos.y)) &&
+    !playerPositions.has(positionToKey(newPos.x, newPos.y))
   ) {
-    //move player in bitmask and save
-    playerPosBitmask[curPos.x] ^= (1 << curPos.y); // Remove old position
-    playerPosBitmask[newPos.x] |= (1 << newPos.y); // Add new position
-    round.set("playerPosBitmask", playerPosBitmask);
-
-      // Update the authoritative state
-    const playerStates = round.get("playerStates")
+    // Update player state
     playerStates[player.id].position = newPos;
     playerStates[player.id].direction = direction;
       round.set("playerStates", playerStates);
+
+  } else if (playerStates[player.id].direction !== direction) {
+    // Just update direction if move wasn't valid
+    playerStates[player.id].direction = direction;
+    round.set("playerStates", playerStates);
   }
+
+});
 });
 
 // Function to process Tilemap from JSON file
@@ -205,39 +214,19 @@ function getObstaclesFromTilemap(mapName) {
   }
   const { width, height, data } = obstaclesLayer;
   // Extract (x, y) coordinates of all non-zero values
-  const staticObstacles = new Set();
+  const staticObstacles = [];
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
       const index = y * width + x;
       if (data[index] !== 0) {
-        staticObstacles.add(`${x},${y}`); // Store as "x,y"
+        staticObstacles.push(`${x},${y}`); // Store as "x,y"
       }
     }
   }
   return staticObstacles;
 }
 
-function setToBitmask(set) {
-  const bitmask = new Uint16Array(16); // Initialize empty bitmask
-
-  for (const pos of set) {
-      const [x, y] = pos.split(',').map(Number);
-      if (x >= 0 && x < 16 && y >= 0 && y < 16) {
-          bitmask[x] |= (1 << y); // Set bit at (x, y)
-      }
-  }
-  return bitmask;
-}
-
-
-function arrayToBitmask(arr) {
-  const bitmask = new Uint16Array(16); // Initialize bitmask
-
-  for (const { x, y } of arr) {
-      if (x >= 0 && x < 16 && y >= 0 && y < 16) {
-          bitmask[x] |= (1 << y); // Set bit at (x, y)
-    }
-  }
-  return bitmask;
+function positionToKey(x, y) {
+  return `${x},${y}`;
 }
