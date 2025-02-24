@@ -169,6 +169,31 @@ Empirica.onGameEnded(({ game }) => {
     console.log("Saved round data for player:", player.id, roundData);
   });
 });
+
+//function to move game in server
+Empirica.on("player", "moveRequest", ({ player, round, moveRequest }) => {
+    const gridEngine = round.get("gridEngine");
+    const playerId = player.id;
+
+    if (!gridEngine) {
+        console.error("❌ GridEngine instance not found on server!");
+        return;
+    }
+
+      gridEngine.move(playerId, moveRequest.direction);
+
+      // Get the new position after movement
+      const newPos = gridEngine.getPosition(playerId);
+      const newDir = gridEngine.getFacingDirection(playerId);
+
+      // Update the authoritative state
+      const playerStates = round.get("playerStates") || {};
+      playerStates[playerId].position = newPos;
+      playerStates[playerId].direction = newDir;
+
+      round.set("playerStates", playerStates);
+});
+
 // Function to process Tilemap from JSON file
 function processTilemap(mapName) {
   // Read the JSON file

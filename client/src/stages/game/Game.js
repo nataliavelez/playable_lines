@@ -20,14 +20,7 @@ export class Game extends Scene {
           orange: 0xFF8000,  // Orange
           purple: 0x8000FF   // Purple
         };
-        
-        // to allow for better updating 
-        //this.lastMoveTime = 0;
-        //this.moveDelay = 100;
-        // Throttle function to limit updates to every 100ms
-        this.emitMoveRequest = _.throttle((playerId, move) => {
-          EventBus.emit('move-request', playerId, move);
-        }, 300); // Limit to one move every 100ms
+      
     }
 
     createWaitingOverlay() {
@@ -250,7 +243,6 @@ export class Game extends Scene {
 
     // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
-
       Object.entries(playerStates).forEach(([id, state]) => {
           if (!this.gridEngine.hasCharacter(id)) {
               console.warn(`Character ${id} not found in GridEngine`);
@@ -303,7 +295,7 @@ export class Game extends Scene {
       });
     }
 
-    update(time) {
+    update() {
       if (!this.playerId) return;
   
       const cursors = this.input.keyboard.createCursorKeys();
@@ -311,46 +303,25 @@ export class Game extends Scene {
   
       let direction = null;
       let player = this.players[this.playerId];
-  
-      // Movement cooldown (adjust delay as needed)
-      const moveDelay = 200; // Move every 200ms
-      if (!this.lastMoveTime || time - this.lastMoveTime > moveDelay) {
-          if (!this.isMoving) { // Prevent multiple moves per key press
+
               if (cursors.left.isDown) direction = "left";
               else if (cursors.right.isDown) direction = "right";
               else if (cursors.up.isDown) direction = "up";
               else if (cursors.down.isDown) direction = "down";
   
               if (direction) {
-                  this.isMoving = true; // Lock movement to prevent duplicates
-  
                   const currentPos = this.gridEngine.getPosition(this.playerId);
                   const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
                   const newPosition = this.getNewPosition(currentPos, direction);
   
-                  if (this.gridEngine.isTileBlocked(newPosition)) {
-                      // If movement is blocked, still change direction
-                      if (currentDirection !== direction) {
-                          EventBus.emit('player-state-change', this.playerId, { direction: direction });
-                      }
-                  } else {
                       // Move player if tile is not blocked
-                      this.emitMoveRequest(this.playerId, {
-                          x: newPosition.x,
-                          y: newPosition.y,
-                          direction: direction
-                      });
-                  }
-  
-                  this.lastMoveTime = time; // Update Phaser's time tracker
-                  
-                  // 🔥 Unlock movement after short delay
-                  this.time.delayedCall(moveDelay, () => {
-                      this.isMoving = false;
+                  EventBus.emit("moveRequest",{
+                      x: newPosition.x,
+                      y: newPosition.y,
+                      direction: direction
                   });
+
               }
-          }
-      }
   
       // Handle spacebar action for carrying water
       if (Phaser.Input.Keyboard.JustDown(action)) {
