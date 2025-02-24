@@ -169,3 +169,34 @@ Empirica.onGameEnded(({ game }) => {
     console.log("Saved round data for player:", player.id, roundData);
   });
 });
+// Function to process Tilemap from JSON file
+function processTilemap(mapName) {
+  // Read the JSON file
+  filePath = path.resolve("../client/public/assets/maps", `${mapName}.json`);
+  const fileContent = fs.readFileSync(filePath, "utf8");
+  const tiledJson = JSON.parse(fileContent);
+
+  // Find the "obstacles" layer
+  const obstaclesLayer = tiledJson.layers.find(layer => layer.name === "obstacles");
+  
+  if (!obstaclesLayer) {
+    throw new Error("Layer 'obstacles' not found");
+  }
+
+  // Extract dimensions
+  const { width, height, data } = obstaclesLayer;
+
+  // Convert data: replace every non-0 value with 1
+  const transformedData = Array.from({ length: height }, (_, row) =>
+    data.slice(row * width, (row + 1) * width).map(value => (value !== 0 ? 1 : 0))
+  );
+
+  // Create the tilemap object
+  const tilemap = new ArrayTilemap({
+    someLayer: {
+      data: transformedData
+    }
+  });
+
+  return tilemap;
+}
