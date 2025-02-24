@@ -54,8 +54,8 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 90 });  
-    round.addStage({ name: "Feedback", duration: 20 });
+    round.addStage({ name: "Game", duration: 100000 });  
+    round.addStage({ name: "Feedback", duration: 5 });
 
   }
 
@@ -143,6 +143,7 @@ Empirica.onRoundEnded(({ round }) => {});
 Empirica.onGameEnded(({ game }) => {
   // For each player, save their round data
   game.players.forEach((player) => {
+
     // Get all rounds data
     const roundData = game.rounds.map(round => ({
       roundNumber: round.get("number"),
@@ -158,10 +159,9 @@ Empirica.onGameEnded(({ game }) => {
 
 //function to move game in server
 Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
-  //get vars
   const round = player.currentRound;
   const { curPos, newPos, direction } = moveRequest;
-
+  
   const obstacles = new Set(round.get("obstacles"));
   const playerStates = round.get("playerStates");
 
@@ -182,7 +182,7 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
     // Update player state
     playerStates[player.id].position = newPos;
     playerStates[player.id].direction = direction;
-      round.set("playerStates", playerStates);
+    round.set("playerStates", playerStates);
 
   } else if (playerStates[player.id].direction !== direction) {
     // Just update direction if move wasn't valid
@@ -191,6 +191,20 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   }
 
 });
+
+// Function to process waterAction from client
+Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
+  const round = player.currentRound;
+  const playerStates = round.get("playerStates");
+  const { carrying, score } = waterAction;
+  
+  // Update player state
+  playerStates[player.id].carrying = carrying;
+  if (score !== undefined) {
+    playerStates[player.id].score = score;
+  }
+  
+  round.set("playerStates", playerStates);
 });
 
 // Function to process Tilemap from JSON file

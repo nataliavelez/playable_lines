@@ -7,7 +7,7 @@ export class Game extends Scene {
     constructor () {
         super('Game');
         this.isVisible = true;
-
+  
         // TO DO, move this elswhere, prob just need to have the numbers in the vallback
         this.playerColors = {
           white: 0xFFFFFF,  // White (default)
@@ -151,8 +151,8 @@ export class Game extends Scene {
 
      // Get playerId from registry first
      this.playerId = this.registry.get("playerId");
-  }
-      
+    }
+
     initPlayers(playerStates, currentPlayerId) {
         this.playerId = currentPlayerId;
         this.player = this.players[currentPlayerId];
@@ -216,49 +216,68 @@ export class Game extends Scene {
           player.sprite.play(`idle_${direction}`);
       });
 
-        //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
+      //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
     }
 
 
     // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
       Object.entries(playerStates).forEach(([id, state]) => {
-        if (id !== this.playerId && this.gridEngine.hasCharacter(id)) {
-          const currentPos = this.gridEngine.getPosition(id);
-          const currentDirection = this.gridEngine.getFacingDirection(id);
-          const currentlyCarrying = this.isCarrying(id);
+        if (!this.gridEngine.hasCharacter(id)) {
+          return;
+        }
+        const currentPos = this.gridEngine.getPosition(id);
+        const currentDirection = this.gridEngine.getFacingDirection(id);
+        const currentlyCarrying = this.isCarrying(id);
 
           // Handle position and direction changes
           if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-              // Only update position if the tile isn't blocked
-              if (!this.gridEngine.isTileBlocked(state.position)) {
-                  this.gridEngine.setPosition(id, state.position);
-                  
-                  // Play movement animation
-                  this.playMoveAnimation(id, state.direction);
+          if(this.isVisible) {
+              this.gridEngine.move(id, state.direction);
+              this.playMoveAnimation(id, state.direction);
+          } else { 
+              this.gridEngine.setPosition(id, state.position);
+          }
+        }
+      
+        // Always update direction to ensure sync
+        if (currentDirection !== state.direction) {
+            this.gridEngine.turnTowards(id, state.direction);
+            if (!this.gridEngine.isMoving(id)) {
+                this.players[id].sprite.play(`idle_${state.direction}`);
+            }
+        }
+
+        // Handle carrying state changes
+        if (currentlyCarrying !== state.carrying) {
+          this.players[id].carrying = state.carrying;
+          this.players[id].indicator.visible = state.carrying;
+
+          // Update score whenever it changes
+          if (state.score !== undefined && state.score !== this.players[id].score) {
+            this.players[id].score = state.score;
+          }
+  
+          const currentDirection = this.gridEngine.getFacingDirection(id);
+          
+          // Play water animation
+          this.playWaterAnimation(id, currentDirection);
+          
+          // Handle pickup/dropoff effects
+          if (state.carrying) {
+              // Pickup effects
+              if (id === this.playerId) {
+                  this.collectWaterSound.play();
               }
-          }
-
-          // Handle direction changes separately
-          if (currentDirection !== state.direction) {
-              this.gridEngine.turnTowards(id, state.direction);
-          }
-
-          // Handle carrying state changes
-          if (currentlyCarrying !== state.carrying) {
-              this.players[id].carrying = state.carrying;
-              this.players[id].indicator.visible = state.carrying;
+          } else {
+              // Dropoff effects
+              const position = this.gridEngine.getFacingPosition(id);
+              this.createSparkleEffect(position.x, position.y);
               
-              // Play water animation
-              this.playWaterAnimation(id, currentDirection);
-              
-              // Handle water drop-off effects
-              if (!state.carrying) {
-                  const position = this.gridEngine.getFacingPosition(id);
-                  this.createSparkleEffect(position.x, position.y);
-                  
-                  // Play sound if visible and sound system is ready
-                  if (this.isVisible && this.othersSuccessSound) {
+              if (this.isVisible) {
+                  if (id === this.playerId) {
+                      this.successSound.play();
+                  } else if (this.othersSuccessSound) {
                       try {
                           this.othersSuccessSound.play();
                       } catch (error) {
@@ -267,66 +286,58 @@ export class Game extends Scene {
                   }
               }
           }
+        }
       });
     }
 
     update() {
       if (!this.playerId) return;
   
+      // Movement
       const cursors = this.input.keyboard.createCursorKeys();
-      const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-  
-      let direction = null;
-      let player = this.players[this.playerId];
+      if (!this.gridEngine.isMoving(this.playerId)) {
+        let direction = null;
+        if (cursors.left.isDown) direction = "left";
+        else if (cursors.right.isDown) direction = "right";
+        else if (cursors.up.isDown) direction = "up";
+        else if (cursors.down.isDown) direction = "down";
 
-              if (cursors.left.isDown) direction = "left";
-              else if (cursors.right.isDown) direction = "right";
-              else if (cursors.up.isDown) direction = "up";
-              else if (cursors.down.isDown) direction = "down";
-  
-              if (direction) {
-                  const currentPos = this.gridEngine.getPosition(this.playerId);
-                  const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
-                  const newPosition = this.getNewPosition(currentPos, direction);
-  
-                      // Move player if tile is not blocked
-          this.gridEngine.move(this.playerId, direction);
-          EventBus.emit("moveRequest", {
-              curPos: currentPos,
-              newPos: newPosition,
-                      direction: direction
-                  });
-
-              }
-  
-      // Handle spacebar action for carrying water
-      if (Phaser.Input.Keyboard.JustDown(action)) {
+        if (direction) {
+          const currentPos = this.gridEngine.getPosition(this.playerId);
           const currentDirection = this.gridEngine.getFacingDirection(this.playerId);
-          const facingPosition = this.gridEngine.getFacingPosition(this.playerId);
-  
-          if (!player.carrying && this.nearSource(this.playerId)) {
-              player.carrying = true;
-              EventBus.emit('player-state-change', this.playerId, { carrying: player.carrying });
-  
-              this.playWaterAnimation(this.playerId, currentDirection);
-              this.collectWaterSound.play();
-  
-          } else if (player.carrying && this.nearTarget(this.playerId)) {
-              player.carrying = false;
-              player.score = player.score + 1;
-  
-              EventBus.emit('player-state-change', this.playerId, {
-                  carrying: player.carrying,
-                  score: player.score
-              });
-  
-              this.playWaterAnimation(this.playerId, currentDirection);
-              this.createSparkleEffect(facingPosition.x, facingPosition.y);
-              this.successSound.play();
+          const newPosition = this.getNewPosition(currentPos, direction);
+
+          // Only emit moveRequest if we're changing position or direction
+          if (currentDirection !== direction || 
+            currentPos.x !== newPosition.x || 
+            currentPos.y !== newPosition.y) {
+            EventBus.emit("moveRequest", {
+                curPos: currentPos,
+                newPos: newPosition,
+                direction: direction
+            });
           }
-  
-          player.indicator.visible = player.carrying;
+        }
       }
+  
+      // Water Carrying
+      let player = this.players[this.playerId];
+      const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+      if (Phaser.Input.Keyboard.JustDown(action)) {
+          if (!player.carrying && this.nearSource(this.playerId)) {
+              // Request pickup
+              EventBus.emit('waterAction', {
+                  carrying: true
+              });
+          } else if (player.carrying && this.nearTarget(this.playerId)) {
+              // Request dropoff
+              EventBus.emit('waterAction', {
+                  carrying: false,
+                  score: player.score + 1
+              });
+          }
+      }
+
   }
   
   
@@ -378,7 +389,6 @@ export class Game extends Scene {
         });
       });
 
-
     }
 
     //helpers for movement
@@ -411,6 +421,7 @@ export class Game extends Scene {
       );
       }
     }
+    
 
     // helpers for carrying
     nearSource(id) {

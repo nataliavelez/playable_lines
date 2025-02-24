@@ -11,7 +11,7 @@ export function GridWorld() {
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
     const playerStates = round.get('playerStates');
-    
+
 
     // handle move request to make sure player doesn't collide with other players
     useEffect(() => {
@@ -23,7 +23,23 @@ export function GridWorld() {
             EventBus.off('moveRequest', handleMoveRequest);
         };
     }, []);
+
+    // handle water action
+    useEffect(() => {
+        const handleWaterAction = (action) => {
+            player.set("waterAction", action);
+        };
+        EventBus.on('waterAction', handleWaterAction);
+        return () => {
+            EventBus.off('waterAction', handleWaterAction);
+        };
+    }, []);
     
+    //useEffect(() => {
+    //    EventBus.emit("update-player-states", playerStates);
+    //    console.log(`🔄 Updated player states:`, playerStates[player.id]);
+    //}, [playerStates]);
+
     //visibility change listener
     useEffect(() => {
         const handleVisibilityChange = () => {
@@ -39,7 +55,7 @@ export function GridWorld() {
             round.set('browserActive', []);
         }
     
-    // Append the new activity update to the existing array
+         // Append the new activity update to the existing array
         round.set('browserActive', [
             ...(round.get('browserActive') || []),
             {
@@ -53,7 +69,6 @@ export function GridWorld() {
     }, [isVisible])
 
     
-
     const currentScene = (scene) => {
         // Allow player to submit to move to next stage, 
         // Not currently needed becuase rounds are working on the basis of time. 
@@ -62,7 +77,7 @@ export function GridWorld() {
         }
 
     };
-    
+
 
     return (
         <div id="app">
@@ -71,7 +86,7 @@ export function GridWorld() {
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
                 playerId={player.id}
-                playerStates={round.get('playerStates')}
+                playerStates={playerStates}
                 isVisible={isVisible}
             />
         </div>
