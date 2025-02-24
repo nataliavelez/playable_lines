@@ -7,7 +7,6 @@ export class Game extends Scene {
     constructor () {
         super('Game');
         this.isVisible = true;
-        this.handleAllPlayersLoaded = this.handleAllPlayersLoaded.bind(this);
 
         // TO DO, move this elswhere, prob just need to have the numbers in the vallback
         this.playerColors = {
@@ -75,7 +74,6 @@ export class Game extends Scene {
       this.players = {};
       this.playerId = null;
 
-      EventBus.off('all-players-loaded', this.handleAllPlayersLoaded);
   }
 
     init() {
@@ -150,27 +148,6 @@ export class Game extends Scene {
 
      // Get playerId from registry first
      this.playerId = this.registry.get("playerId");
-
-      // ✅ Ensure event listener is set BEFORE emitting game-loaded
-      EventBus.on('all-players-loaded', this.handleAllPlayersLoaded.bind(this));
-
-      // ✅ Log to check if event listener is active
-      console.log(`🎧 Listening for all-players-loaded in player: ${this.registry.get("playerId")}`);
-
-      // ✅ Emit game-loaded after ensuring listener is ready
-      console.log(`🎮 Emitting game-loaded for player: ${this.playerId}`);
-      EventBus.emit('game-loaded', this.playerId);
-    }
-
-    handleAllPlayersLoaded(allLoaded) {
-      console.log('📢 Received all-players-loaded event:', allLoaded);
-      
-      if (allLoaded) {
-          console.log('✅ All players confirmed loaded! Removing waiting overlay.');
-          this.setWaitingState(false);
-      } else {
-          console.warn('❌ Unexpected: allLoaded was false!');
-      }
   }
       
     initPlayers(playerStates, currentPlayerId) {
