@@ -127,14 +127,8 @@ Empirica.onRoundStart(({ round }) => {
 
   // Get obstacles from tilemap and make bitmash
   const obstacles = getObstaclesFromTilemap(mapName);
-  const obstaclesBitmask = setToBitmask(obstacles);
-
   round.set("obstacles", obstacles);
-  round.set("obstaclesBitmask", obstaclesBitmask);
-
-  //  get player positions into bitmask
-  const playerPosSet = new Set(startPositions.map(({ x, y }) => `${x},${y}`));
-  round.set("playerPosBitmask", setToBitmask(playerPosSet));
+  console.log("🔹 Initial obstacles:", obstacles);
 
 });
 
