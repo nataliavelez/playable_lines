@@ -109,26 +109,44 @@ Empirica.onRoundStart(({ round }) => {
 
   // Initialize player state for round
   const players = round.currentGame.players;
-  const playerStates = {};
+  const movementStates = {};  // Combined position + direction
+  const gameState = {};      // Other dynamic states
+  const playerInfo = {};     // Static player info
 
-  // Populate player states
   players.forEach((p, i) => {
-      playerStates[p.id] = {
-          position: startPositions[i],
-          direction: 'down',
-          carrying: false,
-          score: 0,
-          color: p.get('color'),
-          name: p.get('nickname'),
-      };
-  });
-  round.set('playerStates', playerStates); // set 
-  console.log("🔹 Server initialized player states:", round.get("playerStates"));
+    // Movement-related state
+    movementStates[p.id] = {
+      position: startPositions[i],
+      direction: 'down',
+      timestamp: Date.now()
+    };
 
-  // Get obstacles from tilemap and make bitmash
+    // Game state (non-movement)
+    gameState[p.id] = {
+      carrying: false,
+      score: 0
+    };
+
+    // Static player info
+    playerInfo[p.id] = {
+      color: p.get('color'),
+      name: p.get('nickname')
+    };
+  });
+
+  round.set('movementStates', movementStates);
+  round.set('gameState', gameState);
+  round.set('playerInfo', playerInfo);
+
+  // Get obstacles from tilemap
   const obstacles = getObstaclesFromTilemap(mapName);
   round.set("obstacles", obstacles);
-  console.log("🔹 Initial obstacles:", obstacles);
+
+  // Log info
+  console.log("🔹 Movement state :", movementStates);
+  console.log("🔹 Game state:", gameState)
+  console.log("🔹 Player info:", playerInfo);
+  console.log("🔹 Round Obstacles:", obstacles);
 
 });
 
@@ -160,14 +178,14 @@ Empirica.onGameEnded(({ game }) => {
 //function to move game in server
 Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   const round = player.currentRound;
-  const { curPos, newPos, direction } = moveRequest;
+  const { newPos, direction } = moveRequest;
   
   const obstacles = new Set(round.get("obstacles"));
-  const playerStates = round.get("playerStates");
+  const movementStates = round.get("movementStates");
 
   // Get current positions from playerStates
   const playerPositions = new Set(
-    Object.values(playerStates).map(state => 
+    Object.values(movementStates).map(state => 
       positionToKey(state.position.x, state.position.y)
     )
   );
@@ -179,15 +197,22 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
     !obstacles.has(positionToKey(newPos.x, newPos.y)) &&
     !playerPositions.has(positionToKey(newPos.x, newPos.y))
   ) {
-    // Update player state
-    playerStates[player.id].position = newPos;
-    playerStates[player.id].direction = direction;
-    round.set("playerStates", playerStates);
+    // Update movement state
+    movementStates[player.id] = {
+      position: newPos,
+      direction: direction,
+      timestamp: Date.now()
+    };
+    round.set("movementStates", movementStates);
 
-  } else if (playerStates[player.id].direction !== direction) {
+  } else if (movementStates[player.id].direction !== direction) {
     // Just update direction if move wasn't valid
-    playerStates[player.id].direction = direction;
-    round.set("playerStates", playerStates);
+    movementStates[player.id] = {
+      ...movementStates[player.id],
+      direction: direction,
+      timestamp: Date.now()
+    };
+    round.set("movementStates", movementStates);
   }
 
 });
@@ -195,16 +220,16 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
 // Function to process waterAction from client
 Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
   const round = player.currentRound;
-  const playerStates = round.get("playerStates");
+  const gameState = round.get("gameState");
   const { carrying, score } = waterAction;
   
   // Update player state
-  playerStates[player.id].carrying = carrying;
+  gameState[player.id].carrying = carrying;
   if (score !== undefined) {
-    playerStates[player.id].score = score;
+    gameState[player.id].score = score;
   }
   
-  round.set("playerStates", playerStates);
+  round.set("gameState", gameState);
 });
 
 // Function to process Tilemap from JSON file

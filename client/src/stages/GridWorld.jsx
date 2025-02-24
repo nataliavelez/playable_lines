@@ -10,8 +10,22 @@ export function GridWorld() {
    // const players = usePlayers();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
-    const playerStates = round.get('playerStates');
+    const movementStates = round.get('movementStates');
+    const gameState = round.get('gameState');
+    const playerInfo = round.get('playerInfo');
 
+    const combinedPlayerStates = React.useMemo(() => {
+        if (!movementStates || !gameState || !playerInfo) return null;
+        
+        return Object.keys(movementStates).reduce((acc, id) => {
+            acc[id] = {
+                ...movementStates[id],
+                ...gameState[id],
+                ...playerInfo[id]
+            };
+            return acc;
+        }, {});
+    }, [movementStates, gameState, playerInfo]);
 
     // handle move request to make sure player doesn't collide with other players
     useEffect(() => {
@@ -86,7 +100,7 @@ export function GridWorld() {
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
                 playerId={player.id}
-                playerStates={playerStates}
+                playerStates={combinedPlayerStates}
                 isVisible={isVisible}
             />
         </div>
