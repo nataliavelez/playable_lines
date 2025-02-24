@@ -80,6 +80,9 @@ export class Game extends Scene {
       // get map name from registry
       this.mapName = this.registry.get('mapName');
       this.mapFileName = `maps/${this.mapName}.json`;
+
+      // get speed from regisrty
+      this.speed = this.registry.get("speed");
     }
 
     preload() { 
@@ -196,9 +199,8 @@ export class Game extends Scene {
                 sprite: player.sprite,
                 container: player.container,
                 offsetY: 16,
-                //offsetx: 16,
                 startPosition: { x: player.container.x , y: player.container.y  },
-                speed: 2.5 // Adjust this value to control movement speed
+                speed: this.speed
             }))
         };
         //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
@@ -352,15 +354,15 @@ export class Game extends Scene {
           this.anims.create({
               key: `walk_${dir}`,
               frames: this.anims.generateFrameNumbers('bunny', animsConfig[dir]),
-              frameRate: 8,
-              repeat: -1,
+              frameRate: this.speed * 4,
+              repeat: 0
           });
 
           // Idle animations (using the first frame of each direction)
           this.anims.create({
               key: `idle_${dir}`,
               frames: this.anims.generateFrameNumbers('bunny', { start: animsConfig[dir].start, end: animsConfig[dir].start + 1 }),
-              frameRate: 4,
+              frameRate: this.speed * 2,
               repeat: -1,
               yoyo: true
           });
@@ -371,7 +373,7 @@ export class Game extends Scene {
         this.anims.create({
             key: `water_${dir}`,
             frames: this.anims.generateFrameNumbers('bunny', { start: waterAnimsConfig[dir], end: waterAnimsConfig[dir] + 1 }),
-            frameRate: 4,
+            frameRate: this.speed * 2,
             repeat: 0,
         });
       });
@@ -403,11 +405,10 @@ export class Game extends Scene {
     playMoveAnimation(id, direction) {
       const player = this.players[id];
       if (player && player.sprite.anims) {
-        player.sprite.anims.play(`walk_${direction}`, true);
-        // Stop the walking animation after a short delay
-        this.time.delayedCall(250, () => {
-          player.sprite.anims.play(`idle_${direction}`, true);
-        });
+        player.sprite.anims.play(`walk_${direction}`).on(
+          'animationcomplete',
+          () => {player.sprite.anims.play('idle_' + direction)}
+      );
       }
     }
 

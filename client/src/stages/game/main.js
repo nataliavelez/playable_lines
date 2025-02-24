@@ -31,6 +31,7 @@ const StartGame = (parent, mapName, playerStates, playerId) => {
               game.registry.set('mapName', mapName);
               game.registry.set('initialPlayerStates', playerStates);
               game.registry.set('playerId', playerId);
+              game.registry.set('speed', 2.5);
           }
       }
     });
