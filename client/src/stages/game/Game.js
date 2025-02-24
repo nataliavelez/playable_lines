@@ -224,45 +224,53 @@ export class Game extends Scene {
     // Gets states for all other players from empirica and does stuff in the game with them
     updatePlayerStates(playerStates) {
       Object.entries(playerStates).forEach(([id, state]) => {
-        if (!this.gridEngine.hasCharacter(id)) {
-          return;
-        }
+        if (!this.gridEngine.hasCharacter(id)) return;
+      
         const currentPos = this.gridEngine.getPosition(id);
         const currentDirection = this.gridEngine.getFacingDirection(id);
         const currentlyCarrying = this.isCarrying(id);
 
         // Handle position and direction changes
         if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-            // all  players use tweened movement
-            const container = this.players[id].container;
-            const targetX = (state.position.x-1) *32; // Multiply by tile size and scale
-            const targetY = (state.position.y-1) *32 -16;
-            
-            // Stop any existing tweens
-            this.tweens.killTweensOf(container);
-
-            if (!this.players[id].moving) {
-              this.players[id].moving = true; // Set moving flag to true
-            
-              // Create new tween for smooth movement
-              this.tweens.add({
-                targets: container,
-                x: targetX,
-                y: targetY,
-                duration: 1000/this.speed,
-                ease: 'Linear',
-                onStart: () => {
-                  if (this.isVisible) {
-                    this.playMoveAnimation(id, state.direction);
-                  } 
-                },
-                onComplete: () => {
-                  // Update GridEngine position after tween
-                  this.gridEngine.setPosition(id, state.position);
-                  this.players[id].moving = false; // Reset moving flag
-                }
-              });
+          if (id === this.playerId) {
+            // Local player moves smoothly using move()
+              this.gridEngine.move(id, state.direction);
+              this.playMoveAnimation(id, state.direction);
+          } else {      
+        // Remote players use tweens
+        const container = this.players[id].container;
+        
+        // Calculate target position
+        const targetX = (state.position.x-1) * 32;
+        const targetY = (state.position.y-1) * 32 - 16;
+        
+        // If already moving, complete current movement first
+        if (container.isMoving) {
+          this.tweens.killTweensOf(container);
+          this.gridEngine.setPosition(id, currentPos);
+        }
+        
+        // Flag to track movement state
+        container.isMoving = true;
+        
+        this.tweens.add({
+          targets: container,
+          x: targetX,
+          y: targetY,
+          duration: 300/this.speed, // Faster duration
+          ease: 'Linear',
+          onStart: () => {
+            if (this.isVisible) {
+              this.playMoveAnimation(id, state.direction);
             }
+          },
+          onComplete: () => {
+            container.isMoving = false;
+            this.gridEngine.setPosition(id, state.position);
+            this.players[id].sprite.play(`idle_${state.direction}`);
+          }
+        });
+      }
           
         }
       
@@ -271,7 +279,7 @@ export class Game extends Scene {
             this.gridEngine.turnTowards(id, state.direction);
             if (!this.gridEngine.isMoving(id)) {
                 this.players[id].sprite.play(`idle_${state.direction}`);
-            }
+              }
         }
 
         // Handle carrying state changes
@@ -318,10 +326,10 @@ export class Game extends Scene {
 
     update() {
       if (!this.playerId) return;
+      if (this.gridEngine.isMoving(this.playerId)) return;
   
-      // Movement
+      // Movement 
       const cursors = this.input.keyboard.createCursorKeys();
-      if (!this.gridEngine.isMoving(this.playerId)) {
         let direction = null;
         if (cursors.left.isDown) direction = "left";
         else if (cursors.right.isDown) direction = "right";
@@ -344,7 +352,7 @@ export class Game extends Scene {
             });
           }
         }
-      }
+      
   
       // Water Carrying
       let player = this.players[this.playerId];
