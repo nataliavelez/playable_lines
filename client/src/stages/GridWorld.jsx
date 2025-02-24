@@ -11,31 +11,6 @@ export function GridWorld() {
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
   
-    const initializePlayers = () => {
-        if (!round.get('playerStates')) {
-            round.set('playerStates', {});
-        }
-
-        //players order is different for different players, so can't just do this. 
-        const sortedPlayers = [...players].sort((a, b) => a.id.localeCompare(b.id));
-        sortedPlayers.forEach((p, i) => {
-            if (!round.get('playerStates')[p.id]) {
-                console.log(`Player ${p.id}, index ${i}, position:`, round.get('startPositions'));
-                round.set('playerStates', {
-                    ...round.get('playerStates'),
-                    [p.id]: { 
-                        position: round.get('startPositions')[i],
-                        direction: 'down',
-                        carrying: false,
-                        score: 0,   
-                        color: p.get('color'),
-                        name: p.get('nickname'),
-                    }   
-                });
-            }
-        });
-    };
-    initializePlayers();
 
     useEffect(() => {
         if (!Array.isArray(round.get('loadedPlayers'))) {

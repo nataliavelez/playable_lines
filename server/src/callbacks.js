@@ -99,13 +99,30 @@ Empirica.onRoundStart(({ round }) => {
   round.set("startPositions", startPositions);
 
   // Log details of each round
-  console.log(`Round ${roundNumber} map universalizability:`, round.get("universalizablity"));
-  console.log(`Round ${roundNumber} map name:`, round.get("mapName")); 
-  console.log(`Round ${roundNumber} Starting positions:`, round.get("startPositions")); 
+  console.log(`Round ${roundNumber} map universalizability:`, universalizability);
+  console.log(`Round ${roundNumber} map name:`, mapName); 
+  console.log(`Round ${roundNumber} Starting positions:`, startPositions); 
+
+  // Initialize player state for round
+  const players = round.currentGame.players;
+  const playerStates = {};
+
+  // Populate player states
+  players.forEach((p, i) => {
+      playerStates[p.id] = {
+          position: startPositions[i],
+          direction: 'down',
+          carrying: false,
+          score: 0,
+          color: p.get('color'),
+          name: p.get('nickname'),
+      };
+  });
+  round.set('playerStates', playerStates); // set 
+  console.log("🔹 Server initialized player states:", round.get("playerStates"));
+
+
 });
-
-Empirica.onStageStart(({ stage }) => {});
-
 Empirica.onStageEnded(({ stage }) => {});
 
 Empirica.onRoundEnded(({ round }) => {});
