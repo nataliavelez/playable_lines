@@ -24,10 +24,10 @@ export default function App() {
 
   function introSteps({ game, player }) {
         return [
-      Introduction,
-      Demo,
-      MultiplayerInfo,
-      Checks
+      Introduction//,
+     // Demo,
+      //MultiplayerInfo,
+      //Checks
     ];
   }
 
