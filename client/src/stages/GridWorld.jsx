@@ -49,26 +49,6 @@ export function GridWorld() {
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, []);
 
-    // saving visibility changes to the round
-    useEffect(() => {
-        if (!round.get('browserActive')) {
-            round.set('browserActive', []);
-        }
-    
-         // Append the new activity update to the existing array
-        round.set('browserActive', [
-            ...(round.get('browserActive') || []),
-            {
-                playerId: player.id,
-                browserActive: isVisible,
-                timestamp: Date.now()
-            }
-        ]);
-
-        console.log(`🔄 Updated browser activity for ${player.id}: ${isVisible} at ${new Date().toISOString()}`);
-    }, [isVisible])
-
-    
     const currentScene = (scene) => {
         // Allow player to submit to move to next stage, 
         // Not currently needed becuase rounds are working on the basis of time. 
