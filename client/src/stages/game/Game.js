@@ -19,7 +19,10 @@ export class Game extends Scene {
           orange: 0xFF8000,  // Orange
           purple: 0x8000FF   // Purple
         };
-      
+        
+        // Simple debounce for movement to prevent rapid key presses
+        this.lastMoveTime = 0;
+        this.moveDebounceTime = 150; // ms between moves
     }
 
     createWaitingOverlay() {
@@ -345,7 +348,11 @@ export class Game extends Scene {
   
       // Movement
       const cursors = this.input.keyboard.createCursorKeys();
-      if (!this.gridEngine.isMoving(this.playerId)) {
+      const currentTime = this.time.now;
+      
+      // Only process movement if enough time has passed since the last move
+      if (!this.gridEngine.isMoving(this.playerId) && 
+          (currentTime - this.lastMoveTime > this.moveDebounceTime)) {
         let direction = null;
         if (cursors.left.isDown) direction = "left";
         else if (cursors.right.isDown) direction = "right";
@@ -361,6 +368,10 @@ export class Game extends Scene {
           if (currentDirection !== direction || 
             currentPos.x !== newPosition.x || 
             currentPos.y !== newPosition.y) {
+            
+            // Update the last move time
+            this.lastMoveTime = currentTime;
+            
             EventBus.emit("moveRequest", {
                 curPos: currentPos,
                 newPos: newPosition,
