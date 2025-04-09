@@ -44,12 +44,6 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
         }
     }, [currentActiveScene, ref]); 
 
-    useEffect(() => {
-        if (game.current && ref.current.scene) {
-            EventBus.emit('update-player-states', playerStates);
-        }
-    }, [playerStates]);
-
     return  <div id="game-container"> </div>
 });
 

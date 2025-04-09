@@ -7,11 +7,17 @@ import { EventBus } from './game/EventBus';
 export function GridWorld() {
     const phaserRef = useRef();
     const player = usePlayer();
-   // const players = usePlayers();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
-    const playerStates = round.get('playerStates');
-
+    const initialPlayerStatesRef = useRef(null);
+    const latestPlayerChange = round.get('latestPlayerChange');
+    
+    // Get playerStates only once for initialization
+    useEffect(() => {
+        if (!initialPlayerStatesRef.current) {
+            initialPlayerStatesRef.current = round.get('playerStates');
+        }
+    }, [round]);
 
     // handle move request to make sure player doesn't collide with other players
     useEffect(() => {
@@ -35,11 +41,6 @@ export function GridWorld() {
         };
     }, []);
     
-    //useEffect(() => {
-    //    EventBus.emit("update-player-states", playerStates);
-    //    console.log(`🔄 Updated player states:`, playerStates[player.id]);
-    //}, [playerStates]);
-
     //visibility change listener
     useEffect(() => {
         const handleVisibilityChange = () => {
@@ -49,35 +50,27 @@ export function GridWorld() {
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, []);
 
-    // saving visibility changes to the round
+
+    // Track and emit individual player state changes
     useEffect(() => {
-        if (!round.get('browserActive')) {
-            round.set('browserActive', []);
+        if (latestPlayerChange && EventBus) {
+            console.log(`🔸 Received latest player change for ${latestPlayerChange.id}`);
+            EventBus.emit("update-player-state", latestPlayerChange);
         }
-    
-         // Append the new activity update to the existing array
-        round.set('browserActive', [
-            ...(round.get('browserActive') || []),
-            {
-                playerId: player.id,
-                browserActive: isVisible,
-                timestamp: Date.now()
-            }
-        ]);
+    }, [latestPlayerChange]);
 
-        console.log(`🔄 Updated browser activity for ${player.id}: ${isVisible} at ${new Date().toISOString()}`);
-    }, [isVisible])
-
-    
     const currentScene = (scene) => {
         // Allow player to submit to move to next stage, 
-        // Not currently needed becuase rounds are working on the basis of time. 
+        // Not currently needed because rounds are working on the basis of time. 
         if (scene.complete) {
             player.stage.set("submit", true);
         }
-
     };
 
+    // Only render PhaserGame once initialPlayerStates is available
+    if (!initialPlayerStatesRef.current) {
+        return <div>Loading game...</div>;
+    }
 
     return (
         <div id="app">
@@ -86,7 +79,7 @@ export function GridWorld() {
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
                 playerId={player.id}
-                playerStates={playerStates}
+                playerStates={initialPlayerStatesRef.current}
                 isVisible={isVisible}
             />
         </div>

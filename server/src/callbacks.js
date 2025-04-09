@@ -183,13 +183,24 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
     playerStates[player.id].position = newPos;
     playerStates[player.id].direction = direction;
     round.set("playerStates", playerStates);
+    
+    // Set the latest change for efficient client updates
+    round.set("latestPlayerChange", {
+      id: player.id,
+      state: playerStates[player.id]
+    });
 
   } else if (playerStates[player.id].direction !== direction) {
     // Just update direction if move wasn't valid
     playerStates[player.id].direction = direction;
     round.set("playerStates", playerStates);
+    
+    // Set the latest change for efficient client updates
+    round.set("latestPlayerChange", {
+      id: player.id,
+      state: playerStates[player.id]
+    });
   }
-
 });
 
 // Function to process waterAction from client
@@ -205,6 +216,12 @@ Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
   }
   
   round.set("playerStates", playerStates);
+  
+  // Set the latest change for efficient client updates
+  round.set("latestPlayerChange", {
+    id: player.id,
+    state: playerStates[player.id]
+  });
 });
 
 // Function to process Tilemap from JSON file

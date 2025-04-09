@@ -145,7 +145,7 @@ export class Game extends Scene {
       this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
 
       EventBus.emit('current-scene-ready', this);
-      EventBus.on('update-player-states', this.updatePlayerStates.bind(this));
+      EventBus.on('update-player-state', this.updatePlayerState.bind(this));
       EventBus.on('visibility-change', this.handleVisibilityChange.bind(this));
       //console.log("Game scene created");
 
@@ -219,34 +219,35 @@ export class Game extends Scene {
       //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
     }
 
-
-    // Gets states for all other players from empirica and does stuff in the game with them
-    updatePlayerStates(playerStates) {
-      Object.entries(playerStates).forEach(([id, state]) => {
-        if (!this.gridEngine.hasCharacter(id)) {
-          return;
+    // Gets states for a single player from empirica and updates that player
+    updatePlayerState(payload) {
+        const { id, state } = payload;
+        
+        if (!this.gridEngine || !this.gridEngine.hasCharacter(id)) {
+            return;
         }
+        
         const currentPos = this.gridEngine.getPosition(id);
         const currentDirection = this.gridEngine.getFacingDirection(id);
         const currentlyCarrying = this.isCarrying(id);
 
-          // Handle position and direction changes
-          if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-          if (id === this.playerId) {
-            // Local player moves smoothly
-            if (this.isVisible) {
-              this.gridEngine.move(id, state.direction);
-              this.playMoveAnimation(id, state.direction);
+        // Handle position and direction changes
+        if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+            if (id === this.playerId) {
+                // Local player moves smoothly
+                if (this.isVisible) {
+                    this.gridEngine.move(id, state.direction);
+                    this.playMoveAnimation(id, state.direction);
+                }
+            } else { 
+                // Remote players teleport to maintain sync
+                this.gridEngine.setPosition(id, state.position);
+                if (this.isVisible) {
+                    this.playMoveAnimation(id, state.direction);
+                }
             }
-          } else { 
-            // Remote players teleport to maintain sync
-              this.gridEngine.setPosition(id, state.position);
-            if (this.isVisible) {
-              this.playMoveAnimation(id, state.direction);
-            }
-          }
         }
-      
+        
         // Always update direction to ensure sync
         if (currentDirection !== state.direction) {
             this.gridEngine.turnTowards(id, state.direction);
@@ -257,44 +258,43 @@ export class Game extends Scene {
 
         // Handle carrying state changes
         if (currentlyCarrying !== state.carrying) {
-          this.players[id].carrying = state.carrying;
-          this.players[id].indicator.visible = state.carrying;
+            this.players[id].carrying = state.carrying;
+            this.players[id].indicator.visible = state.carrying;
 
-          // Update score whenever it changes
-          if (state.score !== undefined && state.score !== this.players[id].score) {
-            this.players[id].score = state.score;
-          }
-  
-          const currentDirection = this.gridEngine.getFacingDirection(id);
-          
-          // Play water animation
-          this.playWaterAnimation(id, currentDirection);
-          
-          // Handle pickup/dropoff effects
-          if (state.carrying) {
-              // Pickup effects
-              if (id === this.playerId) {
-                  this.collectWaterSound.play();
-              }
-          } else {
-              // Dropoff effects
-              const position = this.gridEngine.getFacingPosition(id);
-              this.createSparkleEffect(position.x, position.y);
-              
-              if (this.isVisible) {
-                  if (id === this.playerId) {
-                      this.successSound.play();
-                  } else if (this.othersSuccessSound) {
-                      try {
-                          this.othersSuccessSound.play();
-                      } catch (error) {
-                          console.warn('⚠️ Failed to play sound:', error);
-                      }
-                  }
-              }
-          }
+            // Update score whenever it changes
+            if (state.score !== undefined && state.score !== this.players[id].score) {
+                this.players[id].score = state.score;
+            }
+    
+            const currentDirection = this.gridEngine.getFacingDirection(id);
+            
+            // Play water animation
+            this.playWaterAnimation(id, currentDirection);
+            
+            // Handle pickup/dropoff effects
+            if (state.carrying) {
+                // Pickup effects
+                if (id === this.playerId) {
+                    this.collectWaterSound.play();
+                }
+            } else {
+                // Dropoff effects
+                const position = this.gridEngine.getFacingPosition(id);
+                this.createSparkleEffect(position.x, position.y);
+                
+                if (this.isVisible) {
+                    if (id === this.playerId) {
+                        this.successSound.play();
+                    } else if (this.othersSuccessSound) {
+                        try {
+                            this.othersSuccessSound.play();
+                        } catch (error) {
+                            console.warn('⚠️ Failed to play sound:', error);
+                        }
+                    }
+                }
+            }
         }
-      });
     }
 
     update() {
