@@ -16,12 +16,12 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
         }
 
         return () => {
-            if (game.current) {;
+            if (game.current) {
                 game.current.destroy(true);
                 game.current = undefined;
             }
         }
-    }, [ref]);
+    }, [ref, mapName]);
 
     useEffect(() => {
         if (game.current) {
@@ -44,11 +44,11 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
         }
     }, [currentActiveScene, ref]); 
 
-    //useEffect(() => {
-    //    if (game.current && ref.current.scene) {
-    //        EventBus.emit('update-player-states', playerStates);
-    //    }
-    //}, [playerStates]);
+    useEffect(() => {
+        if (game.current && ref.current.scene) {
+            EventBus.emit('update-player-states', playerStates);
+        }
+    }, [playerStates]);
 
     return  <div id="game-container"> </div>
 });

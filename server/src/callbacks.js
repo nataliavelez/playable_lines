@@ -54,7 +54,7 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 30000});  
+    round.addStage({ name: "Game", duration: 100000 });  
     round.addStage({ name: "Feedback", duration: 5 });
 
   }
@@ -157,10 +157,10 @@ Empirica.onGameEnded(({ game }) => {
   });
 });
 
-//callback to take moverequest from player and make moves in shared state
+//function to move game in server
 Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   const round = player.currentRound;
-  const { newPos, direction } = moveRequest;
+  const { curPos, newPos, direction } = moveRequest;
   
   const obstacles = new Set(round.get("obstacles"));
   const playerStates = round.get("playerStates");
@@ -207,7 +207,6 @@ Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
   round.set("playerStates", playerStates);
 });
 
-// HELPERS
 // Function to process Tilemap from JSON file
 function getObstaclesFromTilemap(mapName) {
   // Read the JSON file

@@ -7,81 +7,48 @@ import { EventBus } from './game/EventBus';
 export function GridWorld() {
     const phaserRef = useRef();
     const player = usePlayer();
+   // const players = usePlayers();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
     const playerStates = round.get('playerStates');
-    const [previousState, setPreviousState] = useState(null); // to only save updates.
 
 
-    // Mount handlers on start up
+    // handle move request to make sure player doesn't collide with other players
     useEffect(() => {
-        // Move request handler
         const handleMoveRequest = (move) => {
             player.set("moveRequest", move);
         };
-    
-        // Water action handler
-        const handleWaterAction = (action) => {
-            player.set("waterAction", action);
-        };
-    
-        // Visibility change handler
-        const handleVisibilityChange = () => {
-            setIsVisible(!document.hidden);
-        };
-    
-        // Set up all event listeners
         EventBus.on('moveRequest', handleMoveRequest);
-        EventBus.on('waterAction', handleWaterAction);
-        document.addEventListener('visibility-change', handleVisibilityChange);
-    
-        // Clean up all listeners on unmount
         return () => {
-            EventBus.off('move-request', handleMoveRequest);
-            EventBus.off('water-action', handleWaterAction);
-            document.removeEventListener('visibility-change', handleVisibilityChange);
+            EventBus.off('moveRequest', handleMoveRequest);
         };
     }, []);
 
-    // save updates to the round
+    // handle water action
     useEffect(() => {
-        if (!round.get('playerStateUpdates')) {
-            round.set('playerStateUpdates', []);
-        }
+        const handleWaterAction = (action) => {
+            player.set("waterAction", action);
+        };
+        EventBus.on('waterAction', handleWaterAction);
+        return () => {
+            EventBus.off('waterAction', handleWaterAction);
+        };
+    }, []);
     
-        if (playerStates && playerStates[player.id]) {
-            const currentState = playerStates[player.id];
-            
-            // Only record changes
-            if (previousState) {
-                const changes = {};
-                let hasChanges = false;
-    
-                // Compare current state with previous state
-                Object.keys(currentState).forEach(key => {
-                    if (JSON.stringify(currentState[key]) !== JSON.stringify(previousState[key])) {
-                        changes[key] = currentState[key];
-                        hasChanges = true;
-                    }
-                });
-    
-                // Only send to game if there are actual changes
-                if (hasChanges) {
-                     // Emit specific changes instead of whole state
-                    EventBus.emit('player-state-change', {
-                        playerId: player.id,
-                        changes
-                    });
-    
-                    console.log(`📝 Recorded state update for ${player.id}:`, changes);
-                }
-            }
-    
-            setPreviousState(currentState);
-        }
-    }, [playerStates]);
+    //useEffect(() => {
+    //    EventBus.emit("update-player-states", playerStates);
+    //    console.log(`🔄 Updated player states:`, playerStates[player.id]);
+    //}, [playerStates]);
 
-    
+    //visibility change listener
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            setIsVisible(!document.hidden);
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
+
     const currentScene = (scene) => {
         // Allow player to submit to move to next stage, 
         // Not currently needed becuase rounds are working on the basis of time. 
@@ -90,6 +57,7 @@ export function GridWorld() {
         }
 
     };
+
 
     return (
         <div id="app">
