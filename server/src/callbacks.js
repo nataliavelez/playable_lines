@@ -63,8 +63,8 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 5 });  
-    round.addStage({ name: "Feedback", duration: 5 });
+    round.addStage({ name: "Game", duration: 100 });  
+    round.addStage({ name: "Feedback", duration: 30 });
 
   }
 
