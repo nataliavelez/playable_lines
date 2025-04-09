@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 export function MyFinished() {
     useEffect(() => {
         const timer = setTimeout(() => {
-            window.location.href = "https://app.prolific.com/submissions/complete?cc=CTTGOUEO";
+            window.location.href = "https://app.prolific.com/submissions/complete?cc=CTQ8U2ML";
         }, 5000);
 
         return () => clearTimeout(timer); // Cleanup timer if component unmounts
