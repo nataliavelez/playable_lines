@@ -12,7 +12,9 @@ const gameCache = {
   // Maps roundId -> Map of playerId -> player data
   playerDataCache: new Map(),
   // Maps roundId -> Set of occupied position keys
-  playerPositionCache: new Map()
+  playerPositionCache: new Map(),
+  // Maps roundId -> Set of ready player IDs
+  playerReadyCache: new Map()
 };
 
 Empirica.onGameStart(({ game }) => {
@@ -63,7 +65,7 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 100000 });  
+    round.addStage({ name: "Game", duration: 20 });  
     round.addStage({ name: "Feedback", duration: 5 });
 
   }
@@ -100,6 +102,22 @@ Empirica.onRoundStart(({ round }) => {
   gameCache.obstacleCache.set(roundId, new Set());
   gameCache.playerDataCache.set(roundId, new Map());
   gameCache.playerPositionCache.set(roundId, new Set());
+  gameCache.playerReadyCache.set(roundId, new Set());
+  
+  // Set initial player readiness state
+  round.set("allPlayersReady", false);
+
+  // Reset player readiness explicitly for this new round
+  round.set("latestPlayerReady", {
+    id: null,
+    readyCount: 0,
+    totalPlayers: round.currentGame.players.length,
+    timestamp: Date.now(),
+    reset: true,
+    roundNumber: roundNumber
+  });
+
+  console.log(`Round ${roundNumber} started - reset player readiness tracking`);
 
   // Get number of players, for now just use the treatment, but later we should have an option to get active players
   const treatment = round.currentGame.get("treatment");
@@ -164,7 +182,16 @@ Empirica.onRoundStart(({ round }) => {
 });
 
 Empirica.onStageStart(({ stage }) => {
-
+  // Reset player readiness when a new stage starts
+  const round = stage.round;
+  if (round && stage.name === "Game") {
+    const roundId = round.id;
+    // Clear any existing ready players for this round
+    if (gameCache.playerReadyCache.has(roundId)) {
+      gameCache.playerReadyCache.get(roundId).clear();
+    }
+    console.log(`Stage ${stage.name} started, reset player readiness for round ${roundId}`);
+  }
 });
 
 Empirica.onStageEnded(({ stage }) => {});
@@ -175,6 +202,7 @@ Empirica.onRoundEnded(({ round }) => {
   gameCache.obstacleCache.delete(roundId);
   gameCache.playerDataCache.delete(roundId);
   gameCache.playerPositionCache.delete(roundId);
+  gameCache.playerReadyCache.delete(roundId);
 });
 
 Empirica.onGameEnded(({ game }) => {
@@ -367,3 +395,55 @@ function getObstaclesFromTilemap(mapName) {
 function positionToKey(x, y) {
   return `${x},${y}`;
 }
+
+// Function to handle player readiness
+Empirica.on("player", "playerReady", (ctx, { player, playerReady }) => {
+  try {
+    const round = player.currentRound;
+    if (!round) {
+      console.warn("No current round for player", player.id);
+      return;
+    }
+    
+    const roundId = round.id;
+    const roundNumber = round.get('number');
+    
+    // Get or initialize player ready cache
+    if (!gameCache.playerReadyCache.has(roundId)) {
+      gameCache.playerReadyCache.set(roundId, new Set());
+    }
+    const readyPlayers = gameCache.playerReadyCache.get(roundId);
+    
+    // Mark this player as ready if not already
+    if (!readyPlayers.has(player.id)) {
+      readyPlayers.add(player.id);
+      
+      // Count total players and ready players
+      const totalPlayers = Object.keys(round.get("playerStates") || {}).length;
+      const readyCount = readyPlayers.size;
+      
+      console.log(`Player ${player.id} is ready for round ${roundNumber}. Ready players: ${readyCount}/${totalPlayers}`);
+      
+      // Broadcast this player's readiness to all clients
+      // Set the latest player ready status for efficient client updates
+      round.set("latestPlayerReady", {
+        id: player.id,
+        readyCount: readyCount,
+        totalPlayers: totalPlayers,
+        timestamp: Date.now(), // Add timestamp to ensure the update is detected
+        roundNumber: roundNumber // Add round number for extra verification
+      });
+      
+      // Debug output all ready players
+      console.log(`Ready players for round ${roundNumber}: ${Array.from(readyPlayers)}`);
+      
+      // If all players are ready, set a flag on the round to indicate this
+      if (readyCount === totalPlayers) {
+        round.set("allPlayersReady", true);
+        console.log(`🎮 All players (${totalPlayers}) are ready for round ${roundNumber}! Game starting.`);
+      }
+    }
+  } catch (error) {
+    console.error("Error handling playerReady event:", error);
+  }
+});

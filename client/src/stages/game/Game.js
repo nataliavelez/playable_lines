@@ -23,6 +23,13 @@ export class Game extends Scene {
         // Simple debounce for movement to prevent rapid key presses
         this.lastMoveTime = 0;
         this.moveDebounceTime = 150; // ms between moves
+        
+        // Player readiness tracking
+        this.readyPlayers = new Set();
+        this.allPlayersReady = false;
+        
+        // Safety timeout to remove overlay after a maximum wait time
+        this.waitingTimeoutId = null;
     }
 
     createWaitingOverlay() {
@@ -50,22 +57,91 @@ export class Game extends Scene {
 
     setWaitingState(isWaiting) {
       console.log('Setting waiting state:', isWaiting);
+      
+      // Clear any existing waiting timeout
+      if (this.waitingTimeoutId) {
+        clearTimeout(this.waitingTimeoutId);
+        this.waitingTimeoutId = null;
+      }
+      
       if (this.waitingOverlay && this.waitingText) {
           this.waitingOverlay.visible = isWaiting;
           this.waitingText.visible = isWaiting;
           
           // Disable input while waiting
           this.input.keyboard.enabled = !isWaiting;
+          
+          // If we're waiting, set a safety timeout
+          if (isWaiting) {
+            this.waitingTimeoutId = setTimeout(() => {
+              console.log('🚨 Safety timeout triggered - forcing game to start');
+              this.allPlayersReady = true;
+              this.setWaitingState(false);
+            }, 10000); // 10 seconds maximum wait time
+          }
+      }
+    }
+    
+    updateWaitingText(readyCount, totalPlayers) {
+      if (this.waitingText) {
+        this.waitingText.setText(`Waiting for players...\n${readyCount}/${totalPlayers} ready`);
+      }
+    }
+    
+    checkAllPlayersReady() {
+      const totalPlayers = Object.keys(this.players || {}).length;
+      const readyCount = this.readyPlayers.size;
+      
+      console.log(`Ready players: ${readyCount}/${totalPlayers}`);
+      
+      // Update the waiting text
+      this.updateWaitingText(readyCount, totalPlayers);
+      
+      if (totalPlayers > 0 && readyCount === totalPlayers) {
+        this.allPlayersReady = true;
+        this.setWaitingState(false);
+        console.log('All players ready, game starting!');
+      }
+    }
+    
+    markPlayerReady(playerId) {
+      if (!this.readyPlayers.has(playerId)) {
+        console.log(`Marking player ${playerId} as ready`);
+        this.readyPlayers.add(playerId);
+        
+        try {
+          // Notify server that this player is ready
+          EventBus.emit('playerReady', { playerId });
+        } catch (error) {
+          console.error('Error emitting playerReady event:', error);
+        }
+        
+        this.checkAllPlayersReady();
       }
     }
 
     shutdown() {
+      // Clear timeout to prevent memory leaks
+      if (this.waitingTimeoutId) {
+        clearTimeout(this.waitingTimeoutId);
+        this.waitingTimeoutId = null;
+      }
+      
       // Clear all event listeners
       this.events.removeAllListeners();
       
-      // Remove EventBus subscriptions
-      EventBus.off('update-player-state', this.updatePlayerState);
-      EventBus.off('visibility-change', this.handleVisibilityChange);
+      try {
+        // Remove EventBus subscriptions
+        EventBus.off('update-player-state', this.updatePlayerState);
+        EventBus.off('visibility-change', this.handleVisibilityChange);
+        EventBus.off('player-ready', this.handlePlayerReady);
+      } catch (error) {
+        console.error('Error removing event listeners:', error);
+      }
+      
+      // Reset player readiness tracking
+      this.readyPlayers = new Set();
+      this.allPlayersReady = false;
       
       // Clear sounds
       if (this.collectWaterSound) this.collectWaterSound.destroy();
@@ -151,49 +227,90 @@ export class Game extends Scene {
       this.players = [];
       this.playerId = null;
       this.complete = false; // do not touch this! tells Empirica to advance trial
+      this.readyPlayers = new Set(); // Reset ready players set
+      this.allPlayersReady = false; // Reset all players ready flag
 
-      // Make sure event handlers are bound properly
-      this.updatePlayerState = this.updatePlayerState.bind(this);
-      this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
-
-      //tile map
-      this.trialTilemap = this.make.tilemap({ key: this.registry.get('mapName') });
-      this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
-      this.tilesets.forEach(tileset => {
-          this.trialTilemap.addTilesetImage(tileset);
-      });
-      
-      //layers
-      for (let i = 0; i < this.trialTilemap.layers.length; i++) {
-          const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
-          layer.scale = 2;
-          
-          if (this.trialTilemap.layers[i].name == 'Top View') {
-            layer.depth = 10;
+      try {
+        // Make sure event handlers are bound properly
+        this.updatePlayerState = this.updatePlayerState.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+        this.handlePlayerReady = this.handlePlayerReady.bind(this);
+  
+        //tile map
+        this.trialTilemap = this.make.tilemap({ key: this.registry.get('mapName') });
+        this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
+        this.tilesets.forEach(tileset => {
+            this.trialTilemap.addTilesetImage(tileset);
+        });
+        
+        //layers
+        for (let i = 0; i < this.trialTilemap.layers.length; i++) {
+            const layer = this.trialTilemap.createLayer(i, this.tilesets, 0, 0);
+            layer.scale = 2;
+            
+            if (this.trialTilemap.layers[i].name == 'Top View') {
+              layer.depth = 10;
+            }
+        }
+  
+        // Sounds
+        this.collectWaterSound = this.sound.add('collectWater');
+        this.successSound = this.sound.add('success');
+        this.othersSuccessSound = this.sound.add('othersSuccess');
+  
+        // Remove any existing event listeners before setting up new ones
+        EventBus.off('update-player-state', this.updatePlayerState);
+        EventBus.off('visibility-change', this.handleVisibilityChange);
+        EventBus.off('player-ready', this.handlePlayerReady);
+  
+        // Get playerId from registry first 
+        this.playerId = this.registry.get("playerId");
+        
+        // Initialize players from registry
+        this.initPlayers(this.registry.get("initialPlayerStates"), this.playerId);
+  
+        // Create waiting overlay and show it until all players are ready
+        this.createWaitingOverlay();
+        const totalPlayers = Object.keys(this.players || {}).length;
+        this.updateWaitingText(0, totalPlayers);
+        this.setWaitingState(true);
+        
+        // Set up event listeners
+        EventBus.emit('current-scene-ready', this);
+        EventBus.on('update-player-state', this.updatePlayerState);
+        EventBus.on('visibility-change', this.handleVisibilityChange);
+        EventBus.on('player-ready', this.handlePlayerReady);
+        
+        console.log("Game scene created with map:", this.registry.get('mapName'));
+        
+        // Mark this player as ready after a short delay
+        // This gives time for the scene to fully load
+        setTimeout(() => {
+          if (this.scene && this.scene.isActive() && this.playerId) {
+            try {
+              this.markPlayerReady(this.playerId);
+            } catch (error) {
+              console.error('Error marking player ready:', error);
+              // Force ready state after error
+              this.allPlayersReady = true;
+              this.setWaitingState(false);
+            }
           }
+        }, 1500);
+      } catch (error) {
+        console.error('Error in create method:', error);
+        // If there's any error in setup, force the game to start anyway
+        this.allPlayersReady = true;
+        if (this.waitingOverlay) {
+          this.waitingOverlay.visible = false;
+        }
+        if (this.waitingText) {
+          this.waitingText.visible = false;
+        }
+        if (this.input && this.input.keyboard) {
+          this.input.keyboard.enabled = true;
+        }
       }
-
-      // Sounds
-      this.collectWaterSound = this.sound.add('collectWater');
-      this.successSound = this.sound.add('success');
-      this.othersSuccessSound = this.sound.add('othersSuccess');
-
-      // Remove any existing event listeners before setting up new ones
-      EventBus.off('update-player-state', this.updatePlayerState);
-      EventBus.off('visibility-change', this.handleVisibilityChange);
-
-      // Initialize players from registry
-      this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
-
-      // Set up event listeners
-      EventBus.emit('current-scene-ready', this);
-      EventBus.on('update-player-state', this.updatePlayerState);
-      EventBus.on('visibility-change', this.handleVisibilityChange);
-      
-      console.log("Game scene created with map:", this.registry.get('mapName'));
-
-      // Get playerId from registry first
-      this.playerId = this.registry.get("playerId");
     }
 
     initPlayers(playerStates, currentPlayerId) {
@@ -344,7 +461,7 @@ export class Game extends Scene {
     }
 
     update() {
-      if (!this.playerId) return;
+      if (!this.playerId || !this.allPlayersReady) return;
   
       // Movement
       const cursors = this.input.keyboard.createCursorKeys();
@@ -566,5 +683,48 @@ export class Game extends Scene {
       this.isVisible = isVisible;
     }
     
-    
+    handlePlayerReady = (data) => {
+      try {
+        const { id, readyCount, totalPlayers, reset, roundNumber } = data;
+        
+        console.log(`Received player ready event:`, data);
+        
+        // If this is a reset signal, clear all ready players
+        if (reset) {
+          console.log(`Resetting ready players for round ${roundNumber || 'unknown'}`);
+          this.readyPlayers.clear();
+          this.allPlayersReady = false;
+          this.updateWaitingText(0, totalPlayers);
+          this.setWaitingState(true);
+          return;
+        }
+        
+        // Add this player to our local ready set
+        if (id && !this.readyPlayers.has(id)) {
+          console.log(`Player ${id} is ready from server notification`);
+          this.readyPlayers.add(id);
+        }
+        
+        // Update UI with server's count if provided
+        if (readyCount !== undefined && totalPlayers !== undefined) {
+          console.log(`Ready status from server: ${readyCount}/${totalPlayers}`);
+          this.updateWaitingText(readyCount, totalPlayers);
+          
+          // If all players are ready according to the server, enable game
+          if (readyCount === totalPlayers) {
+            this.allPlayersReady = true;
+            this.setWaitingState(false);
+            console.log('All players ready according to server, game starting!');
+          }
+        } else {
+          // Fall back to local check if server counts not provided
+          this.checkAllPlayersReady();
+        }
+      } catch (error) {
+        console.error('Error handling player ready event:', error);
+        // Force ready state after error
+        this.allPlayersReady = true;
+        this.setWaitingState(false);
+      }
+    }
 }
