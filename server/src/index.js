@@ -25,7 +25,11 @@ setLogLevel(argv["loglevel"] || "info");
   );
 
   ctx.register(ClassicLoader);
-  ctx.register(Classic());
+  ctx.register(
+    Classic({
+      preferUnderassignedGames: true,
+    })
+  );
   ctx.register(Lobby());
   ctx.register(Empirica);
   ctx.register(function (_) {
