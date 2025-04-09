@@ -2,7 +2,8 @@ import React from "react";
 import { useRef, useState, useEffect } from 'react';
 import { usePlayer, usePlayers, useRound } from "@empirica/core/player/classic/react";
 import { PhaserGame } from './game/PhaserGame';
-import { EventBus } from './game/EventBus'; 
+import { EventBus } from './game/EventBus';
+import { GameLog } from './game/GameConfig';
 
 export function GridWorld() {
     const phaserRef = useRef();
@@ -16,17 +17,17 @@ export function GridWorld() {
     
     // Track round changes to reset player states
     useEffect(() => {
-        console.log(`Round ${roundNumber} initialized`);
+        GameLog.log(`Round ${roundNumber} initialized`);
         const roundPlayerStates = round.get('playerStates');
         
         if (roundPlayerStates) {
-            console.log('Setting player states for new round');
+            GameLog.log('Setting player states for new round');
             setPlayerStates(roundPlayerStates);
             
             // Force a reset of the player readiness for the new round
             try {
                 if (EventBus) {
-                    console.log('Notifying game about new round');
+                    GameLog.log('Notifying game about new round');
                     // This will tell the game scene to reset its waiting overlay
                     EventBus.emit("player-ready", {
                         reset: true,
@@ -35,7 +36,7 @@ export function GridWorld() {
                     });
                 }
             } catch (error) {
-                console.error('Error sending reset signal:', error);
+                GameLog.error('Error sending reset signal:', error);
             }
         }
     }, [roundNumber]);
@@ -46,7 +47,7 @@ export function GridWorld() {
             try {
                 player.set("moveRequest", move);
             } catch (error) {
-                console.error('Error setting moveRequest:', error);
+                GameLog.error('Error setting moveRequest:', error);
             }
         };
         
@@ -56,7 +57,7 @@ export function GridWorld() {
                 EventBus.off('moveRequest', handleMoveRequest);
             };
         } catch (error) {
-            console.error('Error setting up moveRequest listener:', error);
+            GameLog.error('Error setting up moveRequest listener:', error);
             return () => {};
         }
     }, [player]);
@@ -67,7 +68,7 @@ export function GridWorld() {
             try {
                 player.set("waterAction", action);
             } catch (error) {
-                console.error('Error setting waterAction:', error);
+                GameLog.error('Error setting waterAction:', error);
             }
         };
         
@@ -77,7 +78,7 @@ export function GridWorld() {
                 EventBus.off('waterAction', handleWaterAction);
             };
         } catch (error) {
-            console.error('Error setting up waterAction listener:', error);
+            GameLog.error('Error setting up waterAction listener:', error);
             return () => {};
         }
     }, [player]);
@@ -94,7 +95,7 @@ export function GridWorld() {
                 };
                 player.set("playerReady", readyData);
             } catch (error) {
-                console.error('Error setting playerReady:', error);
+                GameLog.error('Error setting playerReady:', error);
             }
         };
         
@@ -104,7 +105,7 @@ export function GridWorld() {
                 EventBus.off('playerReady', handlePlayerReady);
             };
         } catch (error) {
-            console.error('Error setting up playerReady listener:', error);
+            GameLog.error('Error setting up playerReady listener:', error);
             return () => {};
         }
     }, [player, roundNumber]);
@@ -122,10 +123,10 @@ export function GridWorld() {
     useEffect(() => {
         if (latestPlayerChange && EventBus) {
             try {
-                console.log(`🔸 Received latest player change for ${latestPlayerChange.id}`);
+                GameLog.log(`🔸 Received latest player change for ${latestPlayerChange.id}`);
                 EventBus.emit("update-player-state", latestPlayerChange);
             } catch (error) {
-                console.error('Error emitting update-player-state:', error);
+                GameLog.error('Error emitting update-player-state:', error);
             }
         }
     }, [latestPlayerChange]);
@@ -134,7 +135,7 @@ export function GridWorld() {
     useEffect(() => {
         if (latestPlayerReady && EventBus) {
             try {
-                console.log(`🔹 Player ready update: ${JSON.stringify(latestPlayerReady)}`);
+                GameLog.log(`🔹 Player ready update: ${JSON.stringify(latestPlayerReady)}`);
                 // Add current round number for context
                 const readyData = { 
                     ...latestPlayerReady,
@@ -142,7 +143,7 @@ export function GridWorld() {
                 };
                 EventBus.emit("player-ready", readyData);
             } catch (error) {
-                console.error('Error emitting player-ready:', error);
+                GameLog.error('Error emitting player-ready:', error);
             }
         }
     }, [latestPlayerReady, roundNumber]);
@@ -151,14 +152,14 @@ export function GridWorld() {
     useEffect(() => {
         return () => {
             try {
-                console.log('Cleaning up GridWorld event listeners');
+                GameLog.log('Cleaning up GridWorld event listeners');
                 EventBus.off('moveRequest');
                 EventBus.off('waterAction');
                 EventBus.off('playerReady');
                 EventBus.off('update-player-state');
                 EventBus.off('player-ready');
             } catch (error) {
-                console.error('Error cleaning up event listeners:', error);
+                GameLog.error('Error cleaning up event listeners:', error);
             }
         };
     }, []);
@@ -171,7 +172,7 @@ export function GridWorld() {
                 player.stage.set("submit", true);
             }
         } catch (error) {
-            console.error('Error in currentScene callback:', error);
+            GameLog.error('Error in currentScene callback:', error);
         }
     };
 

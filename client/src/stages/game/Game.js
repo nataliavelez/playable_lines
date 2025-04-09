@@ -1,6 +1,7 @@
 import { EventBus } from './EventBus';
 import { Scene } from 'phaser';
 import _ from 'lodash';
+import { GameLog } from './GameConfig';
 //import Phaser from 'phaser';
 
 export class Game extends Scene {
@@ -56,7 +57,7 @@ export class Game extends Scene {
     }
 
     setWaitingState(isWaiting) {
-      console.log('Setting waiting state:', isWaiting);
+      GameLog.log('Setting waiting state:', isWaiting);
       
       // Clear any existing waiting timeout
       if (this.waitingTimeoutId) {
@@ -74,7 +75,7 @@ export class Game extends Scene {
           // If we're waiting, set a safety timeout
           if (isWaiting) {
             this.waitingTimeoutId = setTimeout(() => {
-              console.log('🚨 Safety timeout triggered - forcing game to start');
+              GameLog.log('🚨 Safety timeout triggered - forcing game to start');
               this.allPlayersReady = true;
               this.setWaitingState(false);
             }, 10000); // 10 seconds maximum wait time
@@ -92,7 +93,7 @@ export class Game extends Scene {
       const totalPlayers = Object.keys(this.players || {}).length;
       const readyCount = this.readyPlayers.size;
       
-      console.log(`Ready players: ${readyCount}/${totalPlayers}`);
+      GameLog.log(`Ready players: ${readyCount}/${totalPlayers}`);
       
       // Update the waiting text
       this.updateWaitingText(readyCount, totalPlayers);
@@ -100,20 +101,20 @@ export class Game extends Scene {
       if (totalPlayers > 0 && readyCount === totalPlayers) {
         this.allPlayersReady = true;
         this.setWaitingState(false);
-        console.log('All players ready, game starting!');
+        GameLog.log('All players ready, game starting!');
       }
     }
     
     markPlayerReady(playerId) {
       if (!this.readyPlayers.has(playerId)) {
-        console.log(`Marking player ${playerId} as ready`);
+        GameLog.log(`Marking player ${playerId} as ready`);
         this.readyPlayers.add(playerId);
         
         try {
           // Notify server that this player is ready
           EventBus.emit('playerReady', { playerId });
         } catch (error) {
-          console.error('Error emitting playerReady event:', error);
+          GameLog.error('Error emitting playerReady event:', error);
         }
         
         this.checkAllPlayersReady();
@@ -136,7 +137,7 @@ export class Game extends Scene {
         EventBus.off('visibility-change', this.handleVisibilityChange);
         EventBus.off('player-ready', this.handlePlayerReady);
       } catch (error) {
-        console.error('Error removing event listeners:', error);
+        GameLog.error('Error removing event listeners:', error);
       }
       
       // Reset player readiness tracking
@@ -162,7 +163,7 @@ export class Game extends Scene {
         try {
           this.gridEngine.removeAllCharacters();
         } catch (error) {
-          console.warn('Failed to remove characters from grid engine:', error);
+          GameLog.warn('Failed to remove characters from grid engine:', error);
         }
       }
 
@@ -176,7 +177,7 @@ export class Game extends Scene {
       this.playerId = null;
       this.complete = false;
 
-      console.log("Game scene shutdown complete");
+      GameLog.log("Game scene shutdown complete");
     }
 
     // Add this method to ensure the scene cleans up properly
@@ -281,7 +282,7 @@ export class Game extends Scene {
         EventBus.on('visibility-change', this.handleVisibilityChange);
         EventBus.on('player-ready', this.handlePlayerReady);
         
-        console.log("Game scene created with map:", this.registry.get('mapName'));
+        GameLog.log("Game scene created with map:", this.registry.get('mapName'));
         
         // Mark this player as ready after a short delay
         // This gives time for the scene to fully load
@@ -290,7 +291,7 @@ export class Game extends Scene {
             try {
               this.markPlayerReady(this.playerId);
             } catch (error) {
-              console.error('Error marking player ready:', error);
+              GameLog.error('Error marking player ready:', error);
               // Force ready state after error
               this.allPlayersReady = true;
               this.setWaitingState(false);
@@ -298,7 +299,7 @@ export class Game extends Scene {
           }
         }, 1500);
       } catch (error) {
-        console.error('Error in create method:', error);
+        GameLog.error('Error in create method:', error);
         // If there's any error in setup, force the game to start anyway
         this.allPlayersReady = true;
         if (this.waitingOverlay) {
@@ -348,7 +349,7 @@ export class Game extends Scene {
             const container = this.add.container(state.position.x, state.position.y, [plumbob, sprite, indicator, nameText]);
 
             this.players[id] = { sprite, container, indicator, carrying, score };
-            console.log(`Created sprite for player ${id} at position:`, state.position, `, direction:`, state.direction, `, tint: `, state.color, `, carrying: `, state.carrying, `, score: `, state.score, `, name: `, state.name);
+            GameLog.log(`Created sprite for player ${id} at position:`, state.position, `, direction:`, state.direction, `, tint: `, state.color, `, carrying: `, state.carrying, `, score: `, state.score, `, name: `, state.name);
 
         });
 
@@ -452,7 +453,7 @@ export class Game extends Scene {
                         try {
                             this.othersSuccessSound.play();
                         } catch (error) {
-                            console.warn('⚠️ Failed to play sound:', error);
+                            GameLog.warn('⚠️ Failed to play sound:', error);
                         }
                     }
                 }
@@ -523,7 +524,7 @@ export class Game extends Scene {
 
 
     createPlayerAnimations() {
-      console.log("Creating player animations")
+      GameLog.log("Creating player animations")
       const directions = ['up', 'down', 'left', 'right'];
       const animsConfig = {
           up: { start: 4, end: 7 },
@@ -675,7 +676,7 @@ export class Game extends Scene {
           });
         }
       } catch (error) {
-        console.warn('Failed to create sparkle effect:', error);
+        GameLog.warn('Failed to create sparkle effect:', error);
       }
     }
 
@@ -687,11 +688,11 @@ export class Game extends Scene {
       try {
         const { id, readyCount, totalPlayers, reset, roundNumber } = data;
         
-        console.log(`Received player ready event:`, data);
+        GameLog.log(`Received player ready event:`, data);
         
         // If this is a reset signal, clear all ready players
         if (reset) {
-          console.log(`Resetting ready players for round ${roundNumber || 'unknown'}`);
+          GameLog.log(`Resetting ready players for round ${roundNumber || 'unknown'}`);
           this.readyPlayers.clear();
           this.allPlayersReady = false;
           this.updateWaitingText(0, totalPlayers);
@@ -701,27 +702,27 @@ export class Game extends Scene {
         
         // Add this player to our local ready set
         if (id && !this.readyPlayers.has(id)) {
-          console.log(`Player ${id} is ready from server notification`);
+          GameLog.log(`Player ${id} is ready from server notification`);
           this.readyPlayers.add(id);
         }
         
         // Update UI with server's count if provided
         if (readyCount !== undefined && totalPlayers !== undefined) {
-          console.log(`Ready status from server: ${readyCount}/${totalPlayers}`);
+          GameLog.log(`Ready status from server: ${readyCount}/${totalPlayers}`);
           this.updateWaitingText(readyCount, totalPlayers);
           
           // If all players are ready according to the server, enable game
           if (readyCount === totalPlayers) {
             this.allPlayersReady = true;
             this.setWaitingState(false);
-            console.log('All players ready according to server, game starting!');
+            GameLog.log('All players ready according to server, game starting!');
           }
         } else {
           // Fall back to local check if server counts not provided
           this.checkAllPlayersReady();
         }
       } catch (error) {
-        console.error('Error handling player ready event:', error);
+        GameLog.error('Error handling player ready event:', error);
         // Force ready state after error
         this.allPlayersReady = true;
         this.setWaitingState(false);

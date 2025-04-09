@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
+import { GameLog } from './GameConfig';
 
 export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerId, playerStates, isVisible }, ref) {
     const game = useRef();
@@ -9,7 +10,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
     useLayoutEffect(() => {
         // Only initialize or reinitialize when needed
         if (game.current === undefined) {
-            console.log(`Initializing game with map: ${mapName}`);
+            GameLog.log(`Initializing game with map: ${mapName}`);
             
             // Create new game
             game.current = StartGame("game-container", mapName, playerStates, playerId);
@@ -21,7 +22,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
 
         return () => {
             if (game.current) {
-                console.log('Cleaning up game on unmount');
+                GameLog.log('Cleaning up game on unmount');
                 game.current.destroy(true);
                 game.current = undefined;
             }
