@@ -9,15 +9,19 @@ export function GridWorld() {
     const player = usePlayer();
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
-    const initialPlayerStatesRef = useRef(null);
+    const [playerStates, setPlayerStates] = useState(null);
+    const roundNumber = round.get('number');
     const latestPlayerChange = round.get('latestPlayerChange');
     
-    // Get playerStates only once for initialization
+    // Reset player states when the round changes
     useEffect(() => {
-        if (!initialPlayerStatesRef.current) {
-            initialPlayerStatesRef.current = round.get('playerStates');
+        console.log(`Round ${roundNumber} initialized`);
+        const roundPlayerStates = round.get('playerStates');
+        if (roundPlayerStates) {
+            console.log('Setting player states for new round');
+            setPlayerStates(roundPlayerStates);
         }
-    }, [round]);
+    }, [roundNumber]);
 
     // handle move request to make sure player doesn't collide with other players
     useEffect(() => {
@@ -50,7 +54,6 @@ export function GridWorld() {
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, []);
 
-
     // Track and emit individual player state changes
     useEffect(() => {
         if (latestPlayerChange && EventBus) {
@@ -58,6 +61,16 @@ export function GridWorld() {
             EventBus.emit("update-player-state", latestPlayerChange);
         }
     }, [latestPlayerChange]);
+
+    // Clean up EventBus when component unmounts
+    useEffect(() => {
+        return () => {
+            console.log('Cleaning up GridWorld event listeners');
+            EventBus.off('moveRequest');
+            EventBus.off('waterAction');
+            EventBus.off('update-player-state');
+        };
+    }, []);
 
     const currentScene = (scene) => {
         // Allow player to submit to move to next stage, 
@@ -67,8 +80,8 @@ export function GridWorld() {
         }
     };
 
-    // Only render PhaserGame once initialPlayerStates is available
-    if (!initialPlayerStatesRef.current) {
+    // Only render PhaserGame once playerStates is available
+    if (!playerStates) {
         return <div>Loading game...</div>;
     }
 
@@ -79,7 +92,7 @@ export function GridWorld() {
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}
                 playerId={player.id}
-                playerStates={initialPlayerStatesRef.current}
+                playerStates={playerStates}
                 isVisible={isVisible}
             />
         </div>

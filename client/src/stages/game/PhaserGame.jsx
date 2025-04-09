@@ -7,7 +7,11 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
     const game = useRef();
 
     useLayoutEffect(() => {
+        // Only initialize or reinitialize when needed
         if (game.current === undefined) {
+            console.log(`Initializing game with map: ${mapName}`);
+            
+            // Create new game
             game.current = StartGame("game-container", mapName, playerStates, playerId);
             
             if (ref !== null) {
@@ -17,11 +21,12 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
 
         return () => {
             if (game.current) {
+                console.log('Cleaning up game on unmount');
                 game.current.destroy(true);
                 game.current = undefined;
             }
         }
-    }, [ref, mapName]);
+    }, [ref, mapName]); // When mapName changes, component will unmount and remount
 
     useEffect(() => {
         if (game.current) {
@@ -34,7 +39,9 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
             if (currentActiveScene instanceof Function) {
                 currentActiveScene(scene);
             }
-            ref.current.scene = scene;
+            if (ref.current) {
+                ref.current.scene = scene;
+            }
         };
 
         EventBus.on('current-scene-ready', handleSceneChange);
@@ -49,5 +56,9 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
 
 // Props definitions
 PhaserGame.propTypes = {
-    currentActiveScene: PropTypes.func
+    currentActiveScene: PropTypes.func,
+    mapName: PropTypes.string.isRequired,
+    playerId: PropTypes.string.isRequired,
+    playerStates: PropTypes.object.isRequired,
+    isVisible: PropTypes.bool
 }

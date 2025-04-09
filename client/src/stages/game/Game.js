@@ -60,21 +60,51 @@ export class Game extends Scene {
       // Clear all event listeners
       this.events.removeAllListeners();
       
+      // Remove EventBus subscriptions
+      EventBus.off('update-player-state', this.updatePlayerState);
+      EventBus.off('visibility-change', this.handleVisibilityChange);
+      
       // Clear sounds
-      if (this.othersSuccessSound) {
-          this.othersSuccessSound.destroy();
+      if (this.collectWaterSound) this.collectWaterSound.destroy();
+      if (this.successSound) this.successSound.destroy();
+      if (this.othersSuccessSound) this.othersSuccessSound.destroy();
+      
+      // Destroy all containers and sprites
+      if (this.players) {
+        Object.values(this.players).forEach(player => {
+          if (player.container) player.container.destroy(true);
+          if (player.sprite) player.sprite.destroy(true);
+          if (player.indicator) player.indicator.destroy(true);
+        });
       }
       
       // Clear grid engine
       if (this.gridEngine) {
+        try {
           this.gridEngine.removeAllCharacters();
+        } catch (error) {
+          console.warn('Failed to remove characters from grid engine:', error);
+        }
+      }
+
+      // Clear tilemap
+      if (this.trialTilemap) {
+        this.trialTilemap.destroy();
       }
 
       // Clear player references
       this.players = {};
       this.playerId = null;
+      this.complete = false;
 
-  }
+      console.log("Game scene shutdown complete");
+    }
+
+    // Add this method to ensure the scene cleans up properly
+    destroy() {
+      this.shutdown();
+      super.destroy();
+    }
 
     init() {
       // get map name from registry
@@ -119,6 +149,10 @@ export class Game extends Scene {
       this.playerId = null;
       this.complete = false; // do not touch this! tells Empirica to advance trial
 
+      // Make sure event handlers are bound properly
+      this.updatePlayerState = this.updatePlayerState.bind(this);
+      this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+
       //tile map
       this.trialTilemap = this.make.tilemap({ key: this.registry.get('mapName') });
       this.tilesets = this.trialTilemap.tilesets.map(tileset => tileset.name);
@@ -134,7 +168,6 @@ export class Game extends Scene {
           if (this.trialTilemap.layers[i].name == 'Top View') {
             layer.depth = 10;
           }
-          //console.log(layer.depth);
       }
 
       // Sounds
@@ -142,15 +175,22 @@ export class Game extends Scene {
       this.successSound = this.sound.add('success');
       this.othersSuccessSound = this.sound.add('othersSuccess');
 
+      // Remove any existing event listeners before setting up new ones
+      EventBus.off('update-player-state', this.updatePlayerState);
+      EventBus.off('visibility-change', this.handleVisibilityChange);
+
+      // Initialize players from registry
       this.initPlayers(this.registry.get("initialPlayerStates"), this.registry.get("playerId"));
 
+      // Set up event listeners
       EventBus.emit('current-scene-ready', this);
-      EventBus.on('update-player-state', this.updatePlayerState.bind(this));
-      EventBus.on('visibility-change', this.handleVisibilityChange.bind(this));
-      //console.log("Game scene created");
+      EventBus.on('update-player-state', this.updatePlayerState);
+      EventBus.on('visibility-change', this.handleVisibilityChange);
+      
+      console.log("Game scene created with map:", this.registry.get('mapName'));
 
-     // Get playerId from registry first
-     this.playerId = this.registry.get("playerId");
+      // Get playerId from registry first
+      this.playerId = this.registry.get("playerId");
     }
 
     initPlayers(playerStates, currentPlayerId) {
