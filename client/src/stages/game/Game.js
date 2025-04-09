@@ -73,7 +73,6 @@ export class Game extends Scene {
       // Clear player references
       this.players = {};
       this.playerId = null;
-      grid
 
   }
 
@@ -231,39 +230,21 @@ export class Game extends Scene {
         const currentDirection = this.gridEngine.getFacingDirection(id);
         const currentlyCarrying = this.isCarrying(id);
 
-        // Handle position and direction changes
-        if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
-            // all  players use tweened movement
-            const container = this.players[id].container;
-            const targetX = (state.position.x-1) *32; // Multiply by tile size and scale
-            const targetY = (state.position.y-1) *32 -16;
-            
-            // Stop any existing tweens
-            this.tweens.killTweensOf(container);
-
-            if (!this.players[id].moving) {
-              this.players[id].moving = true; // Set moving flag to true
-            
-              // Create new tween for smooth movement
-              this.tweens.add({
-                targets: container,
-                x: targetX,
-                y: targetY,
-                duration: 1000/this.speed,
-                ease: 'Linear',
-                onStart: () => {
-                  if (this.isVisible) {
-                    this.playMoveAnimation(id, state.direction);
-                  } 
-                },
-                onComplete: () => {
-                  // Update GridEngine position after tween
-                  this.gridEngine.setPosition(id, state.position);
-                  this.players[id].moving = false; // Reset moving flag
-                }
-              });
+          // Handle position and direction changes
+          if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+          if (id === this.playerId) {
+            // Local player moves smoothly
+            if (this.isVisible) {
+              this.gridEngine.move(id, state.direction);
+              this.playMoveAnimation(id, state.direction);
             }
-          
+          } else { 
+            // Remote players teleport to maintain sync
+              this.gridEngine.setPosition(id, state.position);
+            if (this.isVisible) {
+              this.playMoveAnimation(id, state.direction);
+            }
+          }
         }
       
         // Always update direction to ensure sync
