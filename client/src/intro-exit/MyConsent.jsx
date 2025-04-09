@@ -1,6 +1,17 @@
 import { Consent } from "@empirica/core/player/react";
+import { isMobile } from 'react-device-detect';
 
 export function MyConsent({ onConsent }) {
+    if (isMobile) {
+      return (
+        <div className="flex flex-col items-center justify-center h-screen p-4 text-center">
+          <h2 className="text-2xl font-bold mb-4">Mobile Device Detected</h2>
+          <p className="mb-4">This experiment requires a desktop or laptop computer to participate.</p>
+          <p>Please return using a non-mobile device to continue.</p>
+        </div>
+      );
+    }
+    
     return (
       <Consent
         title="Do you consent?"
