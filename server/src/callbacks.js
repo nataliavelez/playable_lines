@@ -1,9 +1,7 @@
 import { ClassicListenersCollector } from "@empirica/core/admin/classic";
-import { getMapInfo } from './getMapInfo.js';
+import { getMapInfo, getMapObstacles } from './getMapInfo.js';
 
 export const Empirica = new ClassicListenersCollector();
-import fs from "fs";
-import path from "path";
 
 // Global cache to store obstacles and player data by round ID
 const gameCache = {
@@ -65,8 +63,8 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndices[i],
       universalizability: universalizabiltyOrder[i]
     });
-    round.addStage({ name: "Game", duration: 100 });  
-    round.addStage({ name: "Feedback", duration: 30 });
+    round.addStage({ name: "Game", duration: 5 });  
+    round.addStage({ name: "Feedback", duration: 5 });
 
   }
 
@@ -366,30 +364,8 @@ Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
 
 // Function to process Tilemap from JSON file
 function getObstaclesFromTilemap(mapName) {
-  // Read the JSON file
-  const filePath = path.resolve("../client/public/assets/maps", `${mapName}.json`);
-  const fileContent = fs.readFileSync(filePath, "utf8");
-  const tiledJson = JSON.parse(fileContent);
-
-  // Find the "obstacles" layer
-  const obstaclesLayer = tiledJson.layers.find(layer => layer.name === "obstacles");
-  
-  if (!obstaclesLayer) {
-    throw new Error("Layer 'obstacles' not found");
-  }
-  const { width, height, data } = obstaclesLayer;
-  // Extract (x, y) coordinates of all non-zero values
-  const staticObstacles = [];
-
-  for (let y = 1; y < height - 1; y++) {
-    for (let x = 1; x < width - 1; x++) {
-      const index = y * width + x;
-      if (data[index] !== 0) {
-        staticObstacles.push(`${x},${y}`); // Store as "x,y"
-      }
-    }
-  }
-  return staticObstacles;
+  // Instead of reading from filesystem, use the hard-coded data
+  return getMapObstacles(mapName);
 }
 
 function positionToKey(x, y) {
