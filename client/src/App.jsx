@@ -7,6 +7,7 @@ import { ExitSurvey1 } from "./intro-exit/ExitSurvey1";
 import { ExitSurvey2 } from "./intro-exit/ExitSurvey2";
 import { ExitSurvey3 } from "./intro-exit/ExitSurvey3";
 import { ExitSurvey4 } from "./intro-exit/ExitSurvey4";
+import { ExitNoGame } from "./intro-exit/ExitNoGame";
 import { Introduction } from "./intro-exit/Introduction";
 import { Demo } from "./intro-exit/Demo";
 import { MultiplayerInfo } from "./intro-exit/MultiplayerInfo";
@@ -32,7 +33,9 @@ export default function App() {
   }
 
   function exitSteps({ game, player }) {
-    return [ExitSurvey1, ExitSurvey2, ExitSurvey3, ExitSurvey4];
+    return player.get("ended") === "finished" ?
+    [ExitSurvey1, ExitSurvey2, ExitSurvey3, ExitSurvey4] :
+    [ExitNoGame]
   }
 
   return (
