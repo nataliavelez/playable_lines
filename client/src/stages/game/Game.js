@@ -261,9 +261,12 @@ export class Game extends Scene {
 
     // Gets states for a single player from empirica and updates that player
     updatePlayerState(payload) {
-        const { id, state } = payload;
+        const { id, changes, state } = payload;
         
-        if (!this.gridEngine || !this.gridEngine.hasCharacter(id)) {
+        // Support both new format (changes) and old format (state) for backward compatibility
+        const playerChanges = changes || state;
+        
+        if (!playerChanges || !this.gridEngine || !this.gridEngine.hasCharacter(id)) {
             return;
         }
         
@@ -272,47 +275,47 @@ export class Game extends Scene {
         const currentlyCarrying = this.isCarrying(id);
 
         // Handle position and direction changes
-        if (currentPos.x !== state.position.x || currentPos.y !== state.position.y) {
+        if (playerChanges.position && (currentPos.x !== playerChanges.position.x || currentPos.y !== playerChanges.position.y)) {
             if (id === this.playerId) {
                 // Local player moves smoothly
                 if (this.isVisible) {
-                    this.gridEngine.move(id, state.direction);
-                    this.playMoveAnimation(id, state.direction);
+                    this.gridEngine.move(id, playerChanges.direction);
+                    this.playMoveAnimation(id, playerChanges.direction);
                 }
             } else { 
                 // Remote players teleport to maintain sync
-                this.gridEngine.setPosition(id, state.position);
+                this.gridEngine.setPosition(id, playerChanges.position);
                 if (this.isVisible) {
-                    this.playMoveAnimation(id, state.direction);
+                    this.playMoveAnimation(id, playerChanges.direction);
                 }
             }
         }
         
         // Always update direction to ensure sync
-        if (currentDirection !== state.direction) {
-            this.gridEngine.turnTowards(id, state.direction);
+        if (playerChanges.direction && currentDirection !== playerChanges.direction) {
+            this.gridEngine.turnTowards(id, playerChanges.direction);
             if (!this.gridEngine.isMoving(id)) {
-                this.players[id].sprite.play(`idle_${state.direction}`);
+                this.players[id].sprite.play(`idle_${playerChanges.direction}`);
             }
         }
 
         // Handle carrying state changes
-        if (currentlyCarrying !== state.carrying) {
-            this.players[id].carrying = state.carrying;
-            this.players[id].indicator.visible = state.carrying;
+        if (playerChanges.carrying !== undefined && currentlyCarrying !== playerChanges.carrying) {
+            this.players[id].carrying = playerChanges.carrying;
+            this.players[id].indicator.visible = playerChanges.carrying;
 
             // Update score whenever it changes
-            if (state.score !== undefined && state.score !== this.players[id].score) {
-                this.players[id].score = state.score;
+            if (playerChanges.score !== undefined && playerChanges.score !== this.players[id].score) {
+                this.players[id].score = playerChanges.score;
             }
-    
+
             const currentDirection = this.gridEngine.getFacingDirection(id);
             
             // Play water animation
             this.playWaterAnimation(id, currentDirection);
             
             // Handle pickup/dropoff effects
-            if (state.carrying) {
+            if (playerChanges.carrying) {
                 // Pickup effects
                 if (id === this.playerId) {
                     this.collectWaterSound.play();

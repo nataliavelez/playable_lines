@@ -5,6 +5,15 @@ export const Empirica = new ClassicListenersCollector();
 import fs from "fs";
 import path from "path";
 
+// Global cache to store obstacles and player data by round ID
+const gameCache = {
+  // Maps roundId -> Set of obstacle position keys
+  obstacleCache: new Map(),
+  // Maps roundId -> Map of playerId -> player data
+  playerDataCache: new Map(),
+  // Maps roundId -> Set of occupied position keys
+  playerPositionCache: new Map()
+};
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
@@ -85,6 +94,12 @@ Empirica.onRoundStart(({ round }) => {
   const randIndex = round.get("randIndex");
   const roundNumber = round.get("number");
   const universalizability = round.get("universalizability");
+  const roundId = round.id;
+
+  // Initialize caches for this round
+  gameCache.obstacleCache.set(roundId, new Set());
+  gameCache.playerDataCache.set(roundId, new Map());
+  gameCache.playerPositionCache.set(roundId, new Set());
 
   // Get number of players, for now just use the treatment, but later we should have an option to get active players
   const treatment = round.currentGame.get("treatment");
@@ -109,10 +124,13 @@ Empirica.onRoundStart(({ round }) => {
 
   // Initialize player state for round
   const players = round.currentGame.players;
+  
+  // Create player states object
   const playerStates = {};
 
   // Populate player states
   players.forEach((p, i) => {
+      // Complete player data
       playerStates[p.id] = {
           position: startPositions[i],
           direction: 'down',
@@ -121,15 +139,28 @@ Empirica.onRoundStart(({ round }) => {
           color: p.get('color'),
           name: p.get('nickname'),
       };
+      
+      // Cache player positions
+      gameCache.playerPositionCache.get(roundId).add(positionToKey(startPositions[i].x, startPositions[i].y));
+      
+      // Cache player data
+      gameCache.playerDataCache.get(roundId).set(p.id, playerStates[p.id]);
   });
-  round.set('playerStates', playerStates); // set 
-  console.log("🔹 Server initialized player states:", round.get("playerStates"));
+  
+  // Store in Empirica
+  round.set('playerStates', playerStates);
+  
+  console.log("🔹 Server initialized player states:", playerStates);
 
-  // Get obstacles from tilemap and make bitmash
+  // Get obstacles from tilemap and cache them
   const obstacles = getObstaclesFromTilemap(mapName);
   round.set("obstacles", obstacles);
+  
+  // Cache obstacles as a Set for fast lookups
+  const obstacleSet = new Set(obstacles);
+  gameCache.obstacleCache.set(roundId, obstacleSet);
+  
   console.log("🔹 Initial obstacles:", obstacles);
-
 });
 
 Empirica.onStageStart(({ stage }) => {
@@ -138,7 +169,13 @@ Empirica.onStageStart(({ stage }) => {
 
 Empirica.onStageEnded(({ stage }) => {});
 
-Empirica.onRoundEnded(({ round }) => {});
+Empirica.onRoundEnded(({ round }) => {
+  // Clean up cache when round ends
+  const roundId = round.id;
+  gameCache.obstacleCache.delete(roundId);
+  gameCache.playerDataCache.delete(roundId);
+  gameCache.playerPositionCache.delete(roundId);
+});
 
 Empirica.onGameEnded(({ game }) => {
   // For each player, save their round data
@@ -160,74 +197,149 @@ Empirica.onGameEnded(({ game }) => {
 //function to move game in server
 Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   const round = player.currentRound;
+  if (!round) {
+    console.warn("No current round for player", player.id);
+    return;
+  }
+  
+  const roundId = round.id;
   const { curPos, newPos, direction } = moveRequest;
   
-  const obstacles = new Set(round.get("obstacles"));
-  const playerStates = round.get("playerStates");
-
-  // Get current positions from playerStates
-  const playerPositions = new Set(
-    Object.values(playerStates).map(state => 
-      positionToKey(state.position.x, state.position.y)
-    )
-  );
+  // Get cached data for fast access
+  const obstacleSet = gameCache.obstacleCache.get(roundId);
+  const playerPositions = gameCache.playerPositionCache.get(roundId);
+  const playerData = gameCache.playerDataCache.get(roundId);
+  
+  // Check if caches exist
+  if (!obstacleSet || !playerPositions || !playerData) {
+    console.warn("Cache not initialized for round", roundId);
+    return;
+  }
+  
+  const newPosKey = positionToKey(newPos.x, newPos.y);
+  
+  // Get current position from cache
+  const playerState = playerData.get(player.id);
+  if (!playerState) {
+    console.warn("Player state not found in cache for player", player.id);
+    return;
+  }
+  
+  const currentPos = playerState.position;
+  const curPosKey = positionToKey(currentPos.x, currentPos.y);
 
   // Check if move is valid
   if (
     newPos.x > 0 && newPos.x < 15 && 
     newPos.y > 0 && newPos.y < 15 &&
-    !obstacles.has(positionToKey(newPos.x, newPos.y)) &&
-    !playerPositions.has(positionToKey(newPos.x, newPos.y))
+    !obstacleSet.has(newPosKey) &&
+    !playerPositions.has(newPosKey)
   ) {
-    // Update player state
-    playerStates[player.id].position = newPos;
-    playerStates[player.id].direction = direction;
-    round.set("playerStates", playerStates);
+    // Update position in cache
+    playerPositions.delete(curPosKey);
+    playerPositions.add(newPosKey);
     
-    // Set the latest change for efficient client updates
-    round.set("latestPlayerChange", {
-      id: player.id,
-      state: playerStates[player.id]
-    });
-
-  } else if (playerStates[player.id].direction !== direction) {
+    // Update player data in cache
+    playerState.position = newPos;
+    playerState.direction = direction;
+    
+    // Update in Empirica store
+    const playerStates = round.get("playerStates");
+    if (playerStates && playerStates[player.id]) {
+      playerStates[player.id].position = newPos;
+      playerStates[player.id].direction = direction;
+      round.set("playerStates", playerStates);
+      
+      // Set the latest change for efficient client updates (includes only what changed)
+      round.set("latestPlayerChange", {
+        id: player.id,
+        changes: {
+          position: newPos,
+          direction: direction
+        }
+      });
+    }
+  } else if (playerState.direction !== direction) {
     // Just update direction if move wasn't valid
-    playerStates[player.id].direction = direction;
-    round.set("playerStates", playerStates);
+    playerState.direction = direction;
     
-    // Set the latest change for efficient client updates
-    round.set("latestPlayerChange", {
-      id: player.id,
-      state: playerStates[player.id]
-    });
+    // Update in Empirica store
+    const playerStates = round.get("playerStates");
+    if (playerStates && playerStates[player.id]) {
+      playerStates[player.id].direction = direction;
+      round.set("playerStates", playerStates);
+      
+      // Set the latest change for efficient client updates
+      round.set("latestPlayerChange", {
+        id: player.id,
+        changes: {
+          direction: direction
+        }
+      });
+    }
   }
 });
 
 // Function to process waterAction from client
 Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
   const round = player.currentRound;
-  const playerStates = round.get("playerStates");
-  const { carrying, score } = waterAction;
-  
-  // Update player state
-  playerStates[player.id].carrying = carrying;
-  if (score !== undefined) {
-    playerStates[player.id].score = score;
+  if (!round) {
+    console.warn("No current round for player", player.id);
+    return;
   }
   
-  round.set("playerStates", playerStates);
+  const roundId = round.id;
+  const { carrying, score } = waterAction;
   
-  // Set the latest change for efficient client updates
-  round.set("latestPlayerChange", {
-    id: player.id,
-    state: playerStates[player.id]
-  });
+  // Get cached data
+  const playerData = gameCache.playerDataCache.get(roundId);
+  if (!playerData) {
+    console.warn("Player data cache not found for round", roundId);
+    return;
+  }
+  
+  const playerState = playerData.get(player.id);
+  if (!playerState) {
+    console.warn("Player state not found in cache for player", player.id);
+    return;
+  }
+  
+  // Update player state in cache
+  playerState.carrying = carrying;
+  if (score !== undefined) {
+    // When score is provided, it means water was delivered - increment cumulative score
+    const currentCumScore = player.get("cumScore") || 0;
+    player.set("cumScore", currentCumScore + 1);
+    
+    playerState.score = score;
+  }
+  
+  // Update in Empirica store
+  const playerStates = round.get("playerStates");
+  if (playerStates && playerStates[player.id]) {
+    playerStates[player.id].carrying = carrying;
+    if (score !== undefined) {
+      playerStates[player.id].score = score;
+    }
+    round.set("playerStates", playerStates);
+    
+    // Set the latest change for efficient client updates
+    const changes = { carrying };
+    if (score !== undefined) {
+      changes.score = score;
+    }
+    
+    round.set("latestPlayerChange", {
+      id: player.id,
+      changes
+    });
+  }
 });
 
 // Function to process Tilemap from JSON file
 function getObstaclesFromTilemap(mapName) {
   // Read the JSON file
-  filePath = path.resolve("../client/public/assets/maps", `${mapName}.json`);
+  const filePath = path.resolve("../client/public/assets/maps", `${mapName}.json`);
   const fileContent = fs.readFileSync(filePath, "utf8");
   const tiledJson = JSON.parse(fileContent);
 

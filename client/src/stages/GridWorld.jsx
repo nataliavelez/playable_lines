@@ -17,6 +17,7 @@ export function GridWorld() {
     useEffect(() => {
         console.log(`Round ${roundNumber} initialized`);
         const roundPlayerStates = round.get('playerStates');
+        
         if (roundPlayerStates) {
             console.log('Setting player states for new round');
             setPlayerStates(roundPlayerStates);
