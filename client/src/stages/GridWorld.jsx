@@ -11,6 +11,7 @@ export function GridWorld() {
     const round = useRound();
     const [isVisible, setIsVisible] = useState(!document.hidden);
     const [playerStates, setPlayerStates] = useState(null);
+    const [gameKey, setGameKey] = useState(0); // Add a key to force remount between rounds
     const roundNumber = round.get('number');
     const latestPlayerChange = round.get('latestPlayerChange');
     const latestPlayerReady = round.get('latestPlayerReady');
@@ -21,8 +22,17 @@ export function GridWorld() {
         const roundPlayerStates = round.get('playerStates');
         
         if (roundPlayerStates) {
-            GameLog.log('Setting player states for new round');
-            setPlayerStates(roundPlayerStates);
+            // Force a clean recreation of the game for each round
+            GameLog.log(`Setting player states for round ${roundNumber}`);
+            setPlayerStates(null); // First clear state
+            
+            // Use setTimeout to ensure state clearing happens before setting new state
+            setTimeout(() => {
+                setPlayerStates(roundPlayerStates);
+                // Increment key to force a complete remount of PhaserGame
+                setGameKey(prevKey => prevKey + 1);
+                GameLog.log(`Set new game key: ${gameKey+1} for round ${roundNumber}`);
+            }, 50);
             
             // Force a reset of the player readiness for the new round
             try {
@@ -66,9 +76,48 @@ export function GridWorld() {
     useEffect(() => {
         const handleWaterAction = (action) => {
             try {
+                GameLog.log(`🚰 GridWorld: Received waterAction event with payload:`, JSON.stringify(action));
+                
+                // First attempt: Use the normal player.set() method
                 player.set("waterAction", action);
+                GameLog.log(`🚰 GridWorld: Successfully set waterAction on player ${player.id}`);
+                
+                // Second attempt: Set a special flag to ensure the server notices
+                // this works around potential Empirica event system issues
+                const timestamp = Date.now();
+                GameLog.log(`🚰 GridWorld: Setting waterActionBackup with timestamp ${timestamp}`);
+                
+                player.round.set("waterActionBackup", {
+                    playerId: player.id,
+                    action: action,
+                    timestamp: timestamp
+                });
             } catch (error) {
                 GameLog.error('Error setting waterAction:', error);
+                
+                // If primary method fails, try the backup method
+                try {
+                    const timestamp = Date.now();
+                    GameLog.log(`🚰 GridWorld: Primary method failed, trying backup with timestamp ${timestamp}`);
+                    
+                    player.round.set("waterActionBackup", {
+                        playerId: player.id,
+                        action: action,
+                        timestamp: timestamp
+                    });
+                } catch (backupError) {
+                    GameLog.error('Error setting waterActionBackup:', backupError);
+                }
+                
+                // Also retry the primary method after a delay
+                setTimeout(() => {
+                    try {
+                        GameLog.log(`🚰 GridWorld: Retrying waterAction after error`);
+                        player.set("waterAction", action);
+                    } catch (retryError) {
+                        GameLog.error('Failed to retry waterAction:', retryError);
+                    }
+                }, 200);
             }
         };
         
@@ -123,7 +172,13 @@ export function GridWorld() {
     useEffect(() => {
         if (latestPlayerChange && EventBus) {
             try {
-                GameLog.log(`🔸 Received latest player change for ${latestPlayerChange.id}`);
+                GameLog.log(`🔸 Received latest player change for ${latestPlayerChange.id}:`, JSON.stringify(latestPlayerChange));
+                
+                // Specifically log carrying state changes for debugging
+                if (latestPlayerChange.changes && 'carrying' in latestPlayerChange.changes) {
+                    GameLog.log(`🚰 GridWorld: Received carrying state update for player ${latestPlayerChange.id}: ${latestPlayerChange.changes.carrying}`);
+                }
+                
                 EventBus.emit("update-player-state", latestPlayerChange);
             } catch (error) {
                 GameLog.error('Error emitting update-player-state:', error);
@@ -184,6 +239,7 @@ export function GridWorld() {
     return (
         <div id="app">
             <PhaserGame 
+                key={gameKey}
                 ref={phaserRef} 
                 currentActiveScene={currentScene} 
                 mapName={round.get('mapName')}

@@ -8,16 +8,21 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
     const game = useRef();
 
     useLayoutEffect(() => {
-        // Only initialize or reinitialize when needed
-        if (game.current === undefined) {
-            GameLog.log(`Initializing game with map: ${mapName}`);
-            
-            // Create new game
-            game.current = StartGame("game-container", mapName, playerStates, playerId);
-            
-            if (ref !== null) {
-                ref.current = { game: game.current, scene: null };
-            }
+        // Clean up any existing game instance first
+        if (game.current) {
+            GameLog.log('Destroying existing game instance');
+            game.current.destroy(true);
+            game.current = undefined;
+        }
+        
+        // Create a new game instance
+        GameLog.log(`Initializing game with map: ${mapName}, playerId: ${playerId}`);
+        
+        // Create new game
+        game.current = StartGame("game-container", mapName, playerStates, playerId);
+        
+        if (ref !== null) {
+            ref.current = { game: game.current, scene: null };
         }
 
         return () => {
@@ -27,7 +32,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
                 game.current = undefined;
             }
         }
-    }, [ref, mapName]); // When mapName changes, component will unmount and remount
+    }, [ref, mapName, playerId, playerStates]); // React to all prop changes
 
     useEffect(() => {
         if (game.current) {

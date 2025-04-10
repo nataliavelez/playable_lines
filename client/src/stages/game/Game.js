@@ -230,6 +230,10 @@ export class Game extends Scene {
       this.complete = false; // do not touch this! tells Empirica to advance trial
       this.readyPlayers = new Set(); // Reset ready players set
       this.allPlayersReady = false; // Reset all players ready flag
+      
+      // Cache for source and target tiles to avoid repeated lookups
+      this.sourceTiles = new Set();
+      this.targetTiles = new Set();
 
       try {
         // Make sure event handlers are bound properly
@@ -253,6 +257,9 @@ export class Game extends Scene {
               layer.depth = 10;
             }
         }
+        
+        // Scan and cache source/target tiles
+        this.scanSpecialTiles();
   
         // Sounds
         this.collectWaterSound = this.sound.add('collectWater');
@@ -317,8 +324,8 @@ export class Game extends Scene {
     initPlayers(playerStates, currentPlayerId) {
         this.playerId = currentPlayerId;
         this.player = this.players[currentPlayerId];
-        //console.log("Current player ID:", this.playerId)
-        //console.log("Initializing players:", playerStates);
+        
+        GameLog.log(`Initializing players for round with states:`, JSON.stringify(playerStates));
 
         Object.entries(playerStates).forEach(([id, state]) => {
             const sprite = this.add.sprite(0, 0, 'bunny');
@@ -329,7 +336,6 @@ export class Game extends Scene {
             sprite.setTint(this.playerColors[state.color]);
             sprite.setScale(2); // set size of sprite 
             sprite.setDepth(1); // set depth of sprite
-
 
             // Create water indicator for is carrying
             const indicator = this.add.sprite(48, 25, "indicator");
@@ -349,8 +355,9 @@ export class Game extends Scene {
             const container = this.add.container(state.position.x, state.position.y, [plumbob, sprite, indicator, nameText]);
 
             this.players[id] = { sprite, container, indicator, carrying, score };
-            GameLog.log(`Created sprite for player ${id} at position:`, state.position, `, direction:`, state.direction, `, tint: `, state.color, `, carrying: `, state.carrying, `, score: `, state.score, `, name: `, state.name);
-
+            
+            // Explicitly log carrying state for debugging
+            GameLog.log(`Player ${id} initialized with carrying=${carrying}, score=${score}`);
         });
 
         this.gridEngineConfig = {
@@ -364,7 +371,6 @@ export class Game extends Scene {
                 speed: this.speed
             }))
         };
-        //console.log("GridEngine config:", JSON.stringify(this.gridEngineConfig, null, 2));
             
         this.gridEngine.create(this.trialTilemap, this.gridEngineConfig);
 
@@ -375,9 +381,7 @@ export class Game extends Scene {
         Object.entries(this.players).forEach(([id, player]) => {
           const direction = playerStates[id].direction || 'down';
           player.sprite.play(`idle_${direction}`);
-      });
-
-      //console.log("Characters in GridEngine:", this.gridEngine.getAllCharacters());
+        });
     }
 
     // Gets states for a single player from empirica and updates that player
@@ -388,12 +392,15 @@ export class Game extends Scene {
         const playerChanges = changes || state;
         
         if (!playerChanges || !this.gridEngine || !this.gridEngine.hasCharacter(id)) {
+            GameLog.warn(`updatePlayerState: Invalid payload or player not in grid engine - id: ${id}`);
             return;
         }
         
         const currentPos = this.gridEngine.getPosition(id);
         const currentDirection = this.gridEngine.getFacingDirection(id);
         const currentlyCarrying = this.isCarrying(id);
+
+        GameLog.log(`updatePlayerState: Updating player ${id}, current carrying: ${currentlyCarrying}, changes:`, JSON.stringify(playerChanges));
 
         // Handle position and direction changes
         if (playerChanges.position && (currentPos.x !== playerChanges.position.x || currentPos.y !== playerChanges.position.y)) {
@@ -420,40 +427,51 @@ export class Game extends Scene {
             }
         }
 
-        // Handle carrying state changes
-        if (playerChanges.carrying !== undefined && currentlyCarrying !== playerChanges.carrying) {
+        // Handle carrying state changes - this is where water pickup is managed
+        if (playerChanges.carrying !== undefined) {
+            // Check if there's an actual change 
+            const carryingChanged = currentlyCarrying !== playerChanges.carrying;
+            
+            // ALWAYS update local state regardless of whether it changed
             this.players[id].carrying = playerChanges.carrying;
             this.players[id].indicator.visible = playerChanges.carrying;
-
-            // Update score whenever it changes
+            
+            GameLog.log(`🚰 Game: Player ${id} carrying set to ${playerChanges.carrying}, changed: ${carryingChanged}`);
+            
+            // Update score when it changes with carrying state
             if (playerChanges.score !== undefined && playerChanges.score !== this.players[id].score) {
+                GameLog.log(`Player ${id} score updated: ${this.players[id].score} -> ${playerChanges.score}`);
                 this.players[id].score = playerChanges.score;
             }
-
-            const currentDirection = this.gridEngine.getFacingDirection(id);
             
-            // Play water animation
-            this.playWaterAnimation(id, currentDirection);
-            
-            // Handle pickup/dropoff effects
-            if (playerChanges.carrying) {
-                // Pickup effects
-                if (id === this.playerId) {
-                    this.collectWaterSound.play();
-                }
-            } else {
-                // Dropoff effects
-                const position = this.gridEngine.getFacingPosition(id);
-                this.createSparkleEffect(position.x, position.y);
+            // Only play effects if the carrying state actually changed
+            if (carryingChanged) {
+                GameLog.log(`🚰 Game: Playing water effects for player ${id}`);
+                const currentDirection = this.gridEngine.getFacingDirection(id);
                 
-                if (this.isVisible) {
+                // Play water animation
+                this.playWaterAnimation(id, currentDirection);
+                
+                // Handle pickup/dropoff effects
+                if (playerChanges.carrying) {
+                    // Pickup effects
                     if (id === this.playerId) {
-                        this.successSound.play();
-                    } else if (this.othersSuccessSound) {
-                        try {
-                            this.othersSuccessSound.play();
-                        } catch (error) {
-                            GameLog.warn('⚠️ Failed to play sound:', error);
+                        this.collectWaterSound.play();
+                    }
+                } else {
+                    // Dropoff effects
+                    const position = this.gridEngine.getFacingPosition(id);
+                    this.createSparkleEffect(position.x, position.y);
+                    
+                    if (this.isVisible) {
+                        if (id === this.playerId) {
+                            this.successSound.play();
+                        } else if (this.othersSuccessSound) {
+                            try {
+                                this.othersSuccessSound.play();
+                            } catch (error) {
+                                GameLog.warn('⚠️ Failed to play sound:', error);
+                            }
                         }
                     }
                 }
@@ -503,17 +521,78 @@ export class Game extends Scene {
       let player = this.players[this.playerId];
       const action = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       if (Phaser.Input.Keyboard.JustDown(action)) {
-          if (!player.carrying && this.nearSource(this.playerId)) {
+          const isNearSource = this.nearSource(this.playerId);
+          const isNearTarget = this.nearTarget(this.playerId);
+          const isCarrying = player.carrying;
+          
+          GameLog.log(`🚰 Water action attempted - Near source: ${isNearSource}, Near target: ${isNearTarget}, Carrying: ${isCarrying}`);
+          
+          if (!isCarrying && isNearSource) {
               // Request pickup
-              EventBus.emit('waterAction', {
-                  carrying: true
-              });
-          } else if (player.carrying && this.nearTarget(this.playerId)) {
+              GameLog.log(`🚰 Attempting water pickup for player ${this.playerId}`);
+              try {
+                  // Store current state for verification
+                  const initialCarrying = player.carrying;
+                  const verificationTime = Date.now();
+                  
+                  EventBus.emit('waterAction', {
+                      carrying: true
+                  });
+                  GameLog.log(`🚰 Water pickup event emitted successfully`);
+                  
+                  // Add verification check after a delay
+                  setTimeout(() => {
+                      const currentCarrying = this.players[this.playerId].carrying;
+                      GameLog.log(`🚰 Verifying water pickup: was ${initialCarrying}, now ${currentCarrying}, elapsed ${Date.now() - verificationTime}ms`);
+                      
+                      // If the carrying state hasn't changed after 1 second, try again
+                      if (!currentCarrying && Date.now() - verificationTime > 1000) {
+                          GameLog.log(`🚰 Water pickup verification failed, retrying`);
+                          EventBus.emit('waterAction', {
+                              carrying: true,
+                              retryCount: 1
+                          });
+                      }
+                  }, 1000);
+              } catch (error) {
+                  GameLog.error('Error emitting water pickup event:', error);
+              }
+          } else if (isCarrying && isNearTarget) {
               // Request dropoff
-              EventBus.emit('waterAction', {
-                  carrying: false,
-                  score: player.score + 1
-              });
+              GameLog.log(`🚰 Attempting water dropoff for player ${this.playerId}`);
+              try {
+                  // Store current state for verification
+                  const initialCarrying = player.carrying;
+                  const initialScore = player.score;
+                  const verificationTime = Date.now();
+                  
+                  EventBus.emit('waterAction', {
+                      carrying: false,
+                      score: player.score + 1
+                  });
+                  GameLog.log(`🚰 Water dropoff event emitted successfully`);
+                  
+                  // Add verification check after a delay
+                  setTimeout(() => {
+                      const currentCarrying = this.players[this.playerId].carrying;
+                      const currentScore = this.players[this.playerId].score;
+                      GameLog.log(`🚰 Verifying water dropoff: carrying was ${initialCarrying}, now ${currentCarrying}, score was ${initialScore}, now ${currentScore}, elapsed ${Date.now() - verificationTime}ms`);
+                      
+                      // If the carrying state hasn't changed after 1 second, try again
+                      if (currentCarrying && Date.now() - verificationTime > 1000) {
+                          GameLog.log(`🚰 Water dropoff verification failed, retrying`);
+                          EventBus.emit('waterAction', {
+                              carrying: false,
+                              score: player.score + 1,
+                              retryCount: 1
+                          });
+                      }
+                  }, 1000);
+              } catch (error) {
+                  GameLog.error('Error emitting water dropoff event:', error);
+              }
+          } else {
+              GameLog.log(`🚰 Water action conditions not met - nothing happened`);
           }
       }
 
@@ -604,21 +683,72 @@ export class Game extends Scene {
 
     // helpers for carrying
     nearSource(id) {
-      const position = this.gridEngine.getFacingPosition(id);
+      try {
+        const position = this.gridEngine.getFacingPosition(id);
+        let foundSource = false;
+        
+        // First do a debug check
+        if (!this.trialTilemap || !this.trialTilemap.layers) {
+          GameLog.error('nearSource: trialTilemap or layers is undefined');
+          return false;
+        }
 
-      return this.trialTilemap.layers.some((layer) => {
-        const tile = this.trialTilemap.getTileAt(position.x, position.y, false, layer.name);
-        return tile?.properties?.source
-      });
+        // Log the position we're checking
+        GameLog.log(`Checking for source at position: (${position.x}, ${position.y})`);
+        
+        for (let i = 0; i < this.trialTilemap.layers.length; i++) {
+          const layer = this.trialTilemap.layers[i];
+          const tile = this.trialTilemap.getTileAt(position.x, position.y, false, layer.name);
+          
+          if (tile) {
+            // Log tile info for debugging
+            if (tile.properties) {
+              GameLog.log(`Tile at (${position.x}, ${position.y}) in layer ${layer.name} has properties:`, 
+                         JSON.stringify(tile.properties));
+            } else {
+              GameLog.log(`Tile at (${position.x}, ${position.y}) in layer ${layer.name} has no properties`);
+            }
+            
+            if (tile.properties && tile.properties.source) {
+              foundSource = true;
+              break;
+            }
+          }
+        }
+        
+        return foundSource;
+      } catch (error) {
+        GameLog.error('Error in nearSource:', error);
+        return false;
+      }
     }
 
     nearTarget(id) {
-      const position = this.gridEngine.getFacingPosition(id);
-
-      return this.trialTilemap.layers.some((layer) => {
-        const tile = this.trialTilemap.getTileAt(position.x, position.y, false, layer.name);
-        return tile?.properties?.target
-      });
+      try {
+        const position = this.gridEngine.getFacingPosition(id);
+        let foundTarget = false;
+        
+        // First do a debug check
+        if (!this.trialTilemap || !this.trialTilemap.layers) {
+          GameLog.error('nearTarget: trialTilemap or layers is undefined');
+          return false;
+        }
+        
+        for (let i = 0; i < this.trialTilemap.layers.length; i++) {
+          const layer = this.trialTilemap.layers[i];
+          const tile = this.trialTilemap.getTileAt(position.x, position.y, false, layer.name);
+          
+          if (tile && tile.properties && tile.properties.target) {
+            foundTarget = true;
+            break;
+          }
+        }
+        
+        return foundTarget;
+      } catch (error) {
+        GameLog.error('Error in nearTarget:', error);
+        return false;
+      }
     }
 
     isCarrying(id) {
@@ -726,6 +856,52 @@ export class Game extends Scene {
         // Force ready state after error
         this.allPlayersReady = true;
         this.setWaitingState(false);
+      }
+    }
+
+    // Scan and cache all source and target tiles
+    scanSpecialTiles() {
+      try {
+        if (!this.trialTilemap || !this.trialTilemap.layers) {
+          GameLog.error('scanSpecialTiles: trialTilemap or layers is undefined');
+          return;
+        }
+        
+        // Clear existing caches
+        this.sourceTiles = new Set();
+        this.targetTiles = new Set();
+        
+        // Log tilemap data for debugging
+        GameLog.log(`Scanning tilemap: ${this.registry.get('mapName')}`);
+        GameLog.log(`Tilemap has ${this.trialTilemap.layers.length} layers`);
+        
+        // Scan all tiles in all layers
+        for (let layerIndex = 0; layerIndex < this.trialTilemap.layers.length; layerIndex++) {
+          const layer = this.trialTilemap.layers[layerIndex];
+          GameLog.log(`Scanning layer: ${layer.name}`);
+          
+          // Loop through all tiles in the layer
+          for (let y = 0; y < this.trialTilemap.height; y++) {
+            for (let x = 0; x < this.trialTilemap.width; x++) {
+              const tile = this.trialTilemap.getTileAt(x, y, false, layer.name);
+              
+              if (tile && tile.properties) {
+                if (tile.properties.source) {
+                  this.sourceTiles.add(`${x},${y}`);
+                  GameLog.log(`Found source tile at (${x}, ${y}) in layer ${layer.name}`);
+                }
+                if (tile.properties.target) {
+                  this.targetTiles.add(`${x},${y}`);
+                  GameLog.log(`Found target tile at (${x}, ${y}) in layer ${layer.name}`);
+                }
+              }
+            }
+          }
+        }
+        
+        GameLog.log(`Found ${this.sourceTiles.size} source tiles and ${this.targetTiles.size} target tiles`);
+      } catch (error) {
+        GameLog.error('Error scanning special tiles:', error);
       }
     }
 }

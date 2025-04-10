@@ -306,60 +306,116 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   }
 });
 
-// Function to process waterAction from client
+// Function to process waterAction from client with retry support
 Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
-  const round = player.currentRound;
-  if (!round) {
-    console.warn("No current round for player", player.id);
-    return;
-  }
-  
-  const roundId = round.id;
-  const { carrying, score } = waterAction;
-  
-  // Get cached data
-  const playerData = gameCache.playerDataCache.get(roundId);
-  if (!playerData) {
-    console.warn("Player data cache not found for round", roundId);
-    return;
-  }
-  
-  const playerState = playerData.get(player.id);
-  if (!playerState) {
-    console.warn("Player state not found in cache for player", player.id);
-    return;
-  }
-  
-  // Update player state in cache
-  playerState.carrying = carrying;
-  if (score !== undefined) {
-    // When score is provided, it means water was delivered - increment cumulative score
-    const currentCumScore = player.get("cumScore") || 0;
-    player.set("cumScore", currentCumScore + 1);
-    
-    playerState.score = score;
-  }
-  
-  // Update in Empirica store
-  const playerStates = round.get("playerStates");
-  if (playerStates && playerStates[player.id]) {
-    playerStates[player.id].carrying = carrying;
-    if (score !== undefined) {
-      playerStates[player.id].score = score;
+  const processWaterAction = (attempt = 1) => {
+    try {
+      console.log(`🚰 SERVER: Processing water action for player ${player.id} (attempt ${attempt}):`, waterAction);
+      
+      const round = player.currentRound;
+      if (!round) {
+        console.warn(`No current round for player ${player.id}`);
+        if (attempt < 3) {
+          console.log(`🚰 SERVER: Retrying in 100ms (attempt ${attempt})`);
+          setTimeout(() => processWaterAction(attempt + 1), 100);
+        }
+        return;
+      }
+      
+      const roundId = round.id;
+      const { carrying, score } = waterAction;
+      
+      // Get cached data
+      const playerData = gameCache.playerDataCache.get(roundId);
+      if (!playerData) {
+        console.warn(`Player data cache not found for round ${roundId}`);
+        if (attempt < 3) {
+          console.log(`🚰 SERVER: Retrying in 100ms (attempt ${attempt})`);
+          setTimeout(() => processWaterAction(attempt + 1), 100);
+        }
+        return;
+      }
+      
+      const playerState = playerData.get(player.id);
+      if (!playerState) {
+        console.warn(`Player state not found in cache for player ${player.id}`);
+        if (attempt < 3) {
+          console.log(`🚰 SERVER: Retrying in 100ms (attempt ${attempt})`);
+          setTimeout(() => processWaterAction(attempt + 1), 100);
+        }
+        return;
+      }
+      
+      console.log(`🚰 SERVER: Current player state before update:`, playerState);
+      
+      // Update player state in cache
+      const oldCarrying = playerState.carrying;
+      playerState.carrying = carrying;
+      
+      if (score !== undefined) {
+        // When score is provided, it means water was delivered - increment cumulative score
+        const currentCumScore = player.get("cumScore") || 0;
+        player.set("cumScore", currentCumScore + 1);
+        
+        playerState.score = score;
+      }
+      
+      console.log(`🚰 SERVER: Player ${player.id} carrying changed from ${oldCarrying} to ${carrying}`);
+      
+      // Update in Empirica store
+      const playerStates = round.get("playerStates");
+      if (playerStates && playerStates[player.id]) {
+        playerStates[player.id].carrying = carrying;
+        if (score !== undefined) {
+          playerStates[player.id].score = score;
+        }
+        round.set("playerStates", playerStates);
+        
+        // Set the latest change for efficient client updates
+        const changes = { carrying };
+        if (score !== undefined) {
+          changes.score = score;
+        }
+        
+        // Log the changes that will be sent back to clients
+        console.log(`🚰 SERVER: Setting latestPlayerChange for player ${player.id}:`, changes);
+        
+        // Set the change, but then immediately verify it was set
+        round.set("latestPlayerChange", {
+          id: player.id,
+          changes
+        });
+        
+        // Verify the change was actually set
+        const verification = round.get("latestPlayerChange");
+        if (verification && verification.id === player.id && 
+            verification.changes && verification.changes.carrying === carrying) {
+          console.log(`🚰 SERVER: Successfully processed water action for player ${player.id}`);
+        } else {
+          console.warn(`🚰 SERVER: Failed to verify latestPlayerChange was set correctly, retrying...`);
+          if (attempt < 3) {
+            console.log(`🚰 SERVER: Retrying in 100ms (attempt ${attempt})`);
+            setTimeout(() => processWaterAction(attempt + 1), 100);
+          }
+        }
+      } else {
+        console.warn(`Failed to update playerStates for player ${player.id} - not found in round data`);
+        if (attempt < 3) {
+          console.log(`🚰 SERVER: Retrying in 100ms (attempt ${attempt})`);
+          setTimeout(() => processWaterAction(attempt + 1), 100);
+        }
+      }
+    } catch (error) {
+      console.error("Error processing water action:", error);
+      if (attempt < 3) {
+        console.log(`🚰 SERVER: Error occurred, retrying in 100ms (attempt ${attempt})`);
+        setTimeout(() => processWaterAction(attempt + 1), 100);
+      }
     }
-    round.set("playerStates", playerStates);
-    
-    // Set the latest change for efficient client updates
-    const changes = { carrying };
-    if (score !== undefined) {
-      changes.score = score;
-    }
-    
-    round.set("latestPlayerChange", {
-      id: player.id,
-      changes
-    });
-  }
+  };
+  
+  // Start processing with attempt 1
+  processWaterAction();
 });
 
 // Function to process Tilemap from JSON file
@@ -421,5 +477,100 @@ Empirica.on("player", "playerReady", (ctx, { player, playerReady }) => {
     }
   } catch (error) {
     console.error("Error handling playerReady event:", error);
+  }
+});
+
+// Callback that runs on each round tick to check for backup water actions
+Empirica.on("roundTick", ({ round }) => {
+  try {
+    // Check for backup water actions
+    const waterActionBackup = round.get("waterActionBackup");
+    if (waterActionBackup) {
+      const { playerId, action, timestamp } = waterActionBackup;
+      const now = Date.now();
+      
+      // Only process backup actions that are recent (within last 5 seconds)
+      if (now - timestamp < 5000) {
+        console.log(`🚰 SERVER: Found backup water action for player ${playerId}:`, action);
+        
+        // Find the player
+        const player = round.currentGame.players.find(p => p.id === playerId);
+        if (player) {
+          // Process the water action (reusing the existing handler logic)
+          console.log(`🚰 SERVER: Processing backup water action for player ${playerId}`);
+          
+          const roundId = round.id;
+          const { carrying, score } = action;
+          
+          // Get cached data
+          const playerData = gameCache.playerDataCache.get(roundId);
+          if (!playerData) {
+            console.warn("Player data cache not found for round", roundId);
+            return;
+          }
+          
+          const playerState = playerData.get(playerId);
+          if (!playerState) {
+            console.warn("Player state not found in cache for player", playerId);
+            return;
+          }
+          
+          console.log(`🚰 SERVER: Backup - Current player state before update:`, playerState);
+          
+          // Update player state in cache
+          const oldCarrying = playerState.carrying;
+          playerState.carrying = carrying;
+          
+          if (score !== undefined) {
+            // When score is provided, it means water was delivered - increment cumulative score
+            const currentCumScore = player.get("cumScore") || 0;
+            player.set("cumScore", currentCumScore + 1);
+            
+            playerState.score = score;
+          }
+          
+          console.log(`🚰 SERVER: Backup - Player ${playerId} carrying changed from ${oldCarrying} to ${carrying}`);
+          
+          // Update in Empirica store
+          const playerStates = round.get("playerStates");
+          if (playerStates && playerStates[playerId]) {
+            playerStates[playerId].carrying = carrying;
+            if (score !== undefined) {
+              playerStates[playerId].score = score;
+            }
+            round.set("playerStates", playerStates);
+            
+            // Set the latest change for efficient client updates
+            const changes = { carrying };
+            if (score !== undefined) {
+              changes.score = score;
+            }
+            
+            // Log the changes that will be sent back to clients
+            console.log(`🚰 SERVER: Backup - Setting latestPlayerChange for player ${playerId}:`, changes);
+            
+            round.set("latestPlayerChange", {
+              id: playerId,
+              changes
+            });
+            
+            console.log(`🚰 SERVER: Successfully processed backup water action for player ${playerId}`);
+            
+            // Clear the backup once processed
+            round.set("waterActionBackup", null);
+          } else {
+            console.warn(`Failed to update playerStates for player ${playerId} - not found in round data`);
+          }
+        } else {
+          console.warn(`Player ${playerId} not found for backup water action`);
+        }
+      } else {
+        // Clear old backup actions
+        console.log(`🚰 SERVER: Clearing old backup water action (${now - timestamp}ms old)`);
+        round.set("waterActionBackup", null);
+      }
+    }
+  } catch (error) {
+    console.error("Error processing backup water action:", error);
   }
 });

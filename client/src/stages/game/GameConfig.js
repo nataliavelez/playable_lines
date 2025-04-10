@@ -1,5 +1,5 @@
 // Set this to false when you want to disable console logs
-export const CONSOLE_ENABLED = false;
+export const CONSOLE_ENABLED = true;
 
 // Simple logging wrapper - use this instead of console.log
 export const GameLog = {
