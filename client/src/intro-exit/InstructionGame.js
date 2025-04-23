@@ -25,6 +25,11 @@ export class InstructionGame extends Scene {
             frameWidth: 48,
             frameHeight: 48
         }); 
+        
+        // Load sounds
+        this.load.audio('success', '352661__foolboymedia__complete-chime.mp3');
+        this.load.audio('othersSuccess', '342759__rhodesmas__score-counter-01.wav');
+        this.load.audio('collectWater', '135936__bradwesson__collectcoin.wav');
     }
 
     create() {
@@ -87,7 +92,10 @@ export class InstructionGame extends Scene {
           //this.playerSprite.setFrame(this.getStopFrame(direction));
         });
 
-
+        // Initialize sounds
+        this.collectWaterSound = this.sound.add('collectWater');
+        this.successSound = this.sound.add('success');
+        this.othersSuccessSound = this.sound.add('othersSuccess');
     }
 
     update() {
@@ -115,6 +123,8 @@ export class InstructionGame extends Scene {
               'animationcomplete',
               () => {this.playerSprite.anims.play('idle_'+direction)}
             );
+            // Play water collection sound
+            this.collectWaterSound.play();
 
           } else if (this.isCarrying() & this.nearTarget()) {
             this.playerSprite.carrying = false;
@@ -122,9 +132,12 @@ export class InstructionGame extends Scene {
               'animationcomplete',
               () => {this.playerSprite.anims.play('idle_'+direction)}
             );
-
+            // Play success sound
+            this.successSound.play();
+            // Create sparkle effect at the target position
+            const position = this.gridEngine.getFacingPosition("bunny");
+            this.createSparkleEffect(position.x, position.y);
           }
-
         }
 
         // display a water emote when character is carrying water
@@ -196,5 +209,47 @@ export class InstructionGame extends Scene {
   
       isCarrying() {
         return this.playerSprite.carrying
+      }
+      
+      // Create sparkle effect when watering plants
+      createSparkleEffect(x, y) {
+        // Queue sparkle effect if scene not ready
+        if (!this.scene?.manager) {
+          this.events.once('update', () => {
+              this.createSparkleEffect(x, y);
+          });
+          return;
+        }
+
+        try {
+          // Create particle manager
+          const emitter = this.add.particles(x*32 + 16, y*32 + 16, 'indicator', {
+            x: x,
+            y: y,
+            lifespan: { min: 600, max: 800 },
+            speed: { min: 40, max: 80 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 0.6, end: 0 },
+            quantity: 2,
+            frequency: 25,
+            emitting: true,
+            tint: [ 0x10a5f5 ],
+            alpha: { start: 1, end: 0 },
+            blendMode: 'ADD',
+            rotate: { min: -180, max: 180 },
+            gravityY: -20  // Makes particles float upward slightly
+          });
+
+          if (emitter) {
+            emitter.setDepth(2);
+            this.time.delayedCall(750, () => {
+                if (emitter && !emitter.destroyed) {
+                    emitter.destroy();
+                }
+            });
+          }
+        } catch (error) {
+          console.warn('Failed to create sparkle effect:', error);
+        }
       }
 }

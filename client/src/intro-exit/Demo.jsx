@@ -29,7 +29,8 @@ export function Demo({ next }) {
             To pick up water, press the <span className="key-styling space-key">SPACE BAR</span> when you are next to and facing a water source (a well, <img src="assets/Water well.png" alt="Water Tile" className="inline-block align-middle w-6 h-6 m-1"></img>,  or ground water, <img src="assets/Water_1.png" alt="Water Tile" className="inline-block align-middle w-6 h-6 m-1"></img>).
           </li>
           <li>
-            To water a plant (a sapling, <img src="assets/sapling.png" alt="Grass Tile" className="inline-block align-middle w-6 h-6 m-1"></img>),  press the <span className="key-styling space-key">SPACE BAR</span> when you are next to and facing it. Note: there are other plants
+            To water a plant (a sapling, <img src="assets/sapling.png" alt="Grass Tile" className="inline-block align-middle w-6 h-6 m-1"></img>),  press the <span className="key-styling space-key">SPACE BAR</span> when you are next to and facing it. 
+            Note: there may be other plants in the game (e.g., <img src="assets/sunflower.png" alt="sunfloer" className="inline-block align-middle w-6 h-6 m-1"></img> and <img src="assets/bush.png" alt="bush" className="inline-block align-middle w-6 h-6 m-1"></img>), but they cannot be watered.
           </li>
           <li>
             When you successfully pick up water, you’ll see your watering can appear in your character’s hand, <img src="assets/watering_bunny.png" alt="watering bunny" className="inline-block align-middle w-8 h-8 m-1"></img>, and a sound will play.  
