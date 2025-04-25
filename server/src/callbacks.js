@@ -231,6 +231,8 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   const roundId = round.id;
   const { curPos, newPos, direction } = moveRequest;
   
+  console.log(`🔄 SERVER: Player ${player.id} requesting move from (${curPos.x},${curPos.y}) to (${newPos.x},${newPos.y}) direction ${direction}`);
+  
   // Get cached data for fast access
   const obstacleSet = gameCache.obstacleCache.get(roundId);
   const playerPositions = gameCache.playerPositionCache.get(roundId);
@@ -254,6 +256,22 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   const currentPos = playerState.position;
   const curPosKey = positionToKey(currentPos.x, currentPos.y);
 
+  // Debug current positions of all players
+  console.log(`🔄 SERVER: Current player positions in cache:`, Array.from(playerPositions));
+  
+  // Detailed checks with logging
+  const isOutOfBounds = newPos.x <= 0 || newPos.x >= 15 || newPos.y <= 0 || newPos.y >= 15;
+  const isObstacle = obstacleSet.has(newPosKey);
+  const isOccupied = playerPositions.has(newPosKey);
+  
+  console.log(`🔄 SERVER: Move validation - Out of bounds: ${isOutOfBounds}, Obstacle: ${isObstacle}, Occupied: ${isOccupied}`);
+  // Prepare rejection reasons for logging
+  const rejectionReasons = [];
+  if (isOutOfBounds) rejectionReasons.push('outOfBounds');
+  if (isObstacle)    rejectionReasons.push('obstacle');
+  if (isOccupied)    rejectionReasons.push('occupied');
+  const reasonStr = rejectionReasons.length ? rejectionReasons.join(', ') : 'none';
+
   // Check if move is valid
   if (
     newPos.x > 0 && newPos.x < 15 && 
@@ -264,6 +282,8 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
     // Update position in cache
     playerPositions.delete(curPosKey);
     playerPositions.add(newPosKey);
+    
+    console.log(`🔄 SERVER: Move approved - Updated player positions:`, Array.from(playerPositions));
     
     // Update player data in cache
     playerState.position = newPos;

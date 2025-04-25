@@ -409,12 +409,20 @@ export class Game extends Scene {
                 if (this.isVisible) {
                     this.gridEngine.move(id, playerChanges.direction);
                     this.playMoveAnimation(id, playerChanges.direction);
+                    
+                    // Log the position update and debug all player positions
+                    GameLog.log(`🔄 Local player ${id} position updated to (${playerChanges.position.x},${playerChanges.position.y})`);
+                    this.logAllPlayerPositions();
                 }
             } else { 
                 // Remote players teleport to maintain sync
                 this.gridEngine.setPosition(id, playerChanges.position);
                 if (this.isVisible) {
                     this.playMoveAnimation(id, playerChanges.direction);
+                    
+                    // Log the position update for remote players
+                    GameLog.log(`🔄 Remote player ${id} position updated to (${playerChanges.position.x},${playerChanges.position.y})`);
+                    this.logAllPlayerPositions();
                 }
             }
         }
@@ -508,11 +516,22 @@ export class Game extends Scene {
             // Update the last move time
             this.lastMoveTime = currentTime;
             
-            EventBus.emit("moveRequest", {
+            // Log movement attempt with detailed information
+            GameLog.log(`🔄 Movement attempt: Player ${this.playerId} at (${currentPos.x},${currentPos.y}) trying to move ${direction} to (${newPosition.x},${newPosition.y})`);
+            
+            // Check if the grid engine thinks this position is blocked
+            const isBlockedInEngine = this.gridEngine.isTileBlocked({x: newPosition.x, y: newPosition.y});
+            GameLog.log(`🔄 Grid engine says position (${newPosition.x},${newPosition.y}) is blocked: ${isBlockedInEngine}`);
+            
+            // Include timestamp so each request is unique
+            const moveReq = {
                 curPos: currentPos,
                 newPos: newPosition,
-                direction: direction
-            });
+                direction: direction,
+                timestamp: Date.now()
+            };
+            GameLog.log(`🔄 Emitting moveRequest with timestamp ${moveReq.timestamp}`);
+            EventBus.emit("moveRequest", moveReq);
           }
         }
       }
@@ -903,5 +922,41 @@ export class Game extends Scene {
       } catch (error) {
         GameLog.error('Error scanning special tiles:', error);
       }
+    }
+
+    // Add a helper method to log all player positions
+    logAllPlayerPositions() {
+        if (!this.gridEngine) return;
+        
+        const playerPositions = {};
+        Object.keys(this.players).forEach(id => {
+            if (this.gridEngine.hasCharacter(id)) {
+                const pos = this.gridEngine.getPosition(id);
+                playerPositions[id] = `(${pos.x},${pos.y})`;
+            }
+        });
+        
+        GameLog.log(`🔄 All player positions: ${JSON.stringify(playerPositions)}`);
+        
+        // Check if any positions are marked as blocked in the grid engine
+        Object.keys(this.players).forEach(id => {
+            if (this.gridEngine.hasCharacter(id)) {
+                const pos = this.gridEngine.getPosition(id);
+                // Check adjacent tiles
+                const adjacentTiles = [
+                    {x: pos.x+1, y: pos.y}, 
+                    {x: pos.x-1, y: pos.y}, 
+                    {x: pos.x, y: pos.y+1}, 
+                    {x: pos.x, y: pos.y-1}
+                ];
+                
+                adjacentTiles.forEach(tile => {
+                    const isBlocked = this.gridEngine.isTileBlocked(tile);
+                    if (isBlocked) {
+                        GameLog.log(`🔄 Tile (${tile.x},${tile.y}) near player ${id} is marked as blocked`);
+                    }
+                });
+            }
+        });
     }
 }

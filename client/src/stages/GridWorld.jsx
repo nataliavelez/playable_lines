@@ -54,8 +54,11 @@ export function GridWorld() {
     // handle move request to make sure player doesn't collide with other players
     useEffect(() => {
         const handleMoveRequest = (move) => {
+            // Log that we're about to send the move request to the server
+            GameLog.log(`🔄 GridWorld: handleMoveRequest received move: ${JSON.stringify(move)}`);
             try {
                 player.set("moveRequest", move);
+                GameLog.log(`🔄 GridWorld: player.set('moveRequest') called successfully`);
             } catch (error) {
                 GameLog.error('Error setting moveRequest:', error);
             }
