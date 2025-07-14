@@ -22,150 +22,38 @@ factors:
       - value: 2
       - value: 3
       - value: 4
+      - value: 5
       - value: 6
   - desc: "The universalizabiliity of learning maps"
     name: universalizability
     values:
       - value: "high"
+      - value: "medium"
       - value: "low"
-  - desc: "The order of maps for experiment 1"
-    name: exp1MapOrder
-    values:
-      - value: "LMH"
-      - value: "HML"
-      - value: "MLH"
-      - value: "MHL"
   - desc: "Bonus cents per watered sapling"
     name: bonusPerSapling
     values:
       - value: 2
 
 treatments:
-  - desc: "Exp1 Two Players, LMH"
-    name: Exp1TwoPlayersLMH
-    factors:
-      playerCount: 2
-      numRounds: 6
-      exp1MapOrder: "LMH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Two Players, HML"
-    name: Exp1TwoPlayersHML
-    factors:
-      playerCount: 2
-      numRounds: 6
-      exp1MapOrder: "HML"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Two Players, MLH"
-    name: Exp1TwoPlayersMLH
-    factors:
-      playerCount: 2
-      numRounds: 6
-      exp1MapOrder: "MLH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Two Players, MHL"
-    name: Exp1TwoPlayersMHL
-    factors:
-      playerCount: 2
-      numRounds: 6
-      exp1MapOrder: "MHL"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Four Players, LMH"
-    name: Exp1FourPlayersLMH
-    factors:
-      playerCount: 4
-      numRounds: 6
-      exp1MapOrder: "LMH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Four Players, HML"
-    name: Exp1FourPlayersHML
-    factors:
-      playerCount: 4
-      numRounds: 6
-      exp1MapOrder: "HML"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Four Players, MLH"
-    name: Exp1FourPlayersMLH
-    factors:
-      playerCount: 4
-      numRounds: 6
-      exp1MapOrder: "MLH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Four Players, MHL"
-    name: Exp1FourPlayersMHL
-    factors:
-      playerCount: 4
-      numRounds: 6
-      exp1MapOrder: "MHL"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Six Players, LMH"
-    name: Exp1SixPlayersLMH
+  - desc: "Exp1: High Univ Learning"
+    name: Exp1HighUniversalizability
     factors:
       playerCount: 6
-      numRounds: 6
-      exp1MapOrder: "LMH"
-      chatEnabled: false
+      numRounds: 5
+      universalizability: "high"
       bonusPerSapling: 2
-  - desc: "Exp1 Six Players, HML"
-    name: Exp1SixPlayersHML
+  - desc: "Exp1: Medium Univ Learning"
+    name: Exp1MediumUniversalizability
     factors:
       playerCount: 6
-      numRounds: 6
-      exp1MapOrder: "HML"
-      chatEnabled: false
+      numRounds: 5
+      universalizability: "medium"
       bonusPerSapling: 2
-  - desc: "Exp1 Six Players, MLH"
-    name: Exp1SixPlayersMLH
+  - desc: "Exp1: Low Univ Learning"
+    name: Exp1LowUniversalizability
     factors:
       playerCount: 6
-      numRounds: 6
-      exp1MapOrder: "MLH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Six Players, MHL"
-    name: Exp1SixPlayersMHL
-    factors:
-      playerCount: 6
-      numRounds: 6
-      exp1MapOrder: "MHL"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Eight Players, LMH"
-    name: Exp1EightPlayersLMH
-    factors:
-      playerCount: 8
-      numRounds: 6
-      exp1MapOrder: "LMH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Eight Players, HML"
-    name: Exp1EightPlayersHML
-    factors:
-      playerCount: 8
-      numRounds: 6
-      exp1MapOrder: "HML"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Eight Players, MLH"
-    name: Exp1EightPlayersMLH
-    factors:
-      playerCount: 8
-      numRounds: 6
-      exp1MapOrder: "MLH"
-      chatEnabled: false
-      bonusPerSapling: 2
-  - desc: "Exp1 Eight Players, MHL"
-    name: Exp1EightPlayersMHL
-    factors:
-      playerCount: 8
-      numRounds: 6
-      exp1MapOrder: "MHL"
-      chatEnabled: false
+      numRounds: 5
+      universalizability: "low"
       bonusPerSapling: 2
