@@ -46,6 +46,7 @@ export default function App() {
           <EmpiricaContext 
             playerCreate={MyPlayerForm}
             consent={MyConsent} 
+            noGames={MyNoGames}
             introSteps={introSteps} 
             exitSteps={exitSteps}
             finished={MyFinished}>
