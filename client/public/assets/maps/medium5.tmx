@@ -1445,7 +1445,7 @@
 93,102,102,102,102,102,102,102,102,102,102,102,102,102,102,95
 </data>
  </layer>
- <layer id="3" name="top" width="16" height="16" visible="0">
+ <layer id="3" name="top" width="16" height="16">
   <properties>
    <property name="ge_alwaysTop" type="bool" value="true"/>
   </properties>
