@@ -2,36 +2,41 @@ import { usePlayer } from "@empirica/core/player/classic/react";
 import React, { useState } from "react";
 import { Button } from "../components/Button";
 
-export function ExitSurvey({ next }) {
+export function ExitSurvey4({ next }) {
   const labelClassName = "block text-sm font-medium text-gray-700 my-2";
   const inputClassName =
     "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-empirica-500 focus:border-empirica-500 sm:text-sm";
+  
   const player = usePlayer();
-
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [race, setRace] = useState("");
-  const [performanceSelf, setPerformanceSelf] = useState("");
-  const [performanceOthers, setPerformanceOthers] = useState("");
-  const [feedback, setFeedback] = useState("");
   const [education, setEducation] = useState("");
+  const [showError, setShowError] = useState(false);
+
 
   function handleSubmit(event) {
     event.preventDefault();
-    player.set("exitSurvey", {
+
+    // Check if all fields are filled
+    if (!age || !gender || !race || !education) {
+      setShowError(true);
+      return;
+    }
+
+    setShowError(false);
+    player.set("exitSurvey4", {
       age,
       gender,
       race,
-      performanceSelf,
-      performanceOthers,
-      feedback,
-      education,
+      education
     });
     next();
   }
 
   function handleEducationChange(e) {
     setEducation(e.target.value);
+    setShowError(false);
   }
 
   return (
@@ -47,14 +52,13 @@ export function ExitSurvey({ next }) {
                 Exit Survey
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                <b>You have finished the game!</b> Please fill out the following form 
-                to complete the experiment.
+                Finally, we’ll just ask you a few questions about yourself. 
               </p>
             </div>
 
             <div className="space-y-8 mt-6">
               <div className="flex flex-row">
-                <div>
+                <div className={`${showError && !age ? "bg-red-50 p-2 rounded" : ""}`}>
                   <label htmlFor="email" className={labelClassName}>
                     Age
                   </label>
@@ -63,6 +67,8 @@ export function ExitSurvey({ next }) {
                       id="age"
                       name="age"
                       type="number"
+                      min = "18"
+                      max = "100"
                       autoComplete="off"
                       className={inputClassName}
                       value={age}
@@ -70,7 +76,7 @@ export function ExitSurvey({ next }) {
                     />
                   </div>
                 </div>
-                <div className="ml-5">
+                <div className={`ml-5 ${showError && !gender ? "bg-red-50 p-2 rounded" : ""}`}>
                   <label htmlFor="email" className={labelClassName}>
                     Gender
                   </label>
@@ -85,7 +91,7 @@ export function ExitSurvey({ next }) {
                     />
                   </div>
                 </div>
-                <div className="ml-5">
+                <div className={`ml-5 ${showError && !race ? "bg-red-50 p-2 rounded" : ""}`}>
                   <label htmlFor="email" className={labelClassName}>
                     Race/Ethnicity
                   </label>
@@ -102,7 +108,7 @@ export function ExitSurvey({ next }) {
                 </div>
               </div>
 
-              <div>
+              <div className={`mt-4 ${showError && !education ? "bg-red-50 p-2 rounded" : ""}`}>
                 <label className={labelClassName}>
                   Highest Education Qualification
                 </label>
@@ -138,49 +144,11 @@ export function ExitSurvey({ next }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-x-6 gap-y-3">
-                <label className={labelClassName}>
-                  How did you perform in the game? Did you cooperate/coordinate with the other players?
-                </label>
-
-                <label className={labelClassName}>
-                  How about the other players? Did they cooperate/coordinate? 
-                </label>
-
-                <label className={labelClassName}>
-                  Feedback, including problems or bugs you encountered.
-                </label>
-
-                <textarea
-                  className={inputClassName}
-                  dir="auto"
-                  id="performanceSelf"
-                  name="performanceSelf"
-                  rows={4}
-                  value={performanceSelf}
-                  onChange={(e) => setPerformanceSelf(e.target.value)}
-                />
-
-                <textarea
-                  className={inputClassName}
-                  dir="auto"
-                  id="performanceOthers"
-                  name="performanceOthers"
-                  rows={4}
-                  value={performanceOthers}
-                  onChange={(e) => setPerformanceOthers(e.target.value)}
-                />
-
-                <textarea
-                  className={inputClassName}
-                  dir="auto"
-                  id="feedback"
-                  name="feedback"
-                  rows={4}
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
-                />
-              </div>
+              {showError && (
+                <div className="text-red-600 text-sm mt-2">
+                  Please answer all questions before continuing.
+                </div>
+              )}
 
               <div className="mb-12">
                 <Button type="submit">Submit</Button>

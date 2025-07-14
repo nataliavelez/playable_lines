@@ -2,26 +2,37 @@ import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
+import { GameLog } from './GameConfig';
 
 export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, mapName, playerId, playerStates, isVisible }, ref) {
     const game = useRef();
 
     useLayoutEffect(() => {
-        if (game.current === undefined) {
-            game.current = StartGame("game-container", mapName, playerStates, playerId);
-            
-            if (ref !== null) {
-                ref.current = { game: game.current, scene: null };
-            }
+        // Clean up any existing game instance first
+        if (game.current) {
+            GameLog.log('Destroying existing game instance');
+            game.current.destroy(true);
+            game.current = undefined;
+        }
+        
+        // Create a new game instance
+        GameLog.log(`Initializing game with map: ${mapName}, playerId: ${playerId}`);
+        
+        // Create new game
+        game.current = StartGame("game-container", mapName, playerStates, playerId);
+        
+        if (ref !== null) {
+            ref.current = { game: game.current, scene: null };
         }
 
         return () => {
             if (game.current) {
+                GameLog.log('Cleaning up game on unmount');
                 game.current.destroy(true);
                 game.current = undefined;
             }
         }
-    }, [ref, mapName]);
+    }, [ref, mapName, playerId, playerStates]); // React to all prop changes
 
     useEffect(() => {
         if (game.current) {
@@ -34,7 +45,9 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
             if (currentActiveScene instanceof Function) {
                 currentActiveScene(scene);
             }
-            ref.current.scene = scene;
+            if (ref.current) {
+                ref.current.scene = scene;
+            }
         };
 
         EventBus.on('current-scene-ready', handleSceneChange);
@@ -44,16 +57,14 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene, m
         }
     }, [currentActiveScene, ref]); 
 
-    useEffect(() => {
-        if (game.current) {
-            EventBus.emit('update-player-states', playerStates);
-        }
-    }, [playerStates]);
-
     return  <div id="game-container"> </div>
 });
 
 // Props definitions
 PhaserGame.propTypes = {
-    currentActiveScene: PropTypes.func
+    currentActiveScene: PropTypes.func,
+    mapName: PropTypes.string.isRequired,
+    playerId: PropTypes.string.isRequired,
+    playerStates: PropTypes.object.isRequired,
+    isVisible: PropTypes.bool
 }

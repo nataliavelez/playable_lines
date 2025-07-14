@@ -3,10 +3,18 @@ import { EmpiricaContext } from "@empirica/core/player/classic/react";
 import { EmpiricaMenu, EmpiricaParticipant } from "@empirica/core/player/react";
 import React from "react";
 import { Game } from "./Game";
-import { ExitSurvey } from "./intro-exit/ExitSurvey";
+import { ExitSurvey1 } from "./intro-exit/ExitSurvey1";
+import { ExitSurvey2 } from "./intro-exit/ExitSurvey2";
+import { ExitSurvey3 } from "./intro-exit/ExitSurvey3";
+import { ExitSurvey4 } from "./intro-exit/ExitSurvey4";
+import { ExitNoGame } from "./intro-exit/ExitNoGame";
 import { Introduction } from "./intro-exit/Introduction";
+import { Demo } from "./intro-exit/Demo";
+import { MultiplayerInfo } from "./intro-exit/MultiplayerInfo";
 import { Checks } from "./intro-exit/Checks"; 
 import { MyConsent } from "./intro-exit/MyConsent";
+import { MyPlayerForm } from "./intro-exit/MyPlayerForm";
+import { MyFinished } from "./intro-exit/MyFinished";
 
 export default function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -16,14 +24,18 @@ export default function App() {
   const url = `${protocol}//${host}/query`;
 
   function introSteps({ game, player }) {
-    return [
+        return [
       Introduction,
+      Demo,
+      MultiplayerInfo,
       Checks
     ];
   }
 
   function exitSteps({ game, player }) {
-    return [ExitSurvey];
+    return player.get("ended") === "game ended" ?
+    [ExitSurvey1, ExitSurvey2, ExitSurvey3, ExitSurvey4] :
+    [ExitNoGame]
   }
 
   return (
@@ -31,7 +43,12 @@ export default function App() {
       <div className="h-screen relative">
         <EmpiricaMenu position="bottom-left" />
         <div className="h-full overflow-auto">
-          <EmpiricaContext consent={MyConsent} introSteps={introSteps} exitSteps={exitSteps}>
+          <EmpiricaContext 
+            playerCreate={MyPlayerForm}
+            consent={MyConsent} 
+            introSteps={introSteps} 
+            exitSteps={exitSteps}
+            finished={MyFinished}>
             <Game />
           </EmpiricaContext>
         </div>

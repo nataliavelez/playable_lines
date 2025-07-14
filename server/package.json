@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@empirica/core": "^1.11.4",
+    "grid-engine": "^2.46.2",
     "minimist": "1.2.6"
   },
   "devDependencies": {

@@ -75,7 +75,7 @@
             312, 321, 321, 321, 321, 321, 321, 321, 321, 321, 321, 321, 321, 321, 321, 314],
          "height":16,
          "id":5,
-         "name":"obstacle",
+         "name":"obstacles",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
