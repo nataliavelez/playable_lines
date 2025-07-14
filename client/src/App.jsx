@@ -15,6 +15,7 @@ import { Checks } from "./intro-exit/Checks";
 import { MyConsent } from "./intro-exit/MyConsent";
 import { MyPlayerForm } from "./intro-exit/MyPlayerForm";
 import { MyFinished } from "./intro-exit/MyFinished";
+import { MyNoGames } from "./intro-exit/MyNoGames";
 
 export default function App() {
   const urlParams = new URLSearchParams(window.location.search);
