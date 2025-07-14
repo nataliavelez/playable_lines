@@ -35,7 +35,7 @@ export default function App() {
   function exitSteps({ game, player }) {
     return player.get("ended") === "game ended" ?
     [ExitSurvey1, ExitSurvey2, ExitSurvey3, ExitSurvey4] :
-    [ExitNoGame]
+    [ExitNoGame, ExitSurvey4]
   }
 
   return (

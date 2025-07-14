@@ -27,10 +27,10 @@ export function ExitNoGame({ next }) {
                 Thank You for Your Participation
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                We apologize, but there was a technical issue with the study.
+                We apologize, but we weren't able to start the study session today. 
               </p>
               <p className="mt-2 text-sm text-gray-500">
-                We're sorry that you didn't get to play the game as intended.
+               This likely happened because we couldn't find enough other players in time for your session. We're sorry you didn't get to play the game.
               </p>
               <p className="mt-2 text-sm text-gray-500">
                 But don't worry, <b>you will still be paid for your participation!</b>
@@ -40,7 +40,7 @@ export function ExitNoGame({ next }) {
             <div className="space-y-8 mt-6">
               <div>
                 <label className={labelClassName}>
-                  Please tell us what happened during your session. This will help us improve our study.
+                  However, if there was a technical issue, please tell us what happened during your session. This will help us improve our study and remove any possible bugs.
                 </label>
                 <textarea
                   required
@@ -48,7 +48,7 @@ export function ExitNoGame({ next }) {
                   className={inputClassName}
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
-                  placeholder="Describe what happened during your session..."
+                  placeholder="Describe any technical issues or bugs that occurred during your session..."
                 />
               </div>
 
