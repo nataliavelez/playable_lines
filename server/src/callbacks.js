@@ -17,55 +17,39 @@ const gameCache = {
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
-  const { numRounds, playerCount, exp1MapOrder } = treatment;
+  const { numRounds, playerCount, universalizability } = treatment;
 
-  // Get universalizability of each round from the order string
-  function expandOrderString(str) {
-    const difficultyMap = {
-      'H': 'High',
-      'M': 'Medium',
-      'L': 'Low'
-    };
+  // Generate randomized indices for learning rounds (rounds 1-3)
+  // These will select from the first 3 maps of the participant's universalizability condition
+  const learningIndices = [0, 1, 2].sort(() => Math.random() - 0.5);
   
-    return str.split('')
-      .flatMap(char => {
-        const expanded = difficultyMap[char.toUpperCase()] || char;
-        return [expanded, expanded];
-      });
-  }
-  const universalizabiltyOrder = expandOrderString(exp1MapOrder);
-
-  // get random index for each round
-  function generateRandomSequence(x, n) {
-    // Create base sequence [0, 1, ..., x-1]
-    const baseSequence = Array.from({length: x}, (_, i) => i);
-    
-    // Function to shuffle an array
-    const shuffle = array => {
-      const shuffled = [...array];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    };
-
-    // Generate n shuffled permutations
-    return Array.from({length: n}, () => shuffle(baseSequence)).flat();
-  }
-  const randIndices = generateRandomSequence(2, 3); // that is two maps, for each of 3 universaliabilty levels
+  // Generate randomized indices for test rounds (rounds 4-5)
+  // These will select medium4 and medium5 (indices 3 and 4 in medium maps)
+  const testIndices = [3, 4].sort(() => Math.random() - 0.5);
 
   // add rounds
   for (let i = 0; i < numRounds; i++) { 
+    let roundUniversalizability;
+    let randIndex;
+    
+    if (i < 3) {
+      // Learning rounds (1-3): use participant's universalizability condition
+      roundUniversalizability = universalizability; // Keep original lowercase format
+      randIndex = learningIndices[i];
+    } else {
+      // Test rounds (4-5): use medium universalizability for medium4 and medium5
+      roundUniversalizability = "medium"; // Use lowercase to match map data
+      randIndex = testIndices[i - 3];
+    }
+    
     const round = game.addRound({
       name: `Round ${i + 1}`,
       number: i + 1,
-      randIndex: randIndices[i],
-      universalizability: universalizabiltyOrder[i]
+      randIndex: randIndex,
+      universalizability: roundUniversalizability
     });
     round.addStage({ name: "Game", duration: 100 });  
     round.addStage({ name: "Feedback", duration: 30 });
-
   }
 
   //Randomly set colours for players
