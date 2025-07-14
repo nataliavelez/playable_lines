@@ -1,6 +1,5 @@
 import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 import { getMapInfo, getMapObstacles } from './getMapInfo.js';
-import { GameLogger } from './logger.js';
 
 export const Empirica = new ClassicListenersCollector();
 
@@ -17,17 +16,8 @@ const gameCache = {
 };
 
 Empirica.onGameStart(({ game }) => {
-  // Set logger context
-  GameLogger.setContext(game);
-  
   const treatment = game.get("treatment");
   const { numRounds, playerCount, universalizability } = treatment;
-
-  GameLogger.gameEvent("Game started", { 
-    numRounds, 
-    playerCount, 
-    universalizability 
-  });
 
   // Generate randomized indices for learning rounds (rounds 1-3)
   // These will select from the first 3 maps of the participant's universalizability condition
@@ -44,11 +34,11 @@ Empirica.onGameStart(({ game }) => {
     
     if (i < 3) {
       // Learning rounds (1-3): use participant's universalizability condition
-      roundUniversalizability = universalizability;
+      roundUniversalizability = universalizability; // Keep original lowercase format
       randIndex = learningIndices[i];
     } else {
       // Test rounds (4-5): use medium universalizability for medium4 and medium5
-      roundUniversalizability = "medium"; 
+      roundUniversalizability = "medium"; // Use lowercase to match map data
       randIndex = testIndices[i - 3];
     }
     
@@ -58,8 +48,8 @@ Empirica.onGameStart(({ game }) => {
       randIndex: randIndex,
       universalizability: roundUniversalizability
     });
-    round.addStage({ name: "Game", duration: 40 });  
-    round.addStage({ name: "Feedback", duration: 10 });
+    round.addStage({ name: "Game", duration: 100 });  
+    round.addStage({ name: "Feedback", duration: 30 });
   }
 
   //Randomly set colours for players
@@ -90,9 +80,6 @@ Empirica.onRoundStart(({ round }) => {
   const universalizability = round.get("universalizability");
   const roundId = round.id;
 
-  // Update logger context for this round
-  GameLogger.setContext(round.currentGame, round);
-
   // Initialize caches for this round
   gameCache.obstacleCache.set(roundId, new Set());
   gameCache.playerDataCache.set(roundId, new Map());
@@ -112,7 +99,7 @@ Empirica.onRoundStart(({ round }) => {
     roundNumber: roundNumber
   });
 
-  GameLogger.roundEvent("Round started - reset player readiness tracking", { roundNumber });
+  console.log(`Round ${roundNumber} started - reset player readiness tracking`);
 
   // Get number of players, for now just use the treatment, but later we should have an option to get active players
   const treatment = round.currentGame.get("treatment");
@@ -131,12 +118,9 @@ Empirica.onRoundStart(({ round }) => {
   round.set("startPositions", startPositions);
 
   // Log details of each round
-  GameLogger.roundEvent("Round map configuration", { 
-    roundNumber, 
-    universalizability, 
-    mapName, 
-    startPositions 
-  }); 
+  console.log(`Round ${roundNumber} map universalizability:`, universalizability);
+  console.log(`Round ${roundNumber} map name:`, mapName); 
+  console.log(`Round ${roundNumber} Starting positions:`, startPositions); 
 
   // Initialize player state for round
   const players = round.currentGame.players;
@@ -166,7 +150,7 @@ Empirica.onRoundStart(({ round }) => {
   // Store in Empirica
   round.set('playerStates', playerStates);
   
-  GameLogger.roundEvent("Server initialized player states", { playerStates });
+  console.log("🔹 Server initialized player states:", playerStates);
 
   // Get obstacles from tilemap and cache them
   const obstacles = getObstaclesFromTilemap(mapName);
@@ -195,10 +179,6 @@ Empirica.onStageStart(({ stage }) => {
 Empirica.onStageEnded(({ stage }) => {});
 
 Empirica.onRoundEnded(({ round }) => {
-  // Save logs before cleanup
-  GameLogger.roundEvent("Round ended", { roundNumber: round.get("number") });
-  GameLogger.saveLogsBatch('round');
-  
   // Clean up cache when round ends
   const roundId = round.id;
   gameCache.obstacleCache.delete(roundId);
@@ -208,9 +188,6 @@ Empirica.onRoundEnded(({ round }) => {
 });
 
 Empirica.onGameEnded(({ game }) => {
-  // Set context for final logging
-  GameLogger.setContext(game);
-  
   // For each player, save their round data
   game.players.forEach((player) => {
 
@@ -223,12 +200,8 @@ Empirica.onGameEnded(({ game }) => {
 
     // Store rounds data on player for exit survey access
     player.set("roundsData", roundData);
-    GameLogger.playerAction(player.id, "round_data_saved", { roundData });
+    console.log("Saved round data for player:", player.id, roundData);
   });
-  
-  // Save final game logs
-  GameLogger.gameEvent("Game ended");
-  GameLogger.saveLogsBatch('game');
 });
 
 //function to move game in server
@@ -242,7 +215,7 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   const roundId = round.id;
   const { curPos, newPos, direction } = moveRequest;
   
-  GameLogger.movement(player.id, curPos, newPos, direction);
+  console.log(`🔄 SERVER: Player ${player.id} requesting move from (${curPos.x},${curPos.y}) to (${newPos.x},${newPos.y}) direction ${direction}`);
   
   // Get cached data for fast access
   const obstacleSet = gameCache.obstacleCache.get(roundId);
@@ -251,7 +224,7 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
   
   // Check if caches exist
   if (!obstacleSet || !playerPositions || !playerData) {
-    GameLogger.warn("Cache not initialized for round", { roundId }, 'movement');
+    console.warn("Cache not initialized for round", roundId);
     return;
   }
   
@@ -341,13 +314,13 @@ Empirica.on("player", "moveRequest", (ctx, { player, moveRequest }) => {
 Empirica.on("player", "waterAction", (ctx, { player, waterAction }) => {
   const processWaterAction = (attempt = 1) => {
     try {
-      GameLogger.waterAction(player.id, `Processing water action (attempt ${attempt})`, waterAction);
+      console.log(`🚰 SERVER: Processing water action for player ${player.id} (attempt ${attempt}):`, waterAction);
       
       const round = player.currentRound;
       if (!round) {
-        GameLogger.warn(`No current round for player ${player.id}`, null, 'water_action');
+        console.warn(`No current round for player ${player.id}`);
         if (attempt < 3) {
-          GameLogger.debug(`Retrying water action in 100ms (attempt ${attempt})`, null, 'water_action');
+          console.log(`🚰 SERVER: Retrying in 100ms (attempt ${attempt})`);
           setTimeout(() => processWaterAction(attempt + 1), 100);
         }
         return;
@@ -485,11 +458,7 @@ Empirica.on("player", "playerReady", (ctx, { player, playerReady }) => {
       const totalPlayers = Object.keys(round.get("playerStates") || {}).length;
       const readyCount = readyPlayers.size;
       
-      GameLogger.playerAction(player.id, "player_ready", { 
-        roundNumber, 
-        readyCount, 
-        totalPlayers 
-      });
+      console.log(`Player ${player.id} is ready for round ${roundNumber}. Ready players: ${readyCount}/${totalPlayers}`);
       
       // Broadcast this player's readiness to all clients
       // Set the latest player ready status for efficient client updates
@@ -502,17 +471,12 @@ Empirica.on("player", "playerReady", (ctx, { player, playerReady }) => {
       });
       
       // Debug output all ready players
-      GameLogger.debug(`Ready players for round ${roundNumber}`, { 
-        readyPlayers: Array.from(readyPlayers) 
-      }, 'player_ready');
+      console.log(`Ready players for round ${roundNumber}: ${Array.from(readyPlayers)}`);
       
       // If all players are ready, set a flag on the round to indicate this
       if (readyCount === totalPlayers) {
         round.set("allPlayersReady", true);
-        GameLogger.gameEvent("All players ready - game starting", { 
-          totalPlayers, 
-          roundNumber 
-        });
+        console.log(`🎮 All players (${totalPlayers}) are ready for round ${roundNumber}! Game starting.`);
       }
     }
   } catch (error) {

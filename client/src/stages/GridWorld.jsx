@@ -16,11 +16,6 @@ export function GridWorld() {
     const latestPlayerChange = round.get('latestPlayerChange');
     const latestPlayerReady = round.get('latestPlayerReady');
     
-    // Set logging context
-    useEffect(() => {
-        GameLog.setContext(player, round);
-    }, [player, round]);
-    
     // Track round changes to reset player states
     useEffect(() => {
         GameLog.log(`Round ${roundNumber} initialized`);
