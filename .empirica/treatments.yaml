@@ -57,3 +57,24 @@ treatments:
       numRounds: 5
       universalizability: "low"
       bonusPerSapling: 2
+  - desc: "2p test: High Univ Learning"
+    name: 2pTestHighUniversalizability
+    factors:
+      playerCount: 2
+      numRounds: 5
+      universalizability: "high"
+      bonusPerSapling: 2
+  - desc: "2p test: Medium Univ Learning"
+    name: 2pTestMediumUniversalizability
+    factors:
+      playerCount: 2
+      numRounds: 5
+      universalizability: "medium"
+      bonusPerSapling: 2
+  - desc: "2p test: Low Univ Learning"
+    name: 2pTestLowUniversalizability
+    factors:
+      playerCount: 2
+      numRounds: 5
+      universalizability: "low"
+      bonusPerSapling: 2
