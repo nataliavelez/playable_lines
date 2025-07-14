@@ -11,7 +11,7 @@ export function Introduction({ next }) {
         <p className="text-sm text-gray-500">
           You will be playing a multiplayer game with up to 8 other players. 
           In the game you will walk around in various environments (rounds), collect water, and water nearby saplings.  
-          There will be <b>six different environments (rounds)</b> in the game.  Below, is an example of an environment (round) you could play in.
+          There will be <b>five (5) different environments (rounds)</b> in the game.  Below, is an example of an environment (round) you could play in.
         </p>
         <div className="flex justify-center">
           <img src="assets/test_map.png" alt="map image" className="m-4"></img>

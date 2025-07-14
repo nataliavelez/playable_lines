@@ -30,7 +30,7 @@ const originalQuestions = [
       "2 rounds",
       "3 rounds",
       "4 rounds",
-      "6 rounds"
+      "5 rounds"
     ],
     correctAnswer: 3
   },
